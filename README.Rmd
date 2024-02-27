@@ -7,13 +7,11 @@ output: github_document
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo = TRUE)
 ```
-
 # chef
 
 # Purpose
 
 To provide an open-source opinionated framework for setting up pipelines for AMNOG-style HTA analyses. {chef} is currently in a development phase, so should be used with caution.
-
 
 # Aim
 
@@ -25,3 +23,11 @@ The {chef} aim is that a programmer has to write minimal code, and no programmin
 4.  A specification of the statistical functions used to summarize/analyze the data. (see section)
 
 Behind the scenes, {chef} uses the {[targets](https://books.ropensci.org/targets/)} package to handle the pipelines.
+
+# Setup
+
+## Install githooks
+
+```
+git config --local core.hooksPath .githooks/
+```
