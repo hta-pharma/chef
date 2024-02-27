@@ -46,5 +46,7 @@ Suggests:
     rmarkdown,
     testthat (>= 3.0.0),
     kableExtra
+Remotes:
+    matthew-phelps/testr
 Config/testthat/edition: 3
 VignetteBuilder: knitr
