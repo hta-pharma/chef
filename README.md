@@ -32,3 +32,9 @@ four types of code:
 Behind the scenes, {chef} uses the
 {[targets](https://books.ropensci.org/targets/)} package to handle the
 pipelines.
+
+# Setup
+
+## Install githooks
+
+    git config --local core.hooksPath .githooks/
