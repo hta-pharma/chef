@@ -1,0 +1,57 @@
+---
+title: "Git Workflow"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Git Workflow}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r setup, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>"
+)
+```
+
+
+# Workflow
+
+We work with three top branches  
+
+* `main` Latest stable release.
+* `test` Semi stable testing environment.
+* `dev` For development purposes.
+
+The workflow is as follows:
+#### 1) Branch of the latest version of `dev`:  
+```
+git checkout dev
+git pull
+git checkout -b "feature/cool_new_feature"
+```
+#### 2) Implement and push to feature branch continously. 
+```
+# The below creates the remote link.
+git push --set-upstream origin feature/cool_new_feature
+```
+
+#### 3) Create a PR to merge into the dev branch.
+##### 3.5) Handle merge conflicts locally if there are any.
+```
+git checkout feature/cool_new_feature
+git merge dev
+
+/// solve the conflicts
+
+git commit -a -m "Solved merge conflicts"
+git push
+```
+
+*The next steps are required when a feature or set of features should move from dev into testing.*
+
+#### 4) Create a pull request and move dev into testing 
+* Perform various tests to ensure the new features are ready for production.
+
+#### 5) If releasing a new version: Create a pull request from testing into main.
+##### 5.5) Celebrate that a new stable version have been released.

@@ -1,0 +1,301 @@
+---
+title: "Getting started"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Getting started}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>"
+)
+```
+
+Here we start with an empty R project and walk through an example analysis. Our goal for this analysis is to report the number of subjects experiencing a mild adverse event in each treatment arm stratified by a custom age grouping. For this example we use the ADCM dataset provided in the {pharmaverseadam} package.
+
+The outline of the workflow will be:
+
+  1. Set up our project infrastructure by running `chef::use_chef`
+  2. Specify our endpoint
+  3. Define function to produce our ADaM data
+  4. Define function to calculate the statistics we want as results (i.e. number of events)
+  5. Run the pipeline and inspect the results
+
+
+# 1. Set up project infrastructure
+
+
+```{r, include=FALSE}
+# Set up temporary project for vignette
+library(chef)
+wd_old <- getwd()
+prj_old <- suppressMessages(usethis::proj_get())
+suppressMessages(testr::create_local_project())
+tmp_dir <- getwd()
+mk_endpoint_def <- function() {
+  mk_endpoint_str(
+                study_metadata = list(),
+                pop_var = "SAFFL",
+                pop_value = "Y",
+                treatment_var = "TRT01A",
+                treatment_refval = "Xanomeline High Dose",
+                period_var = "ANL01FL",
+                period_value = "Y",
+                stratify_by = list(c("AGEGR2")),
+                data_prepare = mk_adcm,
+                endpoint_label = "A",
+                custom_pop_filter = "TRT01A %in% c('Placebo', 'Xanomeline High Dose')",
+                stat_by_strata_by_trt = list("n_subev" = c(n_subev))
+              )
+}
+mk_adcm <- function(study_metadata){
+  adcm <- data.table::as.data.table(pharmaverseadam::adcm)
+  adsl <- data.table::as.data.table(pharmaverseadam::adsl)
+  adsl[, AGEGR2 := data.table::fcase(AGE < 70, "AGE < 70",
+                                     AGE >= 70, "AGE >= 70")]
+  adcm_out <-
+    merge(adsl, adcm[, c(setdiff(names(adcm), names(adsl)), "USUBJID"), with =
+                       F], by = "USUBJID", all = TRUE)
+  adcm_out[]
+}
+# Number of subjects with events
+n_subev <- function(dat,
+                    event_index,
+                    cell_index,
+                    subjectid_var,
+                    ...) {
+
+
+  stat <- dat[J(intersect(cell_index, event_index))] %>%
+    unique(., by = c(subjectid_var)) %>%
+    nrow()
+
+  return(data.table(
+    description = "Number of subjects with events",
+    label = "n",
+    value = stat
+  ))
+}
+chef::use_chef(pipeline_id = "01", mk_endpoint_def_fn = mk_endpoint_def, mk_adam_fn = list(mk_adcm, n_subev))
+```
+
+**This assumes you have set up an RStudio project (or equivalent).** If you have not done so, do that first.
+
+To setup a chef project you need:
+
+  - A `R/` directory where all project-specific R code will be stored. This will include:
+      - Any functions used to make the `ADaM` data ingested by the chef pipeline
+      - The R function that produces the endpoint specification object
+      - Any analysis/statistical functions that are not sourced from other R packages
+      - A script containing `library()` calls to any package needed for the pipeline to run
+  - A `pipeline/` directory where the `targets` pipeline(s) is/are defined
+  - A `targets.yml` file tracking the different pipelines 
+
+The file file structure should look like this:
+```  
+<R-project dir>/
+    |-- R/
+        |--- mk_endpoint_definition.R
+        |--- mk_adam.R
+        |--- packages.R
+    |-- pipeline/
+        |--- pipeline_01.R
+    |-- _targets.yaml
+    
+``` 
+
+{chef} has a convenience function to set up this infrastructure for you:
+  
+```{r eval=FALSE}
+    library(chef)
+    chef::use_chef(
+      pipeline_id = "01"
+    )
+
+```
+    
+  This sets up the following file structure:
+    
+  
+    
+  For now we need to know what the file in `R/` do. For the `_targets.yml` and `pipeline_01.R` explanation, see `vignette("pipeline")`
+
+# 1. Specify an endpoint
+
+Endpoint specifications need to be created inside a function, in this case the function defined in the `mk_endpoint_definition.R`  
+
+An endpoint is created by using the `mk_endpoint_str()` function. For an explanation of how to specify endpoints, see `vignette("endpoint_definitions")`.  
+
+Here we specify a minimal working endpoint based on the `ADCM` dataset supplied by {pharmaverseadam}. We do this by modifying the `R/mk_endpoint_definition.R` file so that is looks like this:
+
+```{r, eval=F}
+mk_endpoint_def <- function() {
+  mk_endpoint_str(
+                study_metadata = list(),
+                pop_var = "SAFFL",
+                pop_value = "Y",
+                treatment_var = "TRT01A",
+                treatment_refval = "Xanomeline High Dose",
+                period_var = "ANL01FL",
+                period_value = "Y",
+                stratify_by = list(c("AGEGR2")),
+                data_prepare = mk_adcm,
+                endpoint_label = "A",
+                custom_pop_filter = "TRT01A %in% c('Placebo', 'Xanomeline High Dose')",
+                stat_by_strata_by_trt = list("n_subev" = c(n_subev))
+              )
+}
+```
+
+You might notice a couple things with this specification:
+
+- Even though we are using the ADCM dataset from {pharmavreseadam}, there is no reference to this in the endpoint specification This is because the input clinical data is created via the `adam_fn` field, so in this case the reference to the `ADCM` data set will be inside the `mk_adcm` function (see next section).
+  - In the `stratify_by` field we refer to a variable called `AGEGR2`, however the ADCM dataset from {pharmaverseadam} does not contain any such variable. This is because we will derive this variable inside `mk_adcm` (see next section).
+
+
+# 2. Define the input dataset
+
+We also need to provide chef with the `ADCM` input data set that that corresponds to the endpoint specified above. To read more about make these data sets, see `vignette("mk_adam")`. We can see that we have strata based on a `AGEGR2`, which can be derived from the `AGE` variable in `ADSL`. 
+For now, we write a simple `ADaM` function `mk_adcm` that merges the `ADSL` data set (enriched with `AGEGR2`) onto the `ADCM` data set, thereby creating the input data set.
+
+```{r, eval=F}
+mk_adcm <- function(study_metadata){
+  adcm <- data.table::as.data.table(pharmaverseadam::adcm)
+  adsl <- data.table::as.data.table(pharmaverseadam::adsl)
+  adsl[, AGEGR2 := data.table::fcase(AGE < 70, "AGE < 70",
+                                     AGE >= 70, "AGE >= 70")]
+  adcm_out <-
+    merge(adsl, adcm[, c(setdiff(names(adcm), names(adsl)), "USUBJID"), with =
+                       F], by = "USUBJID", all = TRUE)
+  adcm_out[]
+}
+
+```
+
+# 3. Define the analysis methods
+
+Now that we have specified the endpoint to be analyzed, and defined the analysis data set for {chef}, we need to define the analysis itself. 
+
+Our goal for this analysis is to count the number of events experiencing an event. We need to define a function that makes those calculations, and give that function to chef. Because we want a result per treatment arm - strata combination, we must provide the function in the  `stat_by_strata_by_trt` argument in the endpoint specification. We have already this argument set to `n_events` in the example endpoint specification above, so now need to define the `n_events` function. To see more about how to define analysis functions, see. For now we use this simple function that simply counts the number of rows:
+
+```{r, eval=F}
+n_subev <- function(dat,
+                    event_index,
+                    cell_index,
+                    treatment_var,
+                    treatment_val,
+                    strata_var,
+                    strata_val,
+                    subjectid_var,
+                    ...) {
+
+  stat <- dat[J(cell_index)] %>%
+    .[, event_match := INDEX_ %in% event_index] %>%
+    unique(., by = c(subjectid_var, "event_match")) %>%
+    .[["event_match"]] %>%
+    sum()
+
+  return(data.table(decription = "Number of subjects with events",
+                    label = "n",
+                    value = stat))
+
+}
+```
+
+# 4. Run the analysis pipeline
+
+Now that all the inputs are defined, we can run the pipeline. This is achieved by a call to `tar_make()` from the {targets} package. 
+```{r,eval=FALSE}
+tar_make()
+```
+
+Targets will show you which steps in the pipeline are executed and how long each step took:
+
+```{r, echo=FALSE} 
+setwd(tmp_dir) # Do not run, only needed to get the markdown file to run
+tar_make()
+
+
+```
+
+Then, to see the results, you load the cached step of the pipeline corresponding to the results. In our case it will be `ep_stat`, so to load it into the sessions as an object we call
+
+```{r, eval=FALSE}
+tar_load(ep_stat)
+
+```
+
+Now `ep_stat` is an R object like any other. Thus we can look at our results simply by running
+
+```
+ep_stat
+```
+
+However, there is a lot of extra data included in the object, so lets look at a column subsection of the first 5 rows:
+
+```{r, eval=FALSE}
+ep_stat[, .(
+  treatment_var,
+  treatment_refval,
+  period_var,
+  period_value,
+  strata_var,
+  stat_result
+)] |> head()
+
+```
+
+
+```{r, echo=FALSE}
+setwd(tmp_dir) # Do not run, only needed to get the markdown file to run
+tar_load(ep_stat)
+ep_stat[, .(
+  stat_result_id,
+  treatment_var,
+  treatment_refval,
+  period_var,
+  period_value,
+  strata_var,
+  stat_result
+)] |> head()
+```
+
+The actual results are in a nested `data.table` in the stat_result column. If we want to see them, we can unnest that column
+
+```{r, eval=FALSE}
+ep_stat[, .(
+  stat_result_id,
+  treatment_var,
+  treatment_refval,
+  period_var,
+  period_value,
+  strata_var,
+  stat_result
+)] |> 
+  head() |> 
+  tidyr::unnest(cols = stat_result) |>
+  data.table::as.data.table()
+```
+
+```{r, echo=FALSE}
+setwd(tmp_dir) # Do not run, only needed to get the markdown file to run
+ep_stat[, .(
+  stat_result_id,
+  treatment_var,
+  treatment_refval,
+  period_var,
+  period_value,
+  strata_var,
+  stat_result
+)] |> 
+  head() |> 
+  tidyr::unnest(cols = stat_result) |>
+  data.table::as.data.table()
+```
+
+# 5. Pass the data on to TFL formatting
+
+Now that the data is produced, you can pass it on for TFL formatting (outside the scope of {chef}).

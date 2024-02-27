@@ -1,0 +1,50 @@
+Package: chef
+Title: Framework for generating statistical evidence
+Version: 0.0.1.9000
+Authors@R: 
+    c(person("MEWP (Matthew David Phelps)", , , "mewp@novonordisk.com", role = c("aut")),
+    person("NOSJ (Nicolai Skov Johnsen)",, , "nosj@novonordisk.com", role = c("aut")),
+    person("HSPU (Henrik Sparre Spiegelhauer)",, , "hspu@novonordisk.com", role = c("aut")),
+    person("CINO (Christian Haargaard Olsen)",, , "cino@novonordisk.com", role = c("aut", "cre")))
+Description: Take endpoint recipes and transform them into statistical outputs.
+License: MIT + file LICENSE
+Encoding: UTF-8
+Roxygen: list(markdown = TRUE)
+RoxygenNote: 7.2.2
+Depends:
+    targets(>= 1.3.2)
+Imports: 
+    magrittr,
+    checkmate,
+    methods,
+    cli,
+    utils,
+    crayon,
+    data.table (>= 1.14.2),
+    dplyr,
+    rlang,
+    stringr,
+    crew,
+    tarchetypes,
+    qs,
+    future,
+    future.callr,
+    usethis,
+    digest,
+    glue
+Suggests:
+    htmltools (>= 0.5.4),
+    testr,
+    pharmaverseadam,
+    pryr,
+    withr,
+    fs,
+    covr,
+    plyr,
+    tidyr,
+    knitr,
+    rmarkdown,
+    testthat (>= 3.0.0),
+    kableExtra
+Config/testthat/edition: 3
+VignetteBuilder: knitr
