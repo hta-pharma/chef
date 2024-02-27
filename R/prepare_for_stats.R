@@ -65,14 +65,18 @@ prepare_for_stats <- function(
 
   if (type %in% c("stat_by_strata_by_trt", "stat_by_strata_across_trt")){
 
+    ep_accepted <- ep[get(crit_var)==TRUE]
      out <- expand_ep_for_stats(
-         ep = ep_fn,
+         ep = ep_accepted,#ep_fn,
          grouping_cols = grouping_cols,
          analysis_data_container = analysis_data_container,
          data_col = data_col,
          id_col =  id_col,
          col_prefix = "stat"
     )
+
+     # todo: join fn and add rejected eps
+
      return(out)
   }
 
@@ -148,8 +152,6 @@ expand_ep_for_stats <- function(
 
   name_expand_col = paste(col_prefix, "expand_spec", sep="_")
 
-
-
   ep[,"_i_" := .I]
   setkey(ep, key_analysis_data)
   ep_with_data <- ep[analysis_data_container, nomatch = NULL]
@@ -171,24 +173,24 @@ expand_ep_for_stats <- function(
 
   setkey(ep_exp, key_analysis_data)
 
-  ep_exp[,"_i_":= NULL]
-
-  ep_exp[, stat_result_id := paste0(get(id_col),
-                                    "-",
-                                    fn_hash,
-                                    "-",
-                                    formatC(
-                                      .I,
-                                      width = 4,
-                                      format = "d",
-                                      flag = "0"
-                                    ))]
+  # ep_exp[,"_i_":= NULL]
+  # ep_exp[, stat_result_id := paste0(get(id_col),
+  #                                   "-",
+  #                                   fn_hash,
+  #                                   "-",
+  #                                   formatC(
+  #                                     .I,
+  #                                     width = 4,
+  #                                     format = "d",
+  #                                     flag = "0"
+  #                                   ))]
+  ep_exp[,"_i_":= .I]
 
   ep_exp_with_data <- ep_exp[analysis_data_container, nomatch = NULL]
   filter_col_name = paste(col_prefix, "filter", sep="_")
   ep_exp_with_data[, cell_index := llist(create_flag(get(data_col)[[1]],
                                            singletons = c(get(filter_col_name)[[1]]))),
-         by = stat_result_id]
+         by = "_i_"]
   ep_exp_with_data[, (data_col):=NULL]
   ep_exp_with_data[]
 }
@@ -225,7 +227,13 @@ define_expansion_cell_from_data <- function(
   grouping_var_list = vector(mode="list", length(grouping_col_values))
   names(grouping_var_list) = grouping_col_values
 
-  exp_dt <- define_expanded_ep(row[,get(data_col)][[1]], grouping_var_list, col_prefix = col_prefix)
+  if(row[["only_explicit_strata"]]){
+    dat <-  row[,get(data_col)][[1]][row[["event_index"]]]
+  }else{
+    dat <- row[,get(data_col)][[1]]
+  }
+
+  exp_dt <- define_expanded_ep(x = dat, group_by = grouping_var_list, col_prefix = col_prefix)
   data.table::setnames(exp_dt, c("empty"), c(paste(col_prefix, "empty", sep="_")))
   return (exp_dt)
 }
