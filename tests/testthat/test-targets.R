@@ -158,7 +158,6 @@ test_that("branching after prepare for stats step works",
 
   # ACT ---------------------------------------------------------------------
   tar_make()
-  browser()
   # EXPECT ------------------------------------------------------------------
   x <- tar_meta() %>% as.data.table()
   expect_true(all(is.na(x$error)))

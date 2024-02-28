@@ -29,7 +29,8 @@ validate_endpoints_def <- function(endpoint_base) {
     "stat_across_strata_across_trt",
     "crit_endpoint",
     "crit_by_strata_by_trt",
-    "crit_by_strata_across_trt"
+    "crit_by_strata_across_trt",
+    "only_strata_with_events"
   )
 
   missing_cols <- setdiff(col_names, names(endpoint_base))
@@ -118,7 +119,8 @@ build_expected_col_classes <- function() {
     stat_across_strata_across_trt = "list",
     crit_endpoint = "list",
     crit_by_strata_by_trt = "list",
-    crit_by_strata_across_trt = "list"
+    crit_by_strata_across_trt = "list",
+    only_strata_with_events = "logical"
   )
   data.table::data.table(col_name = names(col_class_expected_vec),
                          col_class = col_class_expected_vec)

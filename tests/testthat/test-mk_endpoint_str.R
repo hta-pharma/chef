@@ -366,7 +366,7 @@ test_that("Column types of endpoint specification with complete function specifi
                      "endpoint_filter", "group_by", "stratify_by", "endpoint_label",
                      "data_prepare", "stat_by_strata_by_trt", "stat_by_strata_across_trt",
                      "stat_across_strata_across_trt", "crit_endpoint", "crit_by_strata_by_trt",
-                     "crit_by_strata_across_trt")
+                     "crit_by_strata_across_trt", "only_strata_with_events")
 
   chr_cols <- c("pop_var", "pop_value", "treatment_var", "treatment_refval",
                 "period_var", "period_value", "custom_pop_filter",
@@ -474,7 +474,7 @@ test_that("Column types of minimal endpoint specification", {
                      "endpoint_filter", "group_by", "stratify_by", "endpoint_label",
                      "data_prepare", "stat_by_strata_by_trt", "stat_by_strata_across_trt",
                      "stat_across_strata_across_trt", "crit_endpoint", "crit_by_strata_by_trt",
-                     "crit_by_strata_across_trt")
+                     "crit_by_strata_across_trt", "only_strata_with_events")
 
   chr_cols <- c("pop_var", "pop_value", "treatment_var", "treatment_refval",
                 "period_var", "period_value", "custom_pop_filter",

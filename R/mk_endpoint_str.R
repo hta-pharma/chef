@@ -17,6 +17,7 @@
 #' @param crit_endpoint List.
 #' @param crit_by_strata_by_trt List.
 #' @param crit_by_strata_across_trt List.
+#' @param only_strata_with_events Boolean.
 #'
 #' @return A data.table containing the endpoint specification.
 #' @export
@@ -40,6 +41,7 @@ mk_endpoint_str <- function(study_metadata = NULL,
                             crit_endpoint = NULL,
                             crit_by_strata_by_trt = NULL,
                             crit_by_strata_across_trt = NULL,
+                            only_strata_with_events = FALSE,
                             env = parent.frame()) {
   if (!is.function(data_prepare)) {
     stop("Argument 'data_prepare' needs to be an unquoted function name")
@@ -110,7 +112,8 @@ mk_endpoint_str <- function(study_metadata = NULL,
     stat_across_strata_across_trt = list(substitute(stat_across_strata_across_trt)),
     crit_endpoint = list(substitute(crit_endpoint)),
     crit_by_strata_by_trt = list(substitute(crit_by_strata_by_trt)),
-    crit_by_strata_across_trt = list(substitute(crit_by_strata_across_trt))
+    crit_by_strata_across_trt = list(substitute(crit_by_strata_across_trt)),
+    only_strata_with_events = only_strata_with_events
   )
   validate_endpoints_def(x)
   x

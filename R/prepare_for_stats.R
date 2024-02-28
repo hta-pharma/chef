@@ -20,38 +20,31 @@
 #' @return A `data.table` with expanded endpoints prepared for statistical
 #'   analysis.
 #' @export
-prepare_for_stats <- function(
-    ep,
-    analysis_data_container,
-    fn_map,
-    type = c("stat_by_strata_by_trt",
-             "stat_by_strata_across_trt",
-             "stat_across_strata_across_trt"),
-    data_col = "dat",
-    id_col ="strata_id"
-){
-
+prepare_for_stats <- function(ep,
+                              analysis_data_container,
+                              fn_map,
+                              type = c(
+                                "stat_by_strata_by_trt",
+                                "stat_by_strata_across_trt",
+                                "stat_across_strata_across_trt"
+                              ),
+                              data_col = "dat",
+                              id_col = "strata_id") {
   type <- match.arg(type)
 
-  # Join endpoint rows accepted by criterion function with stat function data from fn_map
-  crit_var <- switch (type,
+  crit_var <- switch(
+    type,
     "stat_by_strata_by_trt" = "crit_accept_by_strata_by_trt",
-    "stat_by_strata_across_trt"= "crit_accept_by_strata_across_trt",
-    "stat_across_strata_across_trt"= "crit_accept_by_strata_across_trt",
-    stop("Unknown Stat function type")
+    "stat_by_strata_across_trt" = "crit_accept_by_strata_across_trt",
+    "stat_across_strata_across_trt" = "crit_accept_by_strata_across_trt",
+    stop("Unknown stat function type")
   )
 
-  ep_fn <-
-    merge(ep[get(crit_var)==TRUE],
-          fn_map[fn_type == type],
-          by = "endpoint_spec_id",
-          allow.cartesian = TRUE)
-
-  # If no functions of the type are supplied, return early
-  if(nrow(ep_fn)==0){
-    return(data.table::data.table(data=NULL))
+  # Return early if no endpoint rows are accepted by criterion or if no stat functions are suppied
+  if (nrow(ep[get(crit_var)]) == 0 |
+      nrow(fn_map[fn_type == type]) == 0) {
+    return(data.table::data.table(data = NULL))
   }
-
 
   # Set of columns used for slicing the population depending on the type of stat function
   grouping_cols <- switch(
@@ -59,45 +52,82 @@ prepare_for_stats <- function(
     "stat_by_strata_by_trt" = c("strata_var", "treatment_var"),
     "stat_by_strata_across_trt" = c("strata_var"),
     "stat_across_strata_across_trt" = c("strata_var", "treatment_var"),
-    "Invalid \"type\""
+    stop("Unknown stat function type")
   )
 
+  if (type %in% c("stat_by_strata_by_trt", "stat_by_strata_across_trt")) {
 
-  if (type %in% c("stat_by_strata_by_trt", "stat_by_strata_across_trt")){
+    # Expand endpoints by treatment and/or strata
+    ep_expanded <-
+      expand_ep_for_stats(
+        ep = ep[get(crit_var) == TRUE],
+        grouping_cols = grouping_cols,
+        analysis_data_container = analysis_data_container,
+        data_col = data_col,
+        id_col =  id_col,
+        col_prefix = "stat"
+      )
 
-    ep_accepted <- ep[get(crit_var)==TRUE]
-     out <- expand_ep_for_stats(
-         ep = ep_accepted,#ep_fn,
-         grouping_cols = grouping_cols,
-         analysis_data_container = analysis_data_container,
-         data_col = data_col,
-         id_col =  id_col,
-         col_prefix = "stat"
-    )
+    # Indicate if stratum has no observations or events
+    ep_expanded[, stat_event_exist := sapply(Map(intersect, event_index, cell_index), function(x) length(x) == 0)]
 
-     # todo: join fn and add rejected eps
+    # Join stat function data so that each row represent a function call
+    ep_fn <-
+      merge(ep_expanded,
+            fn_map[fn_type == type],
+            by = "endpoint_spec_id",
+            allow.cartesian = TRUE)
 
-     return(out)
+    # Create unique id for stat function call
+    ep_fn[, stat_result_id := paste(get(id_col), fn_hash, formatC(.I, width = 4, format = "d", flag = "0"),
+                                    sep = "-")]
+
+    return(ep_fn)
+  } else{
+
+    ep_fn <-
+      merge(ep[get(crit_var) == TRUE],
+            fn_map[fn_type == type],
+            by = "endpoint_spec_id",
+            allow.cartesian = TRUE)
+
+    # For stat_across_strata_across_trt we test interaction effect between treatment and strata
+    # So Treatment ~ SEX we therefore add an empty filter and an metadata containing all the levels.
+    # Remove the total stratum as it is out of scope of this type of statistics
+    setkey(ep_fn, key_analysis_data)
+    ep_with_data <- ep_fn[analysis_data_container]
+    ep_sg <- ep_with_data[get(grouping_cols[1]) != "TOTAL_", ]
+    ep_sg <-
+      ep_sg[, c("stat_event_exist",
+                "stat_metadata",
+                "stat_filter",
+                "stat_result_id",
+                "cell_index") :=
+              c(TRUE,
+                llist(c(
+                  list_group_and_levels(get(data_col)[[1]], get(grouping_cols[1])),
+                  list_group_and_levels(get(data_col)[[1]], get(grouping_cols[2]))
+                )),
+                "",
+                paste0(
+                  get(id_col),
+                  "-",
+                  fn_hash,
+                  "-",
+                  formatC(
+                    .I,
+                    width = 4,
+                    format = "d",
+                    flag = "0"
+                  )
+                ),
+                llist(get(data_col)[[1]][["INDEX_"]])),
+            by = 1:nrow(ep_sg)]
+    ep_sg[, (data_col) := NULL]
+    return(ep_sg)
+
   }
 
-  # For stat_across_strata_across_trt we test interaction effect between treatment and strata
-  # So Treatment ~ SEX we therefore add an empty filter and an metadata containing all the levels.
-  # Remove the total stratum as it is out of scope of this type of statistics
-  setkey(ep_fn, key_analysis_data)
-  ep_with_data <- ep_fn[analysis_data_container]
-  ep_sg <- ep_with_data[get(grouping_cols[1]) != "TOTAL_",]
-  ep_sg <- ep_sg[, c("stat_empty", "stat_metadata", "stat_filter", "stat_result_id", "cell_index") :=
-                   c(FALSE,
-                    llist(c(
-                      list_group_and_levels(get(data_col)[[1]], get(grouping_cols[1])),
-                      list_group_and_levels(get(data_col)[[1]], get(grouping_cols[2]))
-                    )),
-                    "",
-                    paste0(get(id_col), "-", fn_hash, "-", formatC(.I, width = 4, format = "d", flag = "0")),
-                    llist(get(data_col)[[1]][["INDEX_"]])),
-                 by = 1:nrow(ep_sg)]
-  ep_sg[, (data_col):=NULL]
-  return(ep_sg)
 }
 
 
@@ -173,26 +203,17 @@ expand_ep_for_stats <- function(
 
   setkey(ep_exp, key_analysis_data)
 
-  # ep_exp[,"_i_":= NULL]
-  # ep_exp[, stat_result_id := paste0(get(id_col),
-  #                                   "-",
-  #                                   fn_hash,
-  #                                   "-",
-  #                                   formatC(
-  #                                     .I,
-  #                                     width = 4,
-  #                                     format = "d",
-  #                                     flag = "0"
-  #                                   ))]
-  ep_exp[,"_i_":= .I]
 
+  ep_exp[,"_i_":= .I]
   ep_exp_with_data <- ep_exp[analysis_data_container, nomatch = NULL]
   filter_col_name = paste(col_prefix, "filter", sep="_")
   ep_exp_with_data[, cell_index := llist(create_flag(get(data_col)[[1]],
                                            singletons = c(get(filter_col_name)[[1]]))),
-         by = "_i_"]
-  ep_exp_with_data[, (data_col):=NULL]
-  ep_exp_with_data[]
+                   by = "_i_"]
+
+  ep_exp_with_data[, (data_col) := NULL]
+  ep_exp_with_data[, "_i_" := NULL]
+  return(ep_exp_with_data)
 }
 
 #' Create Expansion Cell Containing a Data Table Based on Strata
@@ -227,14 +248,13 @@ define_expansion_cell_from_data <- function(
   grouping_var_list = vector(mode="list", length(grouping_col_values))
   names(grouping_var_list) = grouping_col_values
 
-  if(row[["only_explicit_strata"]]){
+  if(row[["only_strata_with_events"]]){
     dat <-  row[,get(data_col)][[1]][row[["event_index"]]]
   }else{
     dat <- row[,get(data_col)][[1]]
   }
 
   exp_dt <- define_expanded_ep(x = dat, group_by = grouping_var_list, col_prefix = col_prefix)
-  data.table::setnames(exp_dt, c("empty"), c(paste(col_prefix, "empty", sep="_")))
   return (exp_dt)
 }
 

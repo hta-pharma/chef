@@ -12,7 +12,9 @@ test_that("Keep only explicit strata levels", {
       group_by = list(list(AESOC = c())),
       stratify_by = list(c("RACE")),
       stat_by_strata_by_trt = list(n_sub, n_subev), # need renaming to conform with chefStats
-      endpoint_label = "AESOC: <AESOC>"
+      stat_by_strata_across_trt = list(n_subev),
+      endpoint_label = "AESOC: <AESOC>",
+      only_strata_with_events = TRUE
     )
 
   ep <- add_id(ep)
@@ -52,8 +54,8 @@ test_that("Keep only explicit strata levels", {
     )
 
   ##
-  ep_crit_by_strata_across_trt <- ep_crit_by_strata_across_trt[grepl("SURGICAL AND MEDICAL PROCEDURES", endpoint_group_filter)]#  & strata_var != "TOTAL_"]
-  ep_crit_by_strata_across_trt[["only_explicit_strata"]] <- TRUE
+  # ep_crit_by_strata_across_trt <- ep_crit_by_strata_across_trt[grepl("SURGICAL AND MEDICAL PROCEDURES", endpoint_group_filter)]#  & strata_var != "TOTAL_"]
+  # ep_crit_by_strata_across_trt[["only_strata_with_events"]] <- T
   ##
 
   ep_prep_by_strata_by_trt <-
@@ -61,20 +63,6 @@ test_that("Keep only explicit strata levels", {
                       analysis_data_container,
                       fn_map,
                       type = "stat_by_strata_by_trt")
-
-  # Check actual strata for metabolism
-  dt1 <- unique(analysis_data_container[["dat"]][[1]][,c("AESOC","AEDECOD")])
-  nrow(dt1)
-  table(dt1[["AESOC"]])
-  dt2 <- analysis_data_container[["dat"]][[1]][AESOC == "Metabolism and nutrition disorders"]
-  unique(dt2[["AEDECOD"]])
-  length(unique(dt2[["AEDECOD"]]))
-
-  # Look at pipeline expansion on metabolism
-  ep_prep_by_strata_by_trt[, index := mapply(intersect, event_index, cell_index)]
-  dt3 <- ep_prep_by_strata_by_trt[fn_name == "chefStats::n_event",c("index","event_index", "cell_index","endpoint_group_filter", "strata_var", "stat_filter", "fn_name")]
-  View(dt3)
-  View(dt3[lengths(index) != 0,])
 
   ep_prep_by_strata_across_trt <-
     prepare_for_stats(ep_crit_by_strata_across_trt,

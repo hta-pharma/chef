@@ -116,7 +116,7 @@ define_expanded_ep <- function(x, group_by, col_prefix = "endpoint_group") {
   out <- index_expanded_ep_groups(x, group_by) %>%
     construct_group_filter(col_name_filter = col_name_filter)
   out[, (col_name_meta) := .(list(lapply(.SD, identity))), by=1:nrow(out), .SDcols = names(group_by)]
-  out[, .SD, .SDcols = c("empty", col_name_meta, col_name_filter)]
+  out[, .SD, .SDcols = c(col_name_meta, col_name_filter)]
 }
 
 #' Index Non-Null Group Levels
@@ -171,25 +171,20 @@ index_expanded_ep_groups <- function(x, group_by) {
   } else{
     combos_subset <- combos_all
   }
-  if (length(group_by) == 1) {
-    combos_subset[, empty := FALSE]
-    return(combos_subset)
-  }
-  unique_vals <- lapply(combos_subset, unique)
 
-  combos_expanded <-
-    setDT(expand.grid(unique_vals, stringsAsFactors = FALSE))
-  setnames(combos_expanded, names(combos_subset))
-  combos_expanded[, empty := TRUE]
-  cols <- names(combos_expanded[, !"empty"])
-  combos_expanded[combos_subset, empty := FALSE, on = cols]
-  combos_expanded
+  if (length(group_by) == 1) {
+    return(combos_subset)
+  }else{
+    unique_vals <- lapply(combos_subset, unique)
+    combos_expanded <- setDT(expand.grid(unique_vals, stringsAsFactors = FALSE))
+    return(combos_expanded)
+  }
 }
 
 construct_group_filter <- function(x, col_name_filter="endpoint_group_filter") {
   out <- copy(x)
   filter_str_vec <-
-    purrr::pmap(x[, !"empty"], create_condition_str) %>% unlist(recursive = F)
+    purrr::pmap(x, create_condition_str) %>% unlist(recursive = F)
   out[, (col_name_filter) := filter_str_vec]
 }
 

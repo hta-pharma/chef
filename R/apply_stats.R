@@ -31,7 +31,7 @@ apply_stats <-
 
     if (type == "stat_by_strata_by_trt") {
 
-      if (nrow(ep_cp[crit_accept_by_strata_by_trt == TRUE]) == 0 ){
+      if (nrow(ep_cp[crit_accept_by_strata_by_trt == TRUE]) == 0){
         ep_cp[, stat_result := list()]
       } else {
         ep_cp[crit_accept_by_strata_by_trt == TRUE, stat_result := llist(
