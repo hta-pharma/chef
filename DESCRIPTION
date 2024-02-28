@@ -29,7 +29,8 @@ Imports:
     stringr,
     tarchetypes,
     usethis,
-    utils
+    utils,
+    crew
 Suggests:
     covr,
     fs,
