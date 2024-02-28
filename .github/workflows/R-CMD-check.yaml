@@ -3,8 +3,8 @@
 on:
   push:
     branches: [main, stage, dev]
-  pull_request:
-    branches: [main, stage, dev]
+  # pull_request:
+  #   branches: [main, stage, dev]
 
 name: R-CMD-check
 

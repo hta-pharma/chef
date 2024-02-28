@@ -13,6 +13,10 @@ jobs:
   name: Audit Dependencies 🕵️‍♂️
   uses: insightsengineering/r.pkg.template/.github/workflows/audit.yaml@main
 
+  check-reuse:
+  name: Check Reuse 🔄
+  uses: ./.github/workflow/R-CMD-check.yaml
+
   R-CMD-check:
     runs-on: ${{ matrix.config.os }}
 
