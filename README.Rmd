@@ -2,6 +2,8 @@
 output: github_document
 ---
 
+<!-- Insert badges here -->
+[![R-CMD-check](https://github.com/hta-pharma/chef/actions/workflows/package-check-test.yaml/badge.svg)](https://github.com/hta-pharma/chef/actions/workflows/package-check-test.yaml)
 <!-- README.md is generated from README.Rmd. Please edit that file -->
 
 ```{r setup, include=FALSE}
