@@ -15,7 +15,7 @@ jobs:
   #   uses: insightsengineering/r.pkg.template/.github/workflows/audit.yaml@main
   r-cmd:
     name: R CMD Check 🧬
-    uses: build-check-install.yaml #insightsengineering/r.pkg.template/.github/workflows/
+    uses: ./.github/actions/build-check-install.yaml #insightsengineering/r.pkg.template/.github/workflows/
     secrets:
       REPO_GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
     with:
