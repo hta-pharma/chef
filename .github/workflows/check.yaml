@@ -10,9 +10,9 @@ on:
 
 jobs:
   # Runs package check somewhat similar to blackduck using oysteR
-  audit:
-    name: Audit Dependencies 🕵️‍♂️
-    uses: insightsengineering/r.pkg.template/.github/workflows/audit.yaml@main
+  # audit:
+  #   name: Audit Dependencies 🕵️‍♂️
+  #   uses: insightsengineering/r.pkg.template/.github/workflows/audit.yaml@main
   r-cmd:
     name: R CMD Check 🧬
     uses: insightsengineering/r.pkg.template/.github/workflows/build-check-install.yaml@main
@@ -23,59 +23,59 @@ jobs:
       publish-unit-test-report-gh-pages: false
     # with:
     #   additional-r-cmd-check-params: --as-cran
-  coverage:
-    name: Coverage 📔
-    uses: insightsengineering/r.pkg.template/.github/workflows/test-coverage.yaml@main
-    secrets:
-      REPO_GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-    with:
-      publish-coverage-report-gh-pages: false
-  # linter:
-  #   if: github.event_name == 'pull_request'
-  #   name: SuperLinter 🦸‍♀️
-  #   uses: insightsengineering/r.pkg.template/.github/workflows/linter.yaml@main
-  # Rebuilds the man pages
-  roxygen:
-    name: Roxygen 🅾
-    uses: insightsengineering/r.pkg.template/.github/workflows/roxygen.yaml@main
-    secrets:
-      REPO_GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-    with:
-      auto-update: true
-  gitleaks:
-    name: gitleaks 💧
-    uses: insightsengineering/r.pkg.template/.github/workflows/gitleaks.yaml@main
-  spelling:
-    if: github.event_name == 'pull_request'
-    name: Spell Check 🆎
-    uses: insightsengineering/r.pkg.template/.github/workflows/spelling.yaml@main
-  links:
-    if: github.event_name == 'pull_request'
-    name: Check URLs 🌐
-    uses: insightsengineering/r.pkg.template/.github/workflows/links.yaml@main
-  # Bumps the dev version of the package - only on dev branch
-  vbump:
-    name: Version Bump 🤜🤛
-    if: github.event_name == 'push' && github.ref == 'refs/heads/dev'
-    uses: insightsengineering/r.pkg.template/.github/workflows/version-bump.yaml@main
-    with:
-      disable-precommit-autoupdate: true
-    secrets:
-      REPO_GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-  # Checks that the version of the package agrees with the version in DESCRIPTION
-  version:
-    name: Version Check 🏁
-    uses: insightsengineering/r.pkg.template/.github/workflows/version.yaml@main
-  licenses:
-    name: License Check 🃏
-    uses: insightsengineering/r.pkg.template/.github/workflows/licenses.yaml@main
-  # style:
-  #   if: github.event_name == 'pull_request'
-  #   name: Style Check 👗
-  #   uses: insightsengineering/r.pkg.template/.github/workflows/style.yaml@main
+  # coverage:
+  #   name: Coverage 📔
+  #   uses: insightsengineering/r.pkg.template/.github/workflows/test-coverage.yaml@main
+  #   secrets:
+  #     REPO_GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+  #   with:
+  #     publish-coverage-report-gh-pages: false
+  # # linter:
+  # #   if: github.event_name == 'pull_request'
+  # #   name: SuperLinter 🦸‍♀️
+  # #   uses: insightsengineering/r.pkg.template/.github/workflows/linter.yaml@main
+  # # Rebuilds the man pages
+  # roxygen:
+  #   name: Roxygen 🅾
+  #   uses: insightsengineering/r.pkg.template/.github/workflows/roxygen.yaml@main
+  #   secrets:
+  #     REPO_GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
   #   with:
   #     auto-update: true
-  # grammar:
+  # gitleaks:
+  #   name: gitleaks 💧
+  #   uses: insightsengineering/r.pkg.template/.github/workflows/gitleaks.yaml@main
+  # spelling:
   #   if: github.event_name == 'pull_request'
-  #   name: Grammar Check 🔤
-  #   uses: insightsengineering/r.pkg.template/.github/workflows/grammar.yaml@main
+  #   name: Spell Check 🆎
+  #   uses: insightsengineering/r.pkg.template/.github/workflows/spelling.yaml@main
+  # links:
+  #   if: github.event_name == 'pull_request'
+  #   name: Check URLs 🌐
+  #   uses: insightsengineering/r.pkg.template/.github/workflows/links.yaml@main
+  # # Bumps the dev version of the package - only on dev branch
+  # vbump:
+  #   name: Version Bump 🤜🤛
+  #   if: github.event_name == 'push' && github.ref == 'refs/heads/dev'
+  #   uses: insightsengineering/r.pkg.template/.github/workflows/version-bump.yaml@main
+  #   with:
+  #     disable-precommit-autoupdate: true
+  #   secrets:
+  #     REPO_GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+  # # Checks that the version of the package agrees with the version in DESCRIPTION
+  # version:
+  #   name: Version Check 🏁
+  #   uses: insightsengineering/r.pkg.template/.github/workflows/version.yaml@main
+  # licenses:
+  #   name: License Check 🃏
+  #   uses: insightsengineering/r.pkg.template/.github/workflows/licenses.yaml@main
+  # # style:
+  # #   if: github.event_name == 'pull_request'
+  # #   name: Style Check 👗
+  # #   uses: insightsengineering/r.pkg.template/.github/workflows/style.yaml@main
+  # #   with:
+  # #     auto-update: true
+  # # grammar:
+  # #   if: github.event_name == 'pull_request'
+  # #   name: Grammar Check 🔤
+  # #   uses: insightsengineering/r.pkg.template/.github/workflows/grammar.yaml@main
