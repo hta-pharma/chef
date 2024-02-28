@@ -21,7 +21,9 @@ apply_stats <-
                     "stat_across_strata_across_trt")) {
     # If no functions are given by the user, no results table needs to be
     # produced
-    if (nrow(ep)==0) {
+    nm <- names(ep)
+    if (length(nm) <= 2 &&
+        nm[1] == "SKIP_") {
       return(data.table(NULL))
     }
     type <- match.arg(type)
@@ -97,7 +99,7 @@ apply_stats <-
       }
     }
 
-    keep <- setdiff(names(ep_cp), c("fn_callable", "dat"))
+    keep <- setdiff(names(ep_cp), c("fn_callable", "dat", "tar_group"))
     ep_cp[, .SD, .SDcols = keep]
 
   }
