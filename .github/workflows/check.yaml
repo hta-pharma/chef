@@ -2,17 +2,10 @@
 name: Check 🛠
 
 on:
-  pull_request:
-    types:
-      - opened
-      - synchronize
-      - reopened
-      - ready_for_review
-    branches:
-      - main, stage, dev
   push:
-    branches:
-      - main, stage, dev
+    branches: [main, stage, dev]
+  pull_request:
+    branches: [main, stage, dev]
   workflow_dispatch:
 
 jobs:
