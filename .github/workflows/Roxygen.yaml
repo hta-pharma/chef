@@ -4,26 +4,26 @@
     on:
       workflow_call:
         inputs:
-          install-system-dependencies:
-            description: Check for and install system dependencies
-            required: false
-            default: false
-            type: boolean
-          enable-staged-dependencies-check:
-            description: Enable staged dependencies YAML check
-            required: false
-            default: false
-            type: boolean
+          # install-system-dependencies:
+          #   description: Check for and install system dependencies
+          #   required: false
+          #   default: false
+          #   type: boolean
+          # enable-staged-dependencies-check:
+          #   description: Enable staged dependencies YAML check
+          #   required: false
+          #   default: false
+          #   type: boolean
           auto-update:
             description: If man pages are not up-to-date, they will be automatically updated and committed back to the branch.
             required: false
             default: false
             type: boolean
-          sd-direction:
-            description: The direction to use to install staged dependencies. Choose between 'upstream', 'downstream' and 'all'
-            required: false
-            type: string
-            default: upstream
+          # sd-direction:
+          #   description: The direction to use to install staged dependencies. Choose between 'upstream', 'downstream' and 'all'
+          #   required: false
+          #   type: string
+          #   default: upstream
           package-subdirectory:
             description: Subdirectory in the repository, where the R package is located.
             required: false
@@ -35,9 +35,9 @@
               Github token with read access to repositories, required for staged.dependencies installation
             required: false
     
-    concurrency:
-      group: roxygen-${{ github.event.pull_request.number || github.ref }}
-      cancel-in-progress: true
+    # concurrency:
+    #   group: roxygen-${{ github.event.pull_request.number || github.ref }}
+    #   cancel-in-progress: true
     
     jobs:
       roxygen:
