@@ -1,5 +1,5 @@
 
-name: Check
+
 
 on:
   push:
@@ -8,53 +8,55 @@ on:
     branches: [main, stage, dev]
   workflow_dispatch:
 
+name: Check
+
 jobs:
   audit:
-  name: Audit Dependencies 🕵️‍♂️
-  uses: insightsengineering/r.pkg.template/.github/workflows/audit.yaml@main
+    name: Audit Dependencies 🕵️‍♂️
+    uses: insightsengineering/r.pkg.template/.github/workflows/audit.yaml@main
 
   check-reuse:
-  name: Check Reuse 🔄
-  uses: ./.github/workflow/R-CMD-check.yaml
+    name: Check Reuse 🔄
+    uses: ./.github/workflow/R-CMD-check.yaml
 
-  # R-CMD-check:
-  #   runs-on: ${{ matrix.config.os }}
+  R-CMD-check:
+    runs-on: ${{ matrix.config.os }}
 
-  #   name: ${{ matrix.config.os }} (${{ matrix.config.r }})
+    name: ${{ matrix.config.os }} (${{ matrix.config.r }})
 
-  #   strategy:
-  #     fail-fast: false
-  #     matrix:
-  #       config:
-  #         # - {os: macos-latest,   r: 'release'}
-  #         # - {os: windows-latest, r: 'release'}
-  #         # - {os: ubuntu-latest,   r: 'devel', http-user-agent: 'release'}
-  #         - {os: ubuntu-latest,   r: 'release'}
-  #         # - {os: ubuntu-latest,   r: 'oldrel-1'}
+    strategy:
+      fail-fast: false
+      matrix:
+        config:
+          # - {os: macos-latest,   r: 'release'}
+          # - {os: windows-latest, r: 'release'}
+          # - {os: ubuntu-latest,   r: 'devel', http-user-agent: 'release'}
+          - {os: ubuntu-latest,   r: 'release'}
+          # - {os: ubuntu-latest,   r: 'oldrel-1'}
 
-  #   env:
-  #     GITHUB_PAT: ${{ secrets.GITHUB_TOKEN }}
-  #     R_KEEP_PKG_SOURCE: yes
+    env:
+      GITHUB_PAT: ${{ secrets.GITHUB_TOKEN }}
+      R_KEEP_PKG_SOURCE: yes
 
-  #   steps:
-  #     - uses: actions/checkout@v4
+    steps:
+      - uses: actions/checkout@v4
 
-  #     - uses: r-lib/actions/setup-pandoc@v2
+      - uses: r-lib/actions/setup-pandoc@v2
 
-  #     - uses: r-lib/actions/setup-r@v2
-  #       with:
-  #         r-version: ${{ matrix.config.r }}
-  #         http-user-agent: ${{ matrix.config.http-user-agent }}
-  #         use-public-rspm: true
+      - uses: r-lib/actions/setup-r@v2
+        with:
+          r-version: ${{ matrix.config.r }}
+          http-user-agent: ${{ matrix.config.http-user-agent }}
+          use-public-rspm: true
 
-  #     - uses: r-lib/actions/setup-r-dependencies@v2
-  #       with:
-  #         extra-packages: any::rcmdcheck
-  #         needs: check
+      - uses: r-lib/actions/setup-r-dependencies@v2
+        with:
+          extra-packages: any::rcmdcheck
+          needs: check
 
-  #     - uses: r-lib/actions/check-r-package@v2
-  #       with:
-  #         upload-snapshots: true
+      - uses: r-lib/actions/check-r-package@v2
+        with:
+          upload-snapshots: true
 
   # test-coverage:
   #   runs-on: ubuntu-latest
