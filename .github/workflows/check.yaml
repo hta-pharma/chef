@@ -19,7 +19,7 @@ jobs:
     secrets:
       REPO_GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
     with:
-      install-system-dependencies: true
+      install-system-dependencies: false
     # with:
     #   additional-r-cmd-check-params: --as-cran
   coverage:
