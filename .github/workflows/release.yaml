@@ -14,18 +14,6 @@ on:
 
 jobs:
 
-  aproval:
-    uses: trstringer/manual-approval@v1
-    with:
-      secret: ${{ github.TOKEN }}
-      approvers: HenrikSpiegel
-      minimum-approvals: 1
-      issue-title: "Deployment Approval Request for new version"
-      issue-body: "Please approve or deny the deployment"
-      exclude-workflow-initiator-as-approver: false
-      additional-approved-words: ''
-      additional-denied-words: ''
-
   build:
     name: Build package 🎁
     needs: release
