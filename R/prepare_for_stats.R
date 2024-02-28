@@ -40,10 +40,11 @@ prepare_for_stats <- function(ep,
     stop("Unknown stat function type")
   )
 
+
   # Return early if no endpoint rows are accepted by criterion or if no stat functions are suppied
-  if (nrow(ep[get(crit_var)]) == 0 |
-      nrow(fn_map[fn_type == type]) == 0) {
-    return(data.table::data.table(data = NULL))
+  if(nrow(ep[get(crit_var)]) == 0 |
+     nrow(fn_map[fn_type == type]) == 0){
+    return(data.table::data.table(SKIP_=TRUE))
   }
 
   # Set of columns used for slicing the population depending on the type of stat function

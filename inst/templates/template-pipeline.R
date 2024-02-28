@@ -84,11 +84,13 @@ list(
     apply_stats(ep_prep_by_strata_by_trt, analysis_data_container, type = "stat_by_strata_by_trt"),
     pattern = map(ep_prep_by_strata_by_trt)
   ),
+
   targets::tar_target(
     ep_stat_by_strata_across_trt,
     apply_stats(ep_prep_by_strata_across_trt, analysis_data_container, type = "stat_by_strata_across_trt"),
     pattern = map(ep_prep_by_strata_across_trt)
   ),
+
   targets::tar_target(
     ep_stat_across_strata_across_trt,
     apply_stats(ep_prep_across_strata_across_trt, analysis_data_container, type = "stat_across_strata_across_trt"),

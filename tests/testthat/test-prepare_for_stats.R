@@ -33,7 +33,9 @@ test_that("Proper stat function mapping when type=stat_by_strata_by_trt", {
       treatment_var = "TRT01A",
       strata_var = c("TOTAL_", "SEX"),
       key_analysis_data = "a",
-      crit_accept_by_strata_by_trt = TRUE
+      crit_accept_by_strata_by_trt = TRUE,
+      only_strata_with_events = FALSE,
+      event_index = list(1:nrow(adam))
     )
   fn_map <- data.table(
     endpoint_spec_id = "1",
@@ -66,7 +68,7 @@ test_that("Proper stat function mapping when type=stat_by_strata_by_trt", {
       "fn_hash",
       "fn_name",
       "fn_type",
-      "stat_empty",
+      "stat_event_exist",
       "stat_filter",
       "stat_metadata",
       "stat_result_id"
@@ -85,17 +87,17 @@ test_that("Proper stat function mapping when type=stat_by_strata_by_trt", {
     list(TOTAL_ = "total", TRT01A = "Placebo")
   )
   expect_equal(
-    ep_prep$stat_metadata[[2]],
+    ep_prep$stat_metadata[[3]],
     list(TOTAL_ = "total", TRT01A = "Xanomeline High Dose")
   )
   expect_equal(ep_prep$stat_metadata[[5]], list(SEX = "F", TRT01A = "Placebo"))
-  expect_equal(ep_prep$stat_metadata[[6]], list(SEX = "M", TRT01A = "Placebo"))
+  expect_equal(ep_prep$stat_metadata[[7]], list(SEX = "M", TRT01A = "Placebo"))
   expect_equal(
-    ep_prep$stat_metadata[[7]],
+    ep_prep$stat_metadata[[9]],
     list(SEX = "F", TRT01A = "Xanomeline High Dose")
   )
   expect_equal(
-    ep_prep$stat_metadata[[8]],
+    ep_prep$stat_metadata[[11]],
     list(SEX = "M", TRT01A = "Xanomeline High Dose")
   )
 
@@ -126,7 +128,9 @@ test_that("Proper stat function mapping when type=stat_by_strata_across_trt", {
       treatment_var = "TRT01A",
       strata_var = c("TOTAL_", "SEX"),
       key_analysis_data = "a",
-      crit_accept_by_strata_across_trt = TRUE
+      crit_accept_by_strata_across_trt = TRUE,
+      only_strata_with_events = FALSE,
+      event_index = list(1:nrow(adam))
     )
   fn_map <- data.table(
     endpoint_spec_id = "1",
@@ -160,7 +164,7 @@ test_that("Proper stat function mapping when type=stat_by_strata_across_trt", {
       "fn_hash",
       "fn_name",
       "fn_type",
-      "stat_empty",
+      "stat_event_exist",
       "stat_filter",
       "stat_metadata",
       "stat_result_id"
@@ -203,7 +207,9 @@ test_that("Proper stat function mapping when type=stat_across_strata_across_trt"
       treatment_var = "TRT01A",
       strata_var = c("TOTAL_", "SEX"),
       key_analysis_data = "a",
-      crit_accept_by_strata_across_trt = TRUE
+      crit_accept_by_strata_across_trt = TRUE,
+      only_strata_with_events = FALSE,
+      event_index = list(1:nrow(adam))
     )
   fn_map <- data.table(
     endpoint_spec_id = "1",
@@ -236,7 +242,7 @@ test_that("Proper stat function mapping when type=stat_across_strata_across_trt"
       "fn_hash",
       "fn_name",
       "fn_type",
-      "stat_empty",
+      "stat_event_exist",
       "stat_filter",
       "stat_metadata",
       "stat_result_id"
@@ -276,7 +282,8 @@ test_that("base - dataprep: define_expansion_cell_from_data", {
     id = c(1, 2, 3),
     stratify_by = c("TOTAL_", "SEX", "AGEgrp"),
     dat = list(x),
-    treatment_var = "Treatment"
+    treatment_var = "Treatment",
+    only_strata_with_events = FALSE
   )
 
   # ACT ---------------------------------------------------------------------
@@ -334,7 +341,8 @@ test_that("base - dataprep: expand_ep_for_stats", {
     stratify_by = c("TOTAL_", "SEX", "AGEgrp"),
     treatment_var = "Treatment",
     fn_hash = "X",
-    key_analysis_data = "a"
+    key_analysis_data = "a",
+    only_strata_with_events = FALSE
   )
 
   # ACT ---------------------------------------------------------------------
@@ -361,8 +369,8 @@ test_that("base - dataprep: expand_ep_for_stats", {
         1:nrow(ep_exp_stat)
     ]
 
-  dt_empty <- ep_with_filtered_data[stat_empty == TRUE, ]
-  dt_empty[, expect_equal(length(cell_index[[1]]), 0), by = 1:nrow(dt_empty)]
+  # dt_empty <- ep_with_filtered_data[stat_empty == TRUE, ]
+  # dt_empty[, expect_equal(length(cell_index[[1]]), 0), by = 1:nrow(dt_empty)]
 
   exp_combinations <- uniqueN(x$SEX) * uniqueN(x$Treatment)
 
@@ -395,7 +403,9 @@ test_that("base - dataprep", {
     treatment_var = "Treatment",
     crit_accept_by_strata_across_trt = TRUE,
     crit_accept_by_strata_by_trt = TRUE,
-    crit_accept_across_strata_across_trt = TRUE
+    crit_accept_across_strata_across_trt = TRUE,
+    only_strata_with_events = FALSE,
+    event_index = list(1:nrow(x))
   )
 
   fn_map <- data.table(

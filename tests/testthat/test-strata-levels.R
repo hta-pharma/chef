@@ -1,7 +1,7 @@
 test_that("Keep only explicit strata levels", {
 
   ep <-
-    chef::mk_endpoint_str(
+    mk_endpoint_str(
       data_prepare = mk_adae,
       study_metadata = list(),
       pop_var = "SAFFL",
