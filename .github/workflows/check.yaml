@@ -19,8 +19,7 @@ jobs:
     secrets:
       REPO_GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
     with:
-      install-system-dependencies: false
-      install-deps-from-package-repositories: CRAN=https://cloud.r-project.org/
+      install-system-dependencies: true
       publish-unit-test-report-gh-pages: false
     # with:
     #   additional-r-cmd-check-params: --as-cran
