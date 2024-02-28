@@ -560,7 +560,7 @@
       17: SEX == "F"...  1-0003-000... 134,135,136,137,138,139,... <data.table[1x4]>
       18: SEX == "M"...  1-0003-000...       88,89,90,91,92,93,... <data.table[1x4]>
 
----
+# branching after prepare for stats step works
 
     Code
       ep_stat_nested
@@ -579,92 +579,62 @@
       10:                1      <list[0]>   SAFFL         Y        TRT01A
       11:                1      <list[0]>   SAFFL         Y        TRT01A
       12:                1      <list[0]>   SAFFL         Y        TRT01A
-      13:                1      <list[0]>   SAFFL         Y        TRT01A
-      14:                1      <list[0]>   SAFFL         Y        TRT01A
-      15:                1      <list[0]>   SAFFL         Y        TRT01A
-      16:                1      <list[0]>   SAFFL         Y        TRT01A
-      17:                1      <list[0]>   SAFFL         Y        TRT01A
-      18:                1      <list[0]>   SAFFL         Y        TRT01A
           treatment_refval period_var period_value custom_pop_filter endpoint_filter
                     <char>     <char>       <char>            <char>          <char>
-       1:    Xanomeline...    ANL01FL            Y     TRT01A %in...            <NA>
-       2:    Xanomeline...    ANL01FL            Y     TRT01A %in...            <NA>
-       3:    Xanomeline...    ANL01FL            Y     TRT01A %in...            <NA>
-       4:    Xanomeline...    ANL01FL            Y     TRT01A %in...            <NA>
-       5:    Xanomeline...    ANL01FL            Y     TRT01A %in...            <NA>
-       6:    Xanomeline...    ANL01FL            Y     TRT01A %in...            <NA>
-       7:    Xanomeline...    ANL01FL            Y     TRT01A %in...            <NA>
-       8:    Xanomeline...    ANL01FL            Y     TRT01A %in...            <NA>
-       9:    Xanomeline...    ANL01FL            Y     TRT01A %in...            <NA>
-      10:    Xanomeline...    ANL01FL            Y     TRT01A %in...            <NA>
-      11:    Xanomeline...    ANL01FL            Y     TRT01A %in...            <NA>
-      12:    Xanomeline...    ANL01FL            Y     TRT01A %in...            <NA>
-      13:    Xanomeline...    ANL01FL            Y     TRT01A %in...            <NA>
-      14:    Xanomeline...    ANL01FL            Y     TRT01A %in...            <NA>
-      15:    Xanomeline...    ANL01FL            Y     TRT01A %in...            <NA>
-      16:    Xanomeline...    ANL01FL            Y     TRT01A %in...            <NA>
-      17:    Xanomeline...    ANL01FL            Y     TRT01A %in...            <NA>
-      18:    Xanomeline...    ANL01FL            Y     TRT01A %in...            <NA>
-           group_by stratify_by key_analysis_data  empty endpoint_group_metadata
-             <list>      <list>            <char> <lgcl>                  <list>
-       1: <list[1]>  TOTAL_,SEX     7c0c6f8882...  FALSE               <list[1]>
-       2: <list[1]>  TOTAL_,SEX     7c0c6f8882...  FALSE               <list[1]>
-       3: <list[1]>  TOTAL_,SEX     7c0c6f8882...  FALSE               <list[1]>
-       4: <list[1]>  TOTAL_,SEX     7c0c6f8882...  FALSE               <list[1]>
-       5: <list[1]>  TOTAL_,SEX     7c0c6f8882...  FALSE               <list[1]>
-       6: <list[1]>  TOTAL_,SEX     7c0c6f8882...  FALSE               <list[1]>
-       7: <list[1]>  TOTAL_,SEX     7c0c6f8882...  FALSE               <list[1]>
-       8: <list[1]>  TOTAL_,SEX     7c0c6f8882...  FALSE               <list[1]>
-       9: <list[1]>  TOTAL_,SEX     7c0c6f8882...  FALSE               <list[1]>
-      10: <list[1]>  TOTAL_,SEX     7c0c6f8882...  FALSE               <list[1]>
-      11: <list[1]>  TOTAL_,SEX     7c0c6f8882...  FALSE               <list[1]>
-      12: <list[1]>  TOTAL_,SEX     7c0c6f8882...  FALSE               <list[1]>
-      13: <list[1]>  TOTAL_,SEX     7c0c6f8882...  FALSE               <list[1]>
-      14: <list[1]>  TOTAL_,SEX     7c0c6f8882...  FALSE               <list[1]>
-      15: <list[1]>  TOTAL_,SEX     7c0c6f8882...  FALSE               <list[1]>
-      16: <list[1]>  TOTAL_,SEX     7c0c6f8882...  FALSE               <list[1]>
-      17: <list[1]>  TOTAL_,SEX     7c0c6f8882...  FALSE               <list[1]>
-      18: <list[1]>  TOTAL_,SEX     7c0c6f8882...  FALSE               <list[1]>
-          endpoint_group_filter endpoint_id endpoint_label
-                         <char>      <char>         <char>
-       1:         RACE == "W...      1-0001              A
-       2:         RACE == "W...      1-0001              A
-       3:         RACE == "W...      1-0001              A
-       4:         RACE == "W...      1-0001              A
-       5:         RACE == "W...      1-0001              A
-       6:         RACE == "W...      1-0001              A
-       7:         RACE == "B...      1-0002              A
-       8:         RACE == "B...      1-0002              A
-       9:         RACE == "B...      1-0002              A
-      10:         RACE == "B...      1-0002              A
-      11:         RACE == "B...      1-0002              A
-      12:         RACE == "B...      1-0002              A
-      13:         RACE == "A...      1-0003              A
-      14:         RACE == "A...      1-0003              A
-      15:         RACE == "A...      1-0003              A
-      16:         RACE == "A...      1-0003              A
-      17:         RACE == "A...      1-0003              A
-      18:         RACE == "A...      1-0003              A
-                                event_index crit_accept_endpoint strata_var
-                                     <list>               <lgcl>     <char>
-       1:                   1,2,3,4,5,6,...                 TRUE     TOTAL_
-       2:                   1,2,3,4,5,6,...                 TRUE     TOTAL_
-       3:                   1,2,3,4,5,6,...                 TRUE        SEX
-       4:                   1,2,3,4,5,6,...                 TRUE        SEX
-       5:                   1,2,3,4,5,6,...                 TRUE        SEX
-       6:                   1,2,3,4,5,6,...                 TRUE        SEX
-       7:  670, 671, 672, 673,1057,1058,...                 TRUE     TOTAL_
-       8:  670, 671, 672, 673,1057,1058,...                 TRUE     TOTAL_
-       9:  670, 671, 672, 673,1057,1058,...                 TRUE        SEX
-      10:  670, 671, 672, 673,1057,1058,...                 TRUE        SEX
-      11:  670, 671, 672, 673,1057,1058,...                 TRUE        SEX
-      12:  670, 671, 672, 673,1057,1058,...                 TRUE        SEX
-      13:                   783,784,785,786                 TRUE     TOTAL_
-      14:                   783,784,785,786                 TRUE     TOTAL_
-      15:                   783,784,785,786                 TRUE        SEX
-      16:                   783,784,785,786                 TRUE        SEX
-      17:                   783,784,785,786                 TRUE        SEX
-      18:                   783,784,785,786                 TRUE        SEX
+       1:    Xanomeline...       <NA>         <NA>     TRT01A %in...            <NA>
+       2:    Xanomeline...       <NA>         <NA>     TRT01A %in...            <NA>
+       3:    Xanomeline...       <NA>         <NA>     TRT01A %in...            <NA>
+       4:    Xanomeline...       <NA>         <NA>     TRT01A %in...            <NA>
+       5:    Xanomeline...       <NA>         <NA>     TRT01A %in...            <NA>
+       6:    Xanomeline...       <NA>         <NA>     TRT01A %in...            <NA>
+       7:    Xanomeline...       <NA>         <NA>     TRT01A %in...            <NA>
+       8:    Xanomeline...       <NA>         <NA>     TRT01A %in...            <NA>
+       9:    Xanomeline...       <NA>         <NA>     TRT01A %in...            <NA>
+      10:    Xanomeline...       <NA>         <NA>     TRT01A %in...            <NA>
+      11:    Xanomeline...       <NA>         <NA>     TRT01A %in...            <NA>
+      12:    Xanomeline...       <NA>         <NA>     TRT01A %in...            <NA>
+          group_by stratify_by key_analysis_data expand_specification
+            <char>      <list>            <char>               <lgcl>
+       1:     <NA>  TOTAL_,SEX     120f7ece5a...                   NA
+       2:     <NA>  TOTAL_,SEX     120f7ece5a...                   NA
+       3:     <NA>  TOTAL_,SEX     120f7ece5a...                   NA
+       4:     <NA>  TOTAL_,SEX     120f7ece5a...                   NA
+       5:     <NA>  TOTAL_,SEX     120f7ece5a...                   NA
+       6:     <NA>  TOTAL_,SEX     120f7ece5a...                   NA
+       7:     <NA>  TOTAL_,SEX     120f7ece5a...                   NA
+       8:     <NA>  TOTAL_,SEX     120f7ece5a...                   NA
+       9:     <NA>  TOTAL_,SEX     120f7ece5a...                   NA
+      10:     <NA>  TOTAL_,SEX     120f7ece5a...                   NA
+      11:     <NA>  TOTAL_,SEX     120f7ece5a...                   NA
+      12:     <NA>  TOTAL_,SEX     120f7ece5a...                   NA
+          endpoint_group_filter  empty endpoint_group_metadata endpoint_id
+                         <lgcl> <lgcl>                  <list>      <char>
+       1:                    NA     NA                              1-0001
+       2:                    NA     NA                              1-0001
+       3:                    NA     NA                              1-0001
+       4:                    NA     NA                              1-0001
+       5:                    NA     NA                              1-0001
+       6:                    NA     NA                              1-0001
+       7:                    NA     NA                              1-0001
+       8:                    NA     NA                              1-0001
+       9:                    NA     NA                              1-0001
+      10:                    NA     NA                              1-0001
+      11:                    NA     NA                              1-0001
+      12:                    NA     NA                              1-0001
+          endpoint_label     event_index crit_accept_endpoint strata_var
+                  <char>          <list>               <lgcl>     <char>
+       1:           <NA> 1,2,3,4,5,6,...                 TRUE     TOTAL_
+       2:           <NA> 1,2,3,4,5,6,...                 TRUE     TOTAL_
+       3:           <NA> 1,2,3,4,5,6,...                 TRUE     TOTAL_
+       4:           <NA> 1,2,3,4,5,6,...                 TRUE     TOTAL_
+       5:           <NA> 1,2,3,4,5,6,...                 TRUE        SEX
+       6:           <NA> 1,2,3,4,5,6,...                 TRUE        SEX
+       7:           <NA> 1,2,3,4,5,6,...                 TRUE        SEX
+       8:           <NA> 1,2,3,4,5,6,...                 TRUE        SEX
+       9:           <NA> 1,2,3,4,5,6,...                 TRUE        SEX
+      10:           <NA> 1,2,3,4,5,6,...                 TRUE        SEX
+      11:           <NA> 1,2,3,4,5,6,...                 TRUE        SEX
+      12:           <NA> 1,2,3,4,5,6,...                 TRUE        SEX
               strata_id crit_accept_by_strata_by_trt crit_accept_by_strata_across_trt
                  <char>                       <lgcl>                           <lgcl>
        1: 1-0001-000...                         TRUE                             TRUE
@@ -673,56 +643,38 @@
        4: 1-0001-000...                         TRUE                             TRUE
        5: 1-0001-000...                         TRUE                             TRUE
        6: 1-0001-000...                         TRUE                             TRUE
-       7: 1-0002-000...                         TRUE                             TRUE
-       8: 1-0002-000...                         TRUE                             TRUE
-       9: 1-0002-000...                         TRUE                             TRUE
-      10: 1-0002-000...                         TRUE                             TRUE
-      11: 1-0002-000...                         TRUE                             TRUE
-      12: 1-0002-000...                         TRUE                             TRUE
-      13: 1-0003-000...                         TRUE                             TRUE
-      14: 1-0003-000...                         TRUE                             TRUE
-      15: 1-0003-000...                         TRUE                             TRUE
-      16: 1-0003-000...                         TRUE                             TRUE
-      17: 1-0003-000...                         TRUE                             TRUE
-      18: 1-0003-000...                         TRUE                             TRUE
+       7: 1-0001-000...                         TRUE                             TRUE
+       8: 1-0001-000...                         TRUE                             TRUE
+       9: 1-0001-000...                         TRUE                             TRUE
+      10: 1-0001-000...                         TRUE                             TRUE
+      11: 1-0001-000...                         TRUE                             TRUE
+      12: 1-0001-000...                         TRUE                             TRUE
                 fn_hash       fn_type fn_name fn_call_char stat_empty stat_metadata
                  <char>        <char>  <char>       <char>     <lgcl>        <list>
-       1: 813b7f4a4a... stat_by_st... n_subev   c(n_subev)      FALSE     <list[2]>
-       2: 813b7f4a4a... stat_by_st... n_subev   c(n_subev)      FALSE     <list[2]>
-       3: 813b7f4a4a... stat_by_st... n_subev   c(n_subev)      FALSE     <list[2]>
-       4: 813b7f4a4a... stat_by_st... n_subev   c(n_subev)      FALSE     <list[2]>
-       5: 813b7f4a4a... stat_by_st... n_subev   c(n_subev)      FALSE     <list[2]>
-       6: 813b7f4a4a... stat_by_st... n_subev   c(n_subev)      FALSE     <list[2]>
-       7: 813b7f4a4a... stat_by_st... n_subev   c(n_subev)      FALSE     <list[2]>
-       8: 813b7f4a4a... stat_by_st... n_subev   c(n_subev)      FALSE     <list[2]>
-       9: 813b7f4a4a... stat_by_st... n_subev   c(n_subev)      FALSE     <list[2]>
-      10: 813b7f4a4a... stat_by_st... n_subev   c(n_subev)      FALSE     <list[2]>
-      11: 813b7f4a4a... stat_by_st... n_subev   c(n_subev)      FALSE     <list[2]>
-      12: 813b7f4a4a... stat_by_st... n_subev   c(n_subev)      FALSE     <list[2]>
-      13: 813b7f4a4a... stat_by_st... n_subev   c(n_subev)      FALSE     <list[2]>
-      14: 813b7f4a4a... stat_by_st... n_subev   c(n_subev)      FALSE     <list[2]>
-      15: 813b7f4a4a... stat_by_st... n_subev   c(n_subev)      FALSE     <list[2]>
-      16: 813b7f4a4a... stat_by_st... n_subev   c(n_subev)      FALSE     <list[2]>
-      17: 813b7f4a4a... stat_by_st... n_subev   c(n_subev)      FALSE     <list[2]>
-      18: 813b7f4a4a... stat_by_st... n_subev   c(n_subev)      FALSE     <list[2]>
-            stat_filter stat_result_id                  cell_index       stat_result
-                 <char>         <char>                      <list>            <list>
-       1: TOTAL_ == ...  1-0001-000...             1,2,3,4,5,6,... <data.table[1x4]>
-       2: TOTAL_ == ...  1-0001-000...       88,89,90,91,92,93,... <data.table[1x4]>
-       3: SEX == "F"...  1-0001-000...             1,2,3,4,5,6,... <data.table[1x4]>
-       4: SEX == "M"...  1-0001-000...       67,68,69,70,71,72,... <data.table[1x4]>
-       5: SEX == "F"...  1-0001-000... 134,135,136,137,138,139,... <data.table[1x4]>
-       6: SEX == "M"...  1-0001-000...       88,89,90,91,92,93,... <data.table[1x4]>
-       7: TOTAL_ == ...  1-0002-000...             1,2,3,4,5,6,... <data.table[1x4]>
-       8: TOTAL_ == ...  1-0002-000...       88,89,90,91,92,93,... <data.table[1x4]>
-       9: SEX == "F"...  1-0002-000...             1,2,3,4,5,6,... <data.table[1x4]>
-      10: SEX == "M"...  1-0002-000...       67,68,69,70,71,72,... <data.table[1x4]>
-      11: SEX == "F"...  1-0002-000... 134,135,136,137,138,139,... <data.table[1x4]>
-      12: SEX == "M"...  1-0002-000...       88,89,90,91,92,93,... <data.table[1x4]>
-      13: TOTAL_ == ...  1-0003-000...             1,2,3,4,5,6,... <data.table[1x4]>
-      14: TOTAL_ == ...  1-0003-000...       88,89,90,91,92,93,... <data.table[1x4]>
-      15: SEX == "F"...  1-0003-000...             1,2,3,4,5,6,... <data.table[1x4]>
-      16: SEX == "M"...  1-0003-000...       67,68,69,70,71,72,... <data.table[1x4]>
-      17: SEX == "F"...  1-0003-000... 134,135,136,137,138,139,... <data.table[1x4]>
-      18: SEX == "M"...  1-0003-000...       88,89,90,91,92,93,... <data.table[1x4]>
+       1: 150a10ab56... stat_by_st...    fn_1   c(n_subev)      FALSE     <list[2]>
+       2: 150a10ab56... stat_by_st...    fn_1   c(n_subev)      FALSE     <list[2]>
+       3: afd3cffa8b... stat_by_st...    fn_2     c(n_sub)      FALSE     <list[2]>
+       4: afd3cffa8b... stat_by_st...    fn_2     c(n_sub)      FALSE     <list[2]>
+       5: 150a10ab56... stat_by_st...    fn_1   c(n_subev)      FALSE     <list[2]>
+       6: 150a10ab56... stat_by_st...    fn_1   c(n_subev)      FALSE     <list[2]>
+       7: 150a10ab56... stat_by_st...    fn_1   c(n_subev)      FALSE     <list[2]>
+       8: 150a10ab56... stat_by_st...    fn_1   c(n_subev)      FALSE     <list[2]>
+       9: afd3cffa8b... stat_by_st...    fn_2     c(n_sub)      FALSE     <list[2]>
+      10: afd3cffa8b... stat_by_st...    fn_2     c(n_sub)      FALSE     <list[2]>
+      11: afd3cffa8b... stat_by_st...    fn_2     c(n_sub)      FALSE     <list[2]>
+      12: afd3cffa8b... stat_by_st...    fn_2     c(n_sub)      FALSE     <list[2]>
+            stat_filter stat_result_id            cell_index       stat_result
+                 <char>         <char>                <list>            <list>
+       1: TOTAL_ == ...  1-0001-000...       1,2,3,4,5,6,... <data.table[1x4]>
+       2: TOTAL_ == ...  1-0001-000...  8, 9,11,12,54,55,... <data.table[1x4]>
+       3: TOTAL_ == ...  1-0001-000...       1,2,3,4,5,6,... <data.table[1x4]>
+       4: TOTAL_ == ...  1-0001-000...  8, 9,11,12,54,55,... <data.table[1x4]>
+       5: SEX == "F"...  1-0001-000...  1, 2, 3,13,14,15,... <data.table[1x4]>
+       6: SEX == "M"...  1-0001-000...  4, 5, 6, 7,45,46,... <data.table[1x4]>
+       7: SEX == "F"...  1-0001-000... 11,12,54,55,56,57,... <data.table[1x4]>
+       8: SEX == "M"...  1-0001-000...  8, 9,70,71,72,73,... <data.table[1x4]>
+       9: SEX == "F"...  1-0001-000...  1, 2, 3,13,14,15,... <data.table[1x4]>
+      10: SEX == "M"...  1-0001-000...  4, 5, 6, 7,45,46,... <data.table[1x4]>
+      11: SEX == "F"...  1-0001-000... 11,12,54,55,56,57,... <data.table[1x4]>
+      12: SEX == "M"...  1-0001-000...  8, 9,70,71,72,73,... <data.table[1x4]>
 

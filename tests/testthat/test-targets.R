@@ -1,6 +1,6 @@
 test_that("Non-branching targets pipeline works",
 {
-  testr::skip_on_devops()
+
   # SETUP -------------------------------------------------------------------
   testr::create_local_project()
   crit_endpoint <- function(...) {
@@ -67,7 +67,7 @@ test_that("Non-branching targets pipeline works",
 
 test_that("Non-branching targets pipeline works no criteria fn and missing by_* functions",
 {
-  testr::skip_on_devops()
+
   # SETUP -------------------------------------------------------------------
   testr::create_local_project()
 
@@ -119,7 +119,7 @@ test_that("Non-branching targets pipeline works no criteria fn and missing by_* 
 
 test_that("branching after prepare for stats step works",
 {
-  testr::skip_on_devops()
+
   # SETUP -------------------------------------------------------------------
   testr::create_local_project()
 
@@ -157,8 +157,8 @@ test_that("branching after prepare for stats step works",
   dump("n_sub", file = "R/custom_functions.R", append = TRUE)
 
   # ACT ---------------------------------------------------------------------
-  tar_make()
-  browser()
+    tar_make()
+
   # EXPECT ------------------------------------------------------------------
   x <- tar_meta() %>% as.data.table()
   expect_true(all(is.na(x$error)))
@@ -168,7 +168,7 @@ test_that("branching after prepare for stats step works",
 
 test_that("ep_fn_map is always outdated",
 {
-  testr::skip_on_devops()
+
   # SETUP -------------------------------------------------------------------
   testr::create_local_project()
 
@@ -214,7 +214,7 @@ test_that("ep_fn_map is always outdated",
 
 test_that("study_data responds to changes in source data",
 {
-  testr::skip_on_devops()
+
   # SETUP -------------------------------------------------------------------
   testr::create_local_project()
   saveRDS(data.table(runif(10)),file = "tmp_data_obj.rds")

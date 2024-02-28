@@ -56,6 +56,10 @@ test_that("validate_stat_output in simple cases", {
 test_that(
   "with_error_to_debug creates a debugging session if and only if evaluation fails - no output validation.",
   {
+
+# SETUP -------------------------------------------------------------------
+
+
     my_fun <- function(x) {
       log10(x)
     }
@@ -68,12 +72,20 @@ test_that(
     )
     expect_false(file.exists(filename))
 
+
+# ACT ---------------------------------------------------------------------
+
+
     # Check debug is created when a valid call is wrapped
     expect_error(
       try_and_validate(my_fun("a"), expr_name = "my_fun", debug_dir = tmp),
       "Failed to EVALUATE function with error",
       fixed = TRUE
     )
+
+# EXPECT ------------------------------------------------------------------
+
+
     expect_true(file.exists(filename))
     # Check content
     debug_env <- readRDS(filename)
@@ -85,6 +97,11 @@ test_that(
 test_that(
   "with_error_to_debug creates a debugging session if and only if validation fails - valid calls",
   {
+
+
+# SETUP -------------------------------------------------------------------
+
+
     fn_invalid <- function(x) {
       log10(x)
     }
@@ -102,7 +119,14 @@ test_that(
     filename_valid <- paste(tmp, "fn_valid.Rdata", sep = "/")
 
     # Ensure no error and that debug is not create without validation problems.
-    expect_equal(
+
+# ACT ---------------------------------------------------------------------
+
+# EXPECT ------------------------------------------------------------------
+
+
+
+        expect_equal(
       try_and_validate(fn_valid(10),
         debug_dir = tmp,
         validator = validate_stat_output

@@ -49,7 +49,7 @@ prepare_for_stats <- function(
 
   # If no functions of the type are supplied, return early
   if(nrow(ep_fn)==0){
-    return(data.table::data.table(data=NULL))
+    return(data.table::data.table(SKIP_=TRUE))
   }
 
 
