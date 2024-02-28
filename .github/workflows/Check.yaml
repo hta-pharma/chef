@@ -30,6 +30,8 @@ jobs:
   gitleaks:
     name: gitleaks 💧
     uses: insightsengineering/r.pkg.template/.github/workflows/gitleaks.yaml@main
+    with:
+      check-for-pii: true
 
   vbump:
     name: Version Bump 🤜🤛

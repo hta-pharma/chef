@@ -69,18 +69,18 @@
           - name: Checkout repo (PR) 🛎
             uses: actions/checkout@v4
             if: github.event_name == 'pull_request'
-            with:
-              ref: ${{ steps.branch-name.outputs.head_ref_branch }}
-              path: ${{ github.event.repository.name }}
-              repository: ${{ github.event.pull_request.head.repo.full_name }}
-              token: ${{ steps.github-token.outputs.token }}
+            # with:
+            #   ref: ${{ steps.branch-name.outputs.head_ref_branch }}
+            #   path: ${{ github.event.repository.name }}
+            #   repository: ${{ github.event.pull_request.head.repo.full_name }}
+            #   token: ${{ steps.github-token.outputs.token }}
     
           - name: Checkout repo 🛎
             uses: actions/checkout@v4
             if: github.event_name != 'pull_request'
-            with:
-              ref: ${{ steps.branch-name.outputs.head_ref_branch }}
-              path: ${{ github.event.repository.name }}
+            # with:
+            #   ref: ${{ steps.branch-name.outputs.head_ref_branch }}
+            #   path: ${{ github.event.repository.name }}
 
           - name: Setup R
             uses: r-lib/actions/setup-r@v2
