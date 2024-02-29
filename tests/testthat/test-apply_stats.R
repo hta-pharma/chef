@@ -691,4 +691,3 @@ test_that("Complex application of stats functions",
   expect_true(all(ep_stat[ep_stat$fn_type == "stat_across_strata_across_trt"][["value"]] == 158))
 
 })
-
