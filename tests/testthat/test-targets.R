@@ -1,4 +1,4 @@
-test_that("Non-branching targets pipeline works",
+test_that("Base case: targets pipeline works",
 {
 
   # SETUP -------------------------------------------------------------------
@@ -65,7 +65,7 @@ test_that("Non-branching targets pipeline works",
 })
 
 
-test_that("Non-branching targets pipeline works no criteria fn and missing by_* functions",
+test_that("targets pipeline works no criteria fn and missing by_* functions",
 {
 
   # SETUP -------------------------------------------------------------------
@@ -165,6 +165,54 @@ test_that("branching after prepare for stats step works",
   tar_load(ep_stat_nested)
   expect_snapshot(ep_stat_nested)
 })
+
+
+test_that("branching after prepare for stats step works",
+          {
+
+            # SETUP -------------------------------------------------------------------
+            testr::create_local_project()
+
+            mk_ep_def <- function() {
+              ep <- mk_endpoint_str(
+                study_metadata = list(),
+                pop_var = "SAFFL",
+                pop_value = "Y",
+                treatment_var = "TRT01A",
+                treatment_refval = "Xanomeline High Dose",
+                stratify_by = list(c("SEX")),
+                data_prepare = mk_adae,
+                custom_pop_filter = "TRT01A %in% c('Placebo', 'Xanomeline High Dose')",
+                stat_by_strata_by_trt = list("fn_1" = c(n_subev),
+                                             "fn_2" = c(n_sub))
+              )
+            }
+
+            # This is needed because mk_adcm it is calling from a new R session, it
+            # doesn't have access to the helper-* functions from chef
+
+            use_chef(
+              pipeline_dir = "pipeline",
+              r_functions_dir = "R/",
+              pipeline_id = "01",
+              mk_endpoint_def_fn = mk_ep_def,
+              mk_adam_fn = list(mk_adae),
+              branch_group_size = 1
+            )
+
+            dump("n_subev", file = "R/custom_functions.R")
+            dump("n_sub", file = "R/custom_functions.R", append = TRUE)
+
+            # ACT ---------------------------------------------------------------------
+            tar_make()
+
+            # EXPECT ------------------------------------------------------------------
+            x <- tar_meta() %>% as.data.table()
+            expect_true(all(is.na(x$error)))
+            tar_load(ep_stat_nested)
+            expect_snapshot(ep_stat_nested)
+          })
+
 
 test_that("ep_fn_map is always outdated",
 {
@@ -267,4 +315,87 @@ test_that("study_data responds to changes in source data",
   expect_failure(expect_equal(before, after))
   x <- tar_meta() %>% as.data.table()
   expect_true(all(is.na(x$error)))
+})
+
+
+test_that("Only affected branches outdated when new strata added",
+          {
+            # SETUP -------------------------------------------------------------------
+            mk_endpoint_def <- function() {
+              ep <- mk_endpoint_str(
+                study_metadata = list(),
+                pop_var = "SAFFL",
+                pop_value = "Y",
+                treatment_var = "TRT01A",
+                treatment_refval = "Xanomeline High Dose",
+                stratify_by = list(c("SEX")),
+                data_prepare = mk_adae,
+                custom_pop_filter = "TRT01A %in% c('Placebo', 'Xanomeline High Dose')",
+                stat_by_strata_by_trt = list("fn_1" = c(n_subev),
+                                             "fn_2" = c(n_sub))
+              )
+              ep2 <- mk_endpoint_str(
+                study_metadata = list(),
+                pop_var = "SAFFL",
+                pop_value = "Y",
+                treatment_var = "TRT01A",
+                treatment_refval = "Xanomeline High Dose",
+                stratify_by = list(c("SEX")),
+                group_by = list(list(AESEV=c())),
+                data_prepare = mk_adae,
+                custom_pop_filter = "TRT01A %in% c('Placebo', 'Xanomeline High Dose')",
+                stat_by_strata_by_trt = list("fn_1" = c(n_subev),
+                                             "fn_2" = c(n_sub))
+              )
+              data.table::rbindlist(list(ep, ep2))
+            }
+
+            # This is needed because mk_adcm it is calling from a new R session, it
+            # doesn't have access to the helper-* functions from chef
+            tmp <- readLines("inst/templates/template-pipeline.R")
+
+            tar_dir({
+              dir.create("R")
+              dump("n_subev", file = "R/custom_functions.R")
+              dump("n_sub", file = "R/custom_functions.R", append = TRUE)
+              dump("mk_adae", file = "R/mk_adae.R")
+              dump("mk_endpoint_def", file = "R/mk_endpoint_def.R")
+
+              x <-
+                whisker::whisker.render(tmp, data = list(r_script_dir = "R/"))
+              writeLines(whisker::whisker.render(tmp, data = list(r_script_dir =
+                                                                    "R/")), con  = "_targets.R")
+              browser()
+              tar_make()
+
+            })
+
+          })
+
+test_that({
+  browser()
+  # use_chef(
+  #   pipeline_dir = "pipeline",
+  #   r_functions_dir = "R/",
+  #   pipeline_id = "01",
+  #   mk_endpoint_def_fn = mk_ep_def,
+  #   mk_adam_fn = list(mk_adae),
+  #   branch_group_size = 1
+  # )
+  #
+  # dump("n_subev", file = "R/custom_functions.R")
+  # dump("n_sub", file = "R/custom_functions.R", append = TRUE)
+
+  tar_make()
+  # ACT ---------------------------------------------------------------------
+
+  dump("mk_endpoint_def", "R/mk_endpoint_def.R")
+  browser()
+  tar_make()
+
+  # EXPECT ------------------------------------------------------------------
+  x <- tar_meta() %>% as.data.table()
+  expect_true(all(is.na(x$error)))
+  tar_load(ep_stat_nested)
+  expect_snapshot(ep_stat_nested)
 })
