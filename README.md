@@ -47,13 +47,20 @@ This project supports two styles of githooks.
     of the project:
 
 - These hooks are very simple just blocking the commit to protected
-  branches. \`\` git config –local core.hooksPath .githooks/
+  branches.
 
 <!-- -->
 
+    git config --local core.hooksPath .githooks/
 
-    2. The second is to install the precommit tool (for linux) [precommit](https://pre-commit.com/). 
-      - These are much more powerful and can be used to run checks on the code before it is committed.
+2.  The second is to install the precommit tool (for linux)
+    [precommit](https://pre-commit.com/).
 
-pipx install pre-commit \# Then run in the root of repo: pre-commit
-install \`\`\`
+- These are much more powerful and can be used to run checks on the code
+  before it is committed.
+
+<!-- -->
+
+    pipx install pre-commit
+    # Then run in the root of repo:
+    pre-commit install
