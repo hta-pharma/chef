@@ -70,7 +70,7 @@ prepare_for_stats <- function(ep,
       )
 
     # Indicate if stratum has no observations or events
-    ep_expanded[, stat_event_exist := sapply(Map(intersect, event_index, cell_index), function(x) length(x) == 0)]
+    ep_expanded[, stat_event_exist := sapply(Map(intersect, event_index, cell_index), function(x) length(x) > 0)]
 
     # Join stat function data so that each row represent a function call
     ep_fn <-
