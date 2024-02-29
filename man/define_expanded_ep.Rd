@@ -4,7 +4,12 @@
 \alias{define_expanded_ep}
 \title{Define Expanded Endpoint Specifications}
 \usage{
-define_expanded_ep(x, group_by, col_prefix = "endpoint_group")
+define_expanded_ep(
+  x,
+  group_by,
+  forced_group_levels = NULL,
+  col_prefix = "endpoint_group"
+)
 }
 \arguments{
 \item{x}{A \code{data.table} containing the data associated with the endpoints.}

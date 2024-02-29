@@ -4,7 +4,7 @@
 \alias{index_expanded_ep_groups}
 \title{Index the expanded endpoints}
 \usage{
-index_expanded_ep_groups(x, group_by)
+index_expanded_ep_groups(x, group_by, forced_group_levels = NULL)
 }
 \arguments{
 \item{x}{A dataset with study data (i.e ADaM).}

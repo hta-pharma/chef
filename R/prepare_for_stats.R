@@ -110,17 +110,16 @@ prepare_for_stats <- function(ep,
                   list_group_and_levels(get(data_col)[[1]], get(grouping_cols[2]))
                 )),
                 "",
-                paste0(
+                paste(
                   get(id_col),
-                  "-",
                   fn_hash,
-                  "-",
                   formatC(
                     .I,
                     width = 4,
                     format = "d",
                     flag = "0"
-                  )
+                  ),
+                  sep="-"
                 ),
                 llist(get(data_col)[[1]][["INDEX_"]])),
             by = 1:nrow(ep_sg)]
@@ -186,15 +185,16 @@ expand_ep_for_stats <- function(
   ep[,"_i_" := .I]
   setkey(ep, key_analysis_data)
   ep_with_data <- ep[analysis_data_container, nomatch = NULL]
+
   ep_with_data[,
-     stat_expand_spec := llist(
-       define_expansion_cell_from_data(
-         row=.SD,
-         grouping_cols = grouping_cols,
-         data_col = data_col,
-         col_prefix = col_prefix
-       )),
-     by = "_i_"]
+               stat_expand_spec := llist(
+                 define_expansion_cell_from_data(
+                   row=.SD,
+                   grouping_cols = grouping_cols,
+                   data_col = data_col,
+                   col_prefix = col_prefix
+                 )),
+               by = "_i_"]
 
   # We remove the clinical data, otherwise the memory usage during the unnest
   # step will explode
@@ -209,7 +209,7 @@ expand_ep_for_stats <- function(
   ep_exp_with_data <- ep_exp[analysis_data_container, nomatch = NULL]
   filter_col_name = paste(col_prefix, "filter", sep="_")
   ep_exp_with_data[, cell_index := llist(create_flag(get(data_col)[[1]],
-                                           singletons = c(get(filter_col_name)[[1]]))),
+                                                     singletons = c(get(filter_col_name)[[1]]))),
                    by = "_i_"]
 
   ep_exp_with_data[, (data_col) := NULL]
@@ -244,7 +244,7 @@ define_expansion_cell_from_data <- function(
   }
   stopifnot(all(grouping_cols %in% names(row)))
 
-  # Get the actual grouping variables.
+  # Get the actual grouping variables
   grouping_col_values = row[, .SD, .SDcols=grouping_cols]
   grouping_var_list = vector(mode="list", length(grouping_col_values))
   names(grouping_var_list) = grouping_col_values
@@ -255,7 +255,16 @@ define_expansion_cell_from_data <- function(
     dat <- row[,get(data_col)][[1]]
   }
 
-  exp_dt <- define_expanded_ep(x = dat, group_by = grouping_var_list, col_prefix = col_prefix)
+  # If treatment is part of grouping then force all treatment arms to be present in the group levels
+  if("treatment_var" %in% grouping_cols){
+    trt_arms <- data.table(unique(row[,get(data_col)][[1]][,get(row[["treatment_var"]])]))
+    names(trt_arms) <- row[["treatment_var"]]
+  }else{
+    trt_arms <- NULL
+  }
+
+  exp_dt <- define_expanded_ep(x = dat, group_by = grouping_var_list, forced_group_levels = trt_arms, col_prefix = col_prefix)
+
   return (exp_dt)
 }
 

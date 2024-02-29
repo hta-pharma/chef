@@ -106,14 +106,14 @@ out[]
 #'   consists only of `NA` values, the function returns `NA`.
 #' @export
 #'
-define_expanded_ep <- function(x, group_by, col_prefix = "endpoint_group") {
+define_expanded_ep <- function(x, group_by, forced_group_levels = NULL, col_prefix = "endpoint_group") {
   if (!is.list(group_by) || all(is.na(group_by)))
     return(NA)
 
   col_name_meta = paste(col_prefix, "metadata", sep="_")
   col_name_filter = paste(col_prefix, "filter", sep="_")
 
-  out <- index_expanded_ep_groups(x, group_by) %>%
+  out <- index_expanded_ep_groups(x, group_by, forced_group_levels) %>%
     construct_group_filter(col_name_filter = col_name_filter)
   out[, (col_name_meta) := .(list(lapply(.SD, identity))), by=1:nrow(out), .SDcols = names(group_by)]
   out[, .SD, .SDcols = c(col_name_meta, col_name_filter)]
@@ -145,13 +145,14 @@ index_non_null_group_level <- function(x) {
 #'
 #' @param x A dataset with study data (i.e ADaM).
 #' @param group_by A list specifying the grouping for endpoints.
+#' @param forced_group_levels data.table (optional). Table with group levels that must be included in the expansion, regardless of `group_by`.
 #'
 #' @return A data table with the same number of columns as the number of
 #'   variables included in the grouping specification, plus an additional column
 #'   `empty` that specifies if there are any records corresponding to the group
 #'   combination. `FALSE` means >=1 record exists in the supplied study data.
 #' @export
-index_expanded_ep_groups <- function(x, group_by) {
+index_expanded_ep_groups <- function(x, group_by, forced_group_levels = NULL) {
   checkmate::assert_data_table(x)
   checkmate::assert_list(group_by)
   grouping_vars <- names(group_by)
@@ -159,6 +160,16 @@ index_expanded_ep_groups <- function(x, group_by) {
 
   # Only want rows that contains values as the other rows indicate non-events
   combos_all <- combos_all[complete.cases(combos_all)]
+
+  # If group levels are forced, regardless of group levels in group_by then add these group levels
+  if(!is.null(forced_group_levels)){
+    if(length(setdiff(names(forced_group_levels), names(combos_all)))>0){
+      stop("Unsupported forced group levels")
+    }else if(nrow(unique(combos_all[,names(forced_group_levels), with = FALSE])) != nrow(forced_group_levels)){ # Add forced group levels if they are not already present
+      combos_all <-
+        tidyr::expand_grid(combos_all[, .SD, .SDcols = (names(combos_all) != names(forced_group_levels))], forced_group_levels)
+    }
+  }
 
   specified_group_levels <-
     index_non_null_group_level(group_by)

@@ -24,6 +24,7 @@ mk_endpoint_str(
   crit_endpoint = NULL,
   crit_by_strata_by_trt = NULL,
   crit_by_strata_across_trt = NULL,
+  only_strata_with_events = FALSE,
   env = parent.frame()
 )
 }
@@ -61,6 +62,8 @@ mk_endpoint_str(
 \item{crit_by_strata_by_trt}{List.}
 
 \item{crit_by_strata_across_trt}{List.}
+
+\item{only_strata_with_events}{Boolean.}
 }
 \value{
 A data.table containing the endpoint specification.
