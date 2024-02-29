@@ -52,4 +52,3 @@ expect_same_items <- function(actual, expected, ...) {
   }
   invisible(actual)
 }
-

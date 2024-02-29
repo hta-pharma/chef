@@ -385,8 +385,3 @@ endpoint_XYZ <- mk_endpoint_str(
 )
 
 ```
-
-
-
-
-
