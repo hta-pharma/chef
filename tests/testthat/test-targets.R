@@ -102,7 +102,6 @@ test_that("Non-branching targets pipeline works no criteria fn and missing by_* 
     mk_endpoint_def_fn = mk_ep_def,
     mk_adam_fn = list(mk_adcm)
   )
-
   dump("n_subev", file = "R/custom_functions.R")
   dump("n_subev_trt_diff", file = "R/custom_functions.R", append = TRUE)
   dump("contingency2x2_ptest", file = "R/custom_functions.R", append = TRUE)
