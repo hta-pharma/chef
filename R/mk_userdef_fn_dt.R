@@ -87,6 +87,3 @@ generate_function_table_row <- function(fn_type, fn, fn_name, fn_hash, env){
 
   return(out_row)
 }
-
-
-

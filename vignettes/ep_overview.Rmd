@@ -118,5 +118,3 @@ The parameters of each endpoint specification can be grouped in to the sets belo
         <td>`stat_across_strata_across_trt`</td>
     </tr>
 </table>
-
-
