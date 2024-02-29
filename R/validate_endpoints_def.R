@@ -150,4 +150,3 @@ error_not_fn <- function(x, i) {
     )
   }
 }
-
