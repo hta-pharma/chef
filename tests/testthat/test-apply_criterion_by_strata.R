@@ -543,4 +543,3 @@ test_that("strata_var remains a character variable when some endpoint have been 
   expect_equal(typeof(actual[["strata_var"]]), "character")
 
 })
-

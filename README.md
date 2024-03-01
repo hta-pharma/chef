@@ -1,4 +1,7 @@
 
+<!-- Insert badges here -->
+
+[![R-CMD-check](https://github.com/hta-pharma/chef/actions/workflows/package-check-test.yaml/badge.svg)](https://github.com/hta-pharma/chef/actions/workflows/package-check-test.yaml)
 <!-- README.md is generated from README.Rmd. Please edit that file -->
 
 # chef
@@ -32,3 +35,32 @@ four types of code:
 Behind the scenes, {chef} uses the
 {[targets](https://books.ropensci.org/targets/)} package to handle the
 pipelines.
+
+# Setup
+
+## Install githooks
+
+This project supports two styles of githooks.
+
+1.  The first style is to use the githooks provided in the `.githooks`
+    directory. To use these hooks, run the following command in the root
+    of the project:
+
+- These hooks are very simple just blocking the commit to protected
+  branches.
+
+<!-- -->
+
+    git config --local core.hooksPath .githooks/
+
+2.  The second is to install the precommit tool (for linux)
+    [precommit](https://pre-commit.com/).
+
+- These are much more powerful and can be used to run checks on the code
+  before it is committed.
+
+<!-- -->
+
+    pipx install pre-commit
+    # Then run in the root of repo:
+    pre-commit install

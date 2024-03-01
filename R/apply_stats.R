@@ -105,5 +105,3 @@ apply_stats <-
     ep_cp[, .SD, .SDcols = keep]
 
   }
-
-

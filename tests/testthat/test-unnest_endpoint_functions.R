@@ -245,4 +245,3 @@ test_that("Unnest adam and adsl functions", {
                            return(x[["fn_type"]] == lookup[[x[["fn_name"]]]])
                          })), TRUE)
 })
-

@@ -103,6 +103,7 @@ test_that("targets pipeline works no criteria fn and missing by_* functions",
               mk_adam_fn = list(mk_adcm)
             )
 
+
             dump("n_subev", file = "R/custom_functions.R")
             dump("n_subev_trt_diff", file = "R/custom_functions.R", append = TRUE)
             dump("contingency2x2_ptest", file = "R/custom_functions.R", append = TRUE)
@@ -114,6 +115,9 @@ test_that("targets pipeline works no criteria fn and missing by_* functions",
             tar_load(ep_stat_nested)
             expect_snapshot(ep_stat_nested)
           })
+
+
+
 
 
 
