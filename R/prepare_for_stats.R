@@ -32,6 +32,7 @@ prepare_for_stats <- function(ep,
                               id_col = "strata_id") {
   type <- match.arg(type)
 
+  # Map stat function type to associated criterion variable
   crit_var <- switch(
     type,
     "stat_by_strata_by_trt" = "crit_accept_by_strata_by_trt",
@@ -39,13 +40,6 @@ prepare_for_stats <- function(ep,
     "stat_across_strata_across_trt" = "crit_accept_by_strata_across_trt",
     stop("Unknown stat function type")
   )
-
-
-  # Return early if no endpoint rows are accepted by criterion or if no stat functions are suppied
-  if(nrow(ep[get(crit_var)]) == 0 |
-     nrow(fn_map[fn_type == type]) == 0){
-    return(data.table::data.table(SKIP_=TRUE))
-  }
 
   # Set of columns used for slicing the population depending on the type of stat function
   grouping_cols <- switch(
@@ -56,12 +50,25 @@ prepare_for_stats <- function(ep,
     stop("Unknown stat function type")
   )
 
+  ep_accepted <- ep[get(crit_var) == TRUE]
+
+  # Return early if:
+  #  1) no endpoint rows are accepted by criterion
+  #  2) no stat functions are supplied
+  #  3) no stratum is accepted when preparing for stat_across_strata_across_trt
+  if(nrow(ep_accepted) == 0 |
+     nrow(fn_map[fn_type == type]) == 0 |
+     (type == "stat_across_strata_across_trt" & !any(ep_accepted[[grouping_cols[[1]]]] != "TOTAL_"))
+     ){
+    return(data.table::data.table(SKIP_=TRUE))
+  }
+
   if (type %in% c("stat_by_strata_by_trt", "stat_by_strata_across_trt")) {
 
     # Expand endpoints by treatment and/or strata
     ep_expanded <-
       expand_ep_for_stats(
-        ep = ep[get(crit_var) == TRUE],
+        ep = ep_accepted,
         grouping_cols = grouping_cols,
         analysis_data_container = analysis_data_container,
         data_col = data_col,
@@ -87,7 +94,7 @@ prepare_for_stats <- function(ep,
   } else{
 
     ep_fn <-
-      merge(ep[get(crit_var) == TRUE],
+      merge(ep_accepted,
             fn_map[fn_type == type],
             by = "endpoint_spec_id",
             allow.cartesian = TRUE)
