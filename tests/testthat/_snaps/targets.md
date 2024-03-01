@@ -1,4 +1,4 @@
-# Non-branching targets pipeline works
+# Base case: targets pipeline works
 
     Code
       ep_stat
@@ -394,7 +394,7 @@
       36:               NaN
           stat_result_value
 
-# Non-branching targets pipeline works no criteria fn and missing by_* functions
+# targets pipeline works no criteria fn and missing by_* functions
 
     Code
       ep_stat_nested
@@ -561,6 +561,124 @@
       18: SEX == "M"...  1-0003-000...       88,89,90,91,92,93,... <data.table[1x4]>
 
 # branching after prepare for stats step works
+
+    Code
+      ep_stat_nested
+    Output
+          endpoint_spec_id study_metadata pop_var pop_value treatment_var
+                     <int>         <list>  <char>    <char>        <char>
+       1:                1      <list[0]>   SAFFL         Y        TRT01A
+       2:                1      <list[0]>   SAFFL         Y        TRT01A
+       3:                1      <list[0]>   SAFFL         Y        TRT01A
+       4:                1      <list[0]>   SAFFL         Y        TRT01A
+       5:                1      <list[0]>   SAFFL         Y        TRT01A
+       6:                1      <list[0]>   SAFFL         Y        TRT01A
+       7:                1      <list[0]>   SAFFL         Y        TRT01A
+       8:                1      <list[0]>   SAFFL         Y        TRT01A
+       9:                1      <list[0]>   SAFFL         Y        TRT01A
+      10:                1      <list[0]>   SAFFL         Y        TRT01A
+      11:                1      <list[0]>   SAFFL         Y        TRT01A
+      12:                1      <list[0]>   SAFFL         Y        TRT01A
+          treatment_refval period_var period_value custom_pop_filter endpoint_filter
+                    <char>     <char>       <char>            <char>          <char>
+       1:    Xanomeline...       <NA>         <NA>     TRT01A %in...            <NA>
+       2:    Xanomeline...       <NA>         <NA>     TRT01A %in...            <NA>
+       3:    Xanomeline...       <NA>         <NA>     TRT01A %in...            <NA>
+       4:    Xanomeline...       <NA>         <NA>     TRT01A %in...            <NA>
+       5:    Xanomeline...       <NA>         <NA>     TRT01A %in...            <NA>
+       6:    Xanomeline...       <NA>         <NA>     TRT01A %in...            <NA>
+       7:    Xanomeline...       <NA>         <NA>     TRT01A %in...            <NA>
+       8:    Xanomeline...       <NA>         <NA>     TRT01A %in...            <NA>
+       9:    Xanomeline...       <NA>         <NA>     TRT01A %in...            <NA>
+      10:    Xanomeline...       <NA>         <NA>     TRT01A %in...            <NA>
+      11:    Xanomeline...       <NA>         <NA>     TRT01A %in...            <NA>
+      12:    Xanomeline...       <NA>         <NA>     TRT01A %in...            <NA>
+          group_by stratify_by key_analysis_data expand_specification
+            <char>      <list>            <char>               <lgcl>
+       1:     <NA>  TOTAL_,SEX     120f7ece5a...                   NA
+       2:     <NA>  TOTAL_,SEX     120f7ece5a...                   NA
+       3:     <NA>  TOTAL_,SEX     120f7ece5a...                   NA
+       4:     <NA>  TOTAL_,SEX     120f7ece5a...                   NA
+       5:     <NA>  TOTAL_,SEX     120f7ece5a...                   NA
+       6:     <NA>  TOTAL_,SEX     120f7ece5a...                   NA
+       7:     <NA>  TOTAL_,SEX     120f7ece5a...                   NA
+       8:     <NA>  TOTAL_,SEX     120f7ece5a...                   NA
+       9:     <NA>  TOTAL_,SEX     120f7ece5a...                   NA
+      10:     <NA>  TOTAL_,SEX     120f7ece5a...                   NA
+      11:     <NA>  TOTAL_,SEX     120f7ece5a...                   NA
+      12:     <NA>  TOTAL_,SEX     120f7ece5a...                   NA
+          endpoint_group_filter  empty endpoint_group_metadata endpoint_id
+                         <lgcl> <lgcl>                  <list>      <char>
+       1:                    NA     NA                              1-0001
+       2:                    NA     NA                              1-0001
+       3:                    NA     NA                              1-0001
+       4:                    NA     NA                              1-0001
+       5:                    NA     NA                              1-0001
+       6:                    NA     NA                              1-0001
+       7:                    NA     NA                              1-0001
+       8:                    NA     NA                              1-0001
+       9:                    NA     NA                              1-0001
+      10:                    NA     NA                              1-0001
+      11:                    NA     NA                              1-0001
+      12:                    NA     NA                              1-0001
+          endpoint_label     event_index crit_accept_endpoint strata_var
+                  <char>          <list>               <lgcl>     <char>
+       1:           <NA> 1,2,3,4,5,6,...                 TRUE     TOTAL_
+       2:           <NA> 1,2,3,4,5,6,...                 TRUE     TOTAL_
+       3:           <NA> 1,2,3,4,5,6,...                 TRUE     TOTAL_
+       4:           <NA> 1,2,3,4,5,6,...                 TRUE     TOTAL_
+       5:           <NA> 1,2,3,4,5,6,...                 TRUE        SEX
+       6:           <NA> 1,2,3,4,5,6,...                 TRUE        SEX
+       7:           <NA> 1,2,3,4,5,6,...                 TRUE        SEX
+       8:           <NA> 1,2,3,4,5,6,...                 TRUE        SEX
+       9:           <NA> 1,2,3,4,5,6,...                 TRUE        SEX
+      10:           <NA> 1,2,3,4,5,6,...                 TRUE        SEX
+      11:           <NA> 1,2,3,4,5,6,...                 TRUE        SEX
+      12:           <NA> 1,2,3,4,5,6,...                 TRUE        SEX
+              strata_id crit_accept_by_strata_by_trt crit_accept_by_strata_across_trt
+                 <char>                       <lgcl>                           <lgcl>
+       1: 1-0001-000...                         TRUE                             TRUE
+       2: 1-0001-000...                         TRUE                             TRUE
+       3: 1-0001-000...                         TRUE                             TRUE
+       4: 1-0001-000...                         TRUE                             TRUE
+       5: 1-0001-000...                         TRUE                             TRUE
+       6: 1-0001-000...                         TRUE                             TRUE
+       7: 1-0001-000...                         TRUE                             TRUE
+       8: 1-0001-000...                         TRUE                             TRUE
+       9: 1-0001-000...                         TRUE                             TRUE
+      10: 1-0001-000...                         TRUE                             TRUE
+      11: 1-0001-000...                         TRUE                             TRUE
+      12: 1-0001-000...                         TRUE                             TRUE
+                fn_hash       fn_type fn_name fn_call_char stat_empty stat_metadata
+                 <char>        <char>  <char>       <char>     <lgcl>        <list>
+       1: 150a10ab56... stat_by_st...    fn_1   c(n_subev)      FALSE     <list[2]>
+       2: 150a10ab56... stat_by_st...    fn_1   c(n_subev)      FALSE     <list[2]>
+       3: afd3cffa8b... stat_by_st...    fn_2     c(n_sub)      FALSE     <list[2]>
+       4: afd3cffa8b... stat_by_st...    fn_2     c(n_sub)      FALSE     <list[2]>
+       5: 150a10ab56... stat_by_st...    fn_1   c(n_subev)      FALSE     <list[2]>
+       6: 150a10ab56... stat_by_st...    fn_1   c(n_subev)      FALSE     <list[2]>
+       7: 150a10ab56... stat_by_st...    fn_1   c(n_subev)      FALSE     <list[2]>
+       8: 150a10ab56... stat_by_st...    fn_1   c(n_subev)      FALSE     <list[2]>
+       9: afd3cffa8b... stat_by_st...    fn_2     c(n_sub)      FALSE     <list[2]>
+      10: afd3cffa8b... stat_by_st...    fn_2     c(n_sub)      FALSE     <list[2]>
+      11: afd3cffa8b... stat_by_st...    fn_2     c(n_sub)      FALSE     <list[2]>
+      12: afd3cffa8b... stat_by_st...    fn_2     c(n_sub)      FALSE     <list[2]>
+            stat_filter stat_result_id            cell_index       stat_result
+                 <char>         <char>                <list>            <list>
+       1: TOTAL_ == ...  1-0001-000...       1,2,3,4,5,6,... <data.table[1x4]>
+       2: TOTAL_ == ...  1-0001-000...  8, 9,11,12,54,55,... <data.table[1x4]>
+       3: TOTAL_ == ...  1-0001-000...       1,2,3,4,5,6,... <data.table[1x4]>
+       4: TOTAL_ == ...  1-0001-000...  8, 9,11,12,54,55,... <data.table[1x4]>
+       5: SEX == "F"...  1-0001-000...  1, 2, 3,13,14,15,... <data.table[1x4]>
+       6: SEX == "M"...  1-0001-000...  4, 5, 6, 7,45,46,... <data.table[1x4]>
+       7: SEX == "F"...  1-0001-000... 11,12,54,55,56,57,... <data.table[1x4]>
+       8: SEX == "M"...  1-0001-000...  8, 9,70,71,72,73,... <data.table[1x4]>
+       9: SEX == "F"...  1-0001-000...  1, 2, 3,13,14,15,... <data.table[1x4]>
+      10: SEX == "M"...  1-0001-000...  4, 5, 6, 7,45,46,... <data.table[1x4]>
+      11: SEX == "F"...  1-0001-000... 11,12,54,55,56,57,... <data.table[1x4]>
+      12: SEX == "M"...  1-0001-000...  8, 9,70,71,72,73,... <data.table[1x4]>
+
+---
 
     Code
       ep_stat_nested
