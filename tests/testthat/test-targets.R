@@ -62,9 +62,10 @@ test_that("Base case: targets pipeline works",
             x <- tar_meta() %>% as.data.table()
             expect_true(all(is.na(x$error)))
             tar_load(ep_stat)
-            expect_snapshot(ep_stat)
+            expect_equal(NROW(ep_stat), 36)
+            expect_equal(NCOL(ep_stat), 37)        
+            expect_snapshot(ep_stat$stat_result_value)
           })
-
 
 test_that("targets pipeline works no criteria fn and missing by_* functions",
           {
