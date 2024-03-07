@@ -161,6 +161,7 @@ index_expanded_ep_groups <- function(x, group_by, forced_group_levels = NULL) {
   # Only want rows that contains values as the other rows indicate non-events
   combos_all <- combos_all[complete.cases(combos_all)]
 
+  # Add forced group levels (if any)
   combos_all <- handle_forced_group_levels(combos_all = combos_all, forced_group_levels = forced_group_levels)
 
   specified_group_levels <-
@@ -171,10 +172,11 @@ index_expanded_ep_groups <- function(x, group_by, forced_group_levels = NULL) {
       stop("Support for multiple variables specifying group levels not yet supported")
     combos_subset <-
       combos_all[tolower(get(var_group_levels)) %in% tolower(specified_group_levels[[var_group_levels]]),]
-  } else{
+  } else {
     combos_subset <- combos_all
   }
 
+  # Expand by all possible combinations of group-by columns in combos_subset.
   if (length(group_by) == 1) {
     return(combos_subset)
   }else{
@@ -241,29 +243,39 @@ add_missing_columns <- function(x){
 }
 
 handle_forced_group_levels <- function(combos_all, forced_group_levels) {
-  # If group levels are forced, regardless of group levels in group_by then add these group levels
+
+  # If no forced group levels are present then return early
   if (is.null(forced_group_levels)) {
     return(combos_all)
   }
 
+  # Only forced group levels on one group variable is supported, so check that forced_group_levels has one column only
   checkmate::assertDataTable(forced_group_levels, ncols = 1)
+
+  # Check that the variable that is subject to the forced group levels is present in the analysis data 
   unsupported_forced_group_levels <- setdiff(names(forced_group_levels), names(combos_all)) |>
     length() > 0
-  nrows_forced_group_levels <- combos_all[, names(forced_group_levels), with = FALSE] |>
-    unique() |>
-    nrow()
-  levels_not_present <- nrows_forced_group_levels > nrow(forced_group_levels)
-  too_few_forced_group_levels <- nrows_forced_group_levels <= nrow(forced_group_levels)
-  
   if (unsupported_forced_group_levels) {
     stop("Unsupported forced group levels")
   }
+
+  actual_group_levels <- combos_all[, names(forced_group_levels), with = FALSE] |>
+    unique()
+
+  # Check that the forced group levels covers all existing group levels
+  too_few_forced_group_levels <- length(setdiff(actual_group_levels[[1]], forced_group_levels[[1]])) > 0
   if (too_few_forced_group_levels) {
-    stop("Fewer forced group levels than levels in the data")
+    stop("Fewer forced group levels than levels in the analysis data")
   }
-  if (levels_not_present) {
-    # Only occurs when there are no events in one of the treatment arms
+
+  # Check if the forced group levels covers more than the existing group levels. If not then no need to force them.
+  forced_group_levels_already_present <- setequal(actual_group_levels[[1]], forced_group_levels[[1]])
+ 
+  # If the forced group levels cover more than the existing group levels then add them to the group level combinations
+  if (!forced_group_levels_already_present) {
     return(expand.grid(combos_all[, .SD, .SDcols = (names(combos_all) != names(forced_group_levels))], forced_group_levels))
   }
+
+  # If the forced group levels do not cover more than the existing group levels then return the unmodified group level combinations
   return(combos_all)
 }
