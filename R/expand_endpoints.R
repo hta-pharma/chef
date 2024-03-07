@@ -161,15 +161,7 @@ index_expanded_ep_groups <- function(x, group_by, forced_group_levels = NULL) {
   # Only want rows that contains values as the other rows indicate non-events
   combos_all <- combos_all[complete.cases(combos_all)]
 
-  # If group levels are forced, regardless of group levels in group_by then add these group levels
-  if(!is.null(forced_group_levels)){
-    if(length(setdiff(names(forced_group_levels), names(combos_all)))>0){
-      stop("Unsupported forced group levels")
-    }else if(nrow(unique(combos_all[,names(forced_group_levels), with = FALSE])) != nrow(forced_group_levels)){ # Add forced group levels if they are not already present
-      combos_all <-
-        tidyr::expand_grid(combos_all[, .SD, .SDcols = (names(combos_all) != names(forced_group_levels))], forced_group_levels)
-    }
-  }
+  combos_all <- handle_forced_group_levels(combos_all = combos_all, forced_group_levels = forced_group_levels)
 
   specified_group_levels <-
     index_non_null_group_level(group_by)
@@ -246,4 +238,32 @@ add_missing_columns <- function(x){
   }
 
   x1
+}
+
+handle_forced_group_levels <- function(combos_all, forced_group_levels) {
+  # If group levels are forced, regardless of group levels in group_by then add these group levels
+  if (is.null(forced_group_levels)) {
+    return(combos_all)
+  }
+
+  checkmate::assertDataTable(forced_group_levels, ncols = 1)
+  unsupported_forced_group_levels <- setdiff(names(forced_group_levels), names(combos_all)) |>
+    length() > 0
+  nrows_forced_group_levels <- combos_all[, names(forced_group_levels), with = FALSE] |>
+    unique() |>
+    nrow()
+  levels_not_present <- nrows_forced_group_levels > nrow(forced_group_levels)
+  too_few_forced_group_levels <- nrows_forced_group_levels <= nrow(forced_group_levels)
+  
+  if (unsupported_forced_group_levels) {
+    stop("Unsupported forced group levels")
+  }
+  if (too_few_forced_group_levels) {
+    stop("Fewer forced group levels than levels in the data")
+  }
+  if (levels_not_present) {
+    # Only occurs when there are no events in one of the treatment arms
+    return(expand.grid(combos_all[, .SD, .SDcols = (names(combos_all) != names(forced_group_levels))], forced_group_levels))
+  }
+  return(combos_all)
 }
