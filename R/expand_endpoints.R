@@ -277,7 +277,7 @@ handle_forced_group_levels <- function(combos_all, forced_group_levels) {
     col_list_combos_all <- lapply(combos_all[, .SD, .SDcols = cols_from_combos_all], function(x){x})
     col_list_2 <-lapply(forced_group_levels, function(x){x}) 
     grid_list <- c(col_list_combos_all, col_list_2)
-    return(expand.grid(grid_list))
+    return(expand.grid(grid_list) |> setDT())
   }
 
   # If the forced group levels do not cover more than the existing group levels then return the unmodified group level combinations
