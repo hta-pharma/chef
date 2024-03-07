@@ -31,8 +31,8 @@ If cross combinations of two stratum variables `A` and `B` are required, either:
 1. Create a derived variable in `data_prepare` that combines `A` and `B` and stratify on this new variable.
 2. Use `endpoint_filter` or `group_by` to group or filter the data on `A` and then stratify on `B` within each group level.
 
-The `only_strata_with_events` Boolean endpoint parameter enables the user to trim the set of presented stratification levels to those that only contain events. 
-Activating this trimming may save a considerable amount of computation time if the combination of `group_by` and `stratify_by` forms many hundreds of strata levels of which only a handful of strata levels have events and are of interest. 
+The `only_strata_with_events` endpoint parameter enables the user to trim the set of presented stratification levels to those that only contain events in either of the treatment arms. 
+Activating this trimming may save a considerable amount of computation time if the combination of `group_by` and `stratify_by` forms many hundreds of strata levels of which only a handful of strata levels have events and are of interest.
 
 # Examples
 

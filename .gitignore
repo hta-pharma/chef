@@ -3,6 +3,7 @@
 # History files
 .Rhistory
 .Rapp.history
+.vscode
 
 # Session Data files
 .RData

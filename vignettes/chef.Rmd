@@ -75,6 +75,7 @@ n_subev <- function(dat,
 
   return(data.table(
     description = "Number of subjects with events",
+    qualifiers = NA_character_,
     label = "n",
     value = stat
   ))
@@ -191,17 +192,18 @@ n_subev <- function(dat,
                     strata_val,
                     subjectid_var,
                     ...) {
-
   stat <- dat[J(cell_index)] %>%
     .[, event_match := INDEX_ %in% event_index] %>%
     unique(., by = c(subjectid_var, "event_match")) %>%
     .[["event_match"]] %>%
     sum()
 
-  return(data.table(decription = "Number of subjects with events",
-                    label = "n",
-                    value = stat))
-
+  return(data.table(
+    decription = "Number of subjects with events",
+    qualifiers = NA_character_,
+    label = "n",
+    value = stat
+  ))
 }
 ```
 
@@ -243,7 +245,7 @@ ep_stat[, .(
   period_var,
   period_value,
   strata_var,
-  stat_result
+  stat_result_value
 )] |> head()
 
 ```
@@ -259,42 +261,11 @@ ep_stat[, .(
   period_var,
   period_value,
   strata_var,
-  stat_result
+  stat_result_value
 )] |> head()
 ```
 
-The actual results are in a nested `data.table` in the stat_result column. If we want to see them, we can unnest that column
 
-```{r, eval=FALSE}
-ep_stat[, .(
-  stat_result_id,
-  treatment_var,
-  treatment_refval,
-  period_var,
-  period_value,
-  strata_var,
-  stat_result
-)] |> 
-  head() |> 
-  tidyr::unnest(cols = stat_result) |>
-  data.table::as.data.table()
-```
-
-```{r, echo=FALSE}
-setwd(tmp_dir) # Do not run, only needed to get the markdown file to run
-ep_stat[, .(
-  stat_result_id,
-  treatment_var,
-  treatment_refval,
-  period_var,
-  period_value,
-  strata_var,
-  stat_result
-)] |> 
-  head() |> 
-  tidyr::unnest(cols = stat_result) |>
-  data.table::as.data.table()
-```
 
 # 5. Pass the data on to TFL formatting
 
