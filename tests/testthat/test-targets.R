@@ -113,8 +113,10 @@ test_that("targets pipeline works no criteria fn and missing by_* functions",
             # EXPECT ------------------------------------------------------------------
             x <- tar_meta() %>% as.data.table()
             expect_true(all(is.na(x$error)))
-            tar_load(ep_stat_nested)
-            expect_snapshot(ep_stat_nested)
+            tar_load(ep_stat)
+            expect_equal(NROW(ep_stat), 18)
+            expect_equal(NCOL(ep_stat), 37)        
+            expect_snapshot(ep_stat$stat_result_value)
           })
 
 
@@ -167,8 +169,10 @@ test_that("branching after prepare for stats step works",
             # EXPECT ------------------------------------------------------------------
             x <- tar_meta() %>% as.data.table()
             expect_true(all(is.na(x$error)))
-            tar_load(ep_stat_nested)
-            expect_snapshot(ep_stat_nested)
+            tar_load(ep_stat)
+            expect_equal(NROW(ep_stat), 12)
+            expect_equal(NCOL(ep_stat), 38)        
+            expect_snapshot(ep_stat$stat_result_value)
           })
 
 
@@ -213,8 +217,10 @@ test_that("branching after prepare for stats step works",
             # EXPECT ------------------------------------------------------------------
             x <- tar_meta() %>% as.data.table()
             expect_true(all(is.na(x$error)))
-            tar_load(ep_stat_nested)
-            expect_snapshot(ep_stat_nested)
+            tar_load(ep_stat)
+            expect_equal(NROW(ep_stat), 12)
+            expect_equal(NCOL(ep_stat), 38)        
+            expect_snapshot(ep_stat$stat_result_value)
           })
 
 
@@ -345,7 +351,7 @@ test_that("Only affected branches outdated when new strata added",
             # This is needed because mk_adcm it is calling from a new R session, it
             # doesn't have access to the helper-* functions from chef
             path <-
-              system.file("inst", package = "chef") |> file.path("templates/template-pipeline.R")
+              system.file("templates", package = "chef") |> file.path("template-pipeline.R")
             tmp <- readLines(path)
             tar_dir({
               dir.create("R")
