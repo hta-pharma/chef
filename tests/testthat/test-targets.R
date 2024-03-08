@@ -168,7 +168,7 @@ test_that("branching after prepare for stats step works",
             expect_true(all(is.na(x$error)))
             tar_load(ep_stat)
             expect_equal(NROW(ep_stat), 12)
-            expect_equal(NCOL(ep_stat), 38)        
+            expect_equal(NCOL(ep_stat), 38)
             expect_snapshot(ep_stat$stat_result_value)
 })
 
