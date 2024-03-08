@@ -4,12 +4,14 @@
 \alias{index_expanded_ep_groups}
 \title{Index the expanded endpoints}
 \usage{
-index_expanded_ep_groups(x, group_by)
+index_expanded_ep_groups(x, group_by, forced_group_levels = NULL)
 }
 \arguments{
 \item{x}{A dataset with study data (i.e ADaM).}
 
 \item{group_by}{A list specifying the grouping for endpoints.}
+
+\item{forced_group_levels}{data.table (optional). Table with group levels that must be included in the expansion, regardless of \code{group_by}.}
 }
 \value{
 A data table with the same number of columns as the number of

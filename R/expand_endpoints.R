@@ -106,17 +106,17 @@ out[]
 #'   consists only of `NA` values, the function returns `NA`.
 #' @export
 #'
-define_expanded_ep <- function(x, group_by, col_prefix = "endpoint_group") {
+define_expanded_ep <- function(x, group_by, forced_group_levels = NULL, col_prefix = "endpoint_group") {
   if (!is.list(group_by) || all(is.na(group_by)))
     return(NA)
 
   col_name_meta = paste(col_prefix, "metadata", sep="_")
   col_name_filter = paste(col_prefix, "filter", sep="_")
 
-  out <- index_expanded_ep_groups(x, group_by) %>%
+  out <- index_expanded_ep_groups(x, group_by, forced_group_levels) %>%
     construct_group_filter(col_name_filter = col_name_filter)
   out[, (col_name_meta) := .(list(lapply(.SD, identity))), by=1:nrow(out), .SDcols = names(group_by)]
-  out[, .SD, .SDcols = c("empty", col_name_meta, col_name_filter)]
+  out[, .SD, .SDcols = c(col_name_meta, col_name_filter)]
 }
 
 #' Index Non-Null Group Levels
@@ -145,13 +145,14 @@ index_non_null_group_level <- function(x) {
 #'
 #' @param x A dataset with study data (i.e ADaM).
 #' @param group_by A list specifying the grouping for endpoints.
+#' @param forced_group_levels data.table (optional). Table with group levels that must be included in the expansion, regardless of `group_by`.
 #'
 #' @return A data table with the same number of columns as the number of
 #'   variables included in the grouping specification, plus an additional column
 #'   `empty` that specifies if there are any records corresponding to the group
 #'   combination. `FALSE` means >=1 record exists in the supplied study data.
 #' @export
-index_expanded_ep_groups <- function(x, group_by) {
+index_expanded_ep_groups <- function(x, group_by, forced_group_levels = NULL) {
   checkmate::assert_data_table(x)
   checkmate::assert_list(group_by)
   grouping_vars <- names(group_by)
@@ -159,6 +160,9 @@ index_expanded_ep_groups <- function(x, group_by) {
 
   # Only want rows that contains values as the other rows indicate non-events
   combos_all <- combos_all[complete.cases(combos_all)]
+
+  # Add forced group levels (if any)
+  combos_all <- add_forced_group_levels(combos_all = combos_all, forced_group_levels = forced_group_levels)
 
   specified_group_levels <-
     index_non_null_group_level(group_by)
@@ -168,28 +172,24 @@ index_expanded_ep_groups <- function(x, group_by) {
       stop("Support for multiple variables specifying group levels not yet supported")
     combos_subset <-
       combos_all[tolower(get(var_group_levels)) %in% tolower(specified_group_levels[[var_group_levels]]),]
-  } else{
+  } else {
     combos_subset <- combos_all
   }
-  if (length(group_by) == 1) {
-    combos_subset[, empty := FALSE]
-    return(combos_subset)
-  }
-  unique_vals <- lapply(combos_subset, unique)
 
-  combos_expanded <-
-    setDT(expand.grid(unique_vals, stringsAsFactors = FALSE))
-  setnames(combos_expanded, names(combos_subset))
-  combos_expanded[, empty := TRUE]
-  cols <- names(combos_expanded[, !"empty"])
-  combos_expanded[combos_subset, empty := FALSE, on = cols]
-  combos_expanded
+  # Expand by all possible combinations of group-by columns in combos_subset.
+  if (length(group_by) == 1) {
+    return(combos_subset)
+  }else{
+    unique_vals <- lapply(combos_subset, unique)
+    combos_expanded <- setDT(expand.grid(unique_vals, stringsAsFactors = FALSE))
+    return(combos_expanded)
+  }
 }
 
 construct_group_filter <- function(x, col_name_filter="endpoint_group_filter") {
   out <- copy(x)
   filter_str_vec <-
-    purrr::pmap(x[, !"empty"], create_condition_str) %>% unlist(recursive = F)
+    purrr::pmap(x, create_condition_str) %>% unlist(recursive = F)
   out[, (col_name_filter) := filter_str_vec]
 }
 
@@ -240,4 +240,54 @@ add_missing_columns <- function(x){
   }
 
   x1
+}
+
+#' Add forced group levels
+#'
+#' @description Expand the set of unique group levels of one grouping variables in a table containing all combinations of one or more grouping variables.
+#'
+#' @param combos_all A data.table containing all combinations of group levels found in the analysis data.
+#' @param forced_group_levels A one column data.table containing a required set of group levels of a grouping variable.
+#'
+#' @return A data.table containing all combinations of group levels exapnded with the forced grouping levels. 
+add_forced_group_levels <- function(combos_all, forced_group_levels) {
+
+  # If no forced group levels are present then return early
+  if (is.null(forced_group_levels)) {
+    return(combos_all)
+  }
+
+  # Only forced group levels on one group variable is supported, so check that forced_group_levels has one column only
+  checkmate::assertDataTable(forced_group_levels, ncols = 1)
+
+  # Check that the variable that is subject to the forced group levels is present in the analysis data 
+  unsupported_forced_group_levels <- setdiff(names(forced_group_levels), names(combos_all)) |>
+    length() > 0
+  if (unsupported_forced_group_levels) {
+    stop("Unsupported forced group levels")
+  }
+
+  actual_group_levels <- combos_all[, names(forced_group_levels), with = FALSE] |>
+    unique()
+
+  # Check that the forced group levels covers all existing group levels
+  too_few_forced_group_levels <- length(setdiff(actual_group_levels[[1]], forced_group_levels[[1]])) > 0
+  if (too_few_forced_group_levels) {
+    stop("Fewer forced group levels than levels in the analysis data")
+  }
+
+  # Check if the forced group levels covers more than the existing group levels. If not then no need to force them.
+  forced_group_levels_already_present <- setequal(actual_group_levels[[1]], forced_group_levels[[1]])
+ 
+  # If the forced group levels cover more than the existing group levels then add them to the group level combinations
+  if (!forced_group_levels_already_present) {
+    cols_from_combos_all <- names(combos_all) != names(forced_group_levels)
+    col_list_combos_all <- lapply(combos_all[, .SD, .SDcols = cols_from_combos_all], function(x){x})
+    col_list_2 <-lapply(forced_group_levels, function(x){x}) 
+    grid_list <- c(col_list_combos_all, col_list_2)
+    return(expand.grid(grid_list) |> setDT())
+  }
+
+  # If the forced group levels do not cover more than the existing group levels then return the unmodified group level combinations
+  return(combos_all)
 }

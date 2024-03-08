@@ -19,10 +19,12 @@ apply_stats <-
            type = c("stat_by_strata_by_trt",
                     "stat_by_strata_across_trt",
                     "stat_across_strata_across_trt")) {
+
+    checkmate::assert_data_table(ep)
     # If no functions are given by the user, no results table needs to be
     # produced
     nm <- names(ep)
-    if (length(nm) <= 2 &&
+    if (length(nm) <= 3 &&
         nm[1] == "SKIP_") {
       return(data.table(NULL))
     }
@@ -33,7 +35,7 @@ apply_stats <-
 
     if (type == "stat_by_strata_by_trt") {
 
-      if (nrow(ep_cp[crit_accept_by_strata_by_trt == TRUE]) == 0 ){
+      if (nrow(ep_cp[crit_accept_by_strata_by_trt == TRUE]) == 0){
         ep_cp[, stat_result := list()]
       } else {
         ep_cp[crit_accept_by_strata_by_trt == TRUE, stat_result := llist(

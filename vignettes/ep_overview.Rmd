@@ -51,7 +51,7 @@ The parameters of each endpoint specification can be grouped in to the sets belo
         <th>Endpoint parameter</th>
     </tr>
     <tr>
-        <td rowspan="13">Population and outcome specifications</td>
+        <td rowspan="14">Population and outcome specifications</td>
         <td rowspan="2">[ADaM data](ep_spec_adam_data.html). What data to use and how to consolidate it into a single data table for the endpoint that is used to calculate statistics.</td>
         <td>`study_metadata`</td>
     </tr>
@@ -89,13 +89,16 @@ The parameters of each endpoint specification can be grouped in to the sets belo
         <td>`group_by`</td>
     </tr>
     <tr>
-        <td rowspan="1">[Strata](ep_spec_strata_def.html). How to slice the data within the endpoint.</td>
+        <td rowspan="2">[Strata](ep_spec_strata_def.html). How to slice the data within the endpoint and if only slices with events should be kept.</td>
         <td>`stratify_by`</td>
     </tr>
-     <tr>
-        <td rowspan="1">[Endpoint label](ep_spec_label.html). What events the endpoint describes.</td>
-        <td>`endpoint_label`</td>
+    <tr>
+        <td>`only_strata_with_events`</td>
     </tr>
+     <tr>
+        <td rowspan="1">[Endpoint label](ep_spec_label.html). Description of what events the endpoint presents.</td>
+        <td>`endpoint_label`</td>
+    </tr>  
     <tr>
         <td rowspan="6">Methods</td>
         <td rowspan="3">[Criteria methods](methods_criteria.html). Requirements that must be met to include different types of statistics in the endpoint results.</td>

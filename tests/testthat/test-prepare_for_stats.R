@@ -33,7 +33,9 @@ test_that("Proper stat function mapping when type=stat_by_strata_by_trt", {
       treatment_var = "TRT01A",
       strata_var = c("TOTAL_", "SEX"),
       key_analysis_data = "a",
-      crit_accept_by_strata_by_trt = TRUE
+      crit_accept_by_strata_by_trt = TRUE,
+      only_strata_with_events = FALSE,
+      event_index = list(1:nrow(adam))
     )
   fn_map <- data.table(
     endpoint_spec_id = "1",
@@ -66,7 +68,7 @@ test_that("Proper stat function mapping when type=stat_by_strata_by_trt", {
       "fn_hash",
       "fn_name",
       "fn_type",
-      "stat_empty",
+      "stat_event_exist",
       "stat_filter",
       "stat_metadata",
       "stat_result_id"
@@ -85,17 +87,17 @@ test_that("Proper stat function mapping when type=stat_by_strata_by_trt", {
     list(TOTAL_ = "total", TRT01A = "Placebo")
   )
   expect_equal(
-    ep_prep$stat_metadata[[2]],
+    ep_prep$stat_metadata[[3]],
     list(TOTAL_ = "total", TRT01A = "Xanomeline High Dose")
   )
   expect_equal(ep_prep$stat_metadata[[5]], list(SEX = "F", TRT01A = "Placebo"))
-  expect_equal(ep_prep$stat_metadata[[6]], list(SEX = "M", TRT01A = "Placebo"))
+  expect_equal(ep_prep$stat_metadata[[7]], list(SEX = "M", TRT01A = "Placebo"))
   expect_equal(
-    ep_prep$stat_metadata[[7]],
+    ep_prep$stat_metadata[[9]],
     list(SEX = "F", TRT01A = "Xanomeline High Dose")
   )
   expect_equal(
-    ep_prep$stat_metadata[[8]],
+    ep_prep$stat_metadata[[11]],
     list(SEX = "M", TRT01A = "Xanomeline High Dose")
   )
 
@@ -126,7 +128,9 @@ test_that("Proper stat function mapping when type=stat_by_strata_across_trt", {
       treatment_var = "TRT01A",
       strata_var = c("TOTAL_", "SEX"),
       key_analysis_data = "a",
-      crit_accept_by_strata_across_trt = TRUE
+      crit_accept_by_strata_across_trt = TRUE,
+      only_strata_with_events = FALSE,
+      event_index = list(1:nrow(adam))
     )
   fn_map <- data.table(
     endpoint_spec_id = "1",
@@ -160,7 +164,7 @@ test_that("Proper stat function mapping when type=stat_by_strata_across_trt", {
       "fn_hash",
       "fn_name",
       "fn_type",
-      "stat_empty",
+      "stat_event_exist",
       "stat_filter",
       "stat_metadata",
       "stat_result_id"
@@ -203,7 +207,9 @@ test_that("Proper stat function mapping when type=stat_across_strata_across_trt"
       treatment_var = "TRT01A",
       strata_var = c("TOTAL_", "SEX"),
       key_analysis_data = "a",
-      crit_accept_by_strata_across_trt = TRUE
+      crit_accept_by_strata_across_trt = TRUE,
+      only_strata_with_events = FALSE,
+      event_index = list(1:nrow(adam))
     )
   fn_map <- data.table(
     endpoint_spec_id = "1",
@@ -236,7 +242,7 @@ test_that("Proper stat function mapping when type=stat_across_strata_across_trt"
       "fn_hash",
       "fn_name",
       "fn_type",
-      "stat_empty",
+      "stat_event_exist",
       "stat_filter",
       "stat_metadata",
       "stat_result_id"
@@ -276,7 +282,8 @@ test_that("base - dataprep: define_expansion_cell_from_data", {
     id = c(1, 2, 3),
     stratify_by = c("TOTAL_", "SEX", "AGEgrp"),
     dat = list(x),
-    treatment_var = "Treatment"
+    treatment_var = "Treatment",
+    only_strata_with_events = FALSE
   )
 
   # ACT ---------------------------------------------------------------------
@@ -334,7 +341,8 @@ test_that("base - dataprep: expand_ep_for_stats", {
     stratify_by = c("TOTAL_", "SEX", "AGEgrp"),
     treatment_var = "Treatment",
     fn_hash = "X",
-    key_analysis_data = "a"
+    key_analysis_data = "a",
+    only_strata_with_events = FALSE
   )
 
   # ACT ---------------------------------------------------------------------
@@ -361,8 +369,8 @@ test_that("base - dataprep: expand_ep_for_stats", {
         1:nrow(ep_exp_stat)
     ]
 
-  dt_empty <- ep_with_filtered_data[stat_empty == TRUE, ]
-  dt_empty[, expect_equal(length(cell_index[[1]]), 0), by = 1:nrow(dt_empty)]
+  # dt_empty <- ep_with_filtered_data[stat_empty == TRUE, ]
+  # dt_empty[, expect_equal(length(cell_index[[1]]), 0), by = 1:nrow(dt_empty)]
 
   exp_combinations <- uniqueN(x$SEX) * uniqueN(x$Treatment)
 
@@ -395,7 +403,9 @@ test_that("base - dataprep", {
     treatment_var = "Treatment",
     crit_accept_by_strata_across_trt = TRUE,
     crit_accept_by_strata_by_trt = TRUE,
-    crit_accept_across_strata_across_trt = TRUE
+    crit_accept_across_strata_across_trt = TRUE,
+    only_strata_with_events = FALSE,
+    event_index = list(1:nrow(x))
   )
 
   fn_map <- data.table(
@@ -463,4 +473,110 @@ test_that("base - dataprep", {
     ),
     regexp = "'arg' should be one of"
   )
+})
+
+test_that("Check that only strata levels with events are kept", {
+
+  # SETUP -------------------------------------------------------------------
+
+  ep <-
+    mk_endpoint_str(
+      data_prepare = mk_adae,
+      study_metadata = list(),
+      pop_var = "SAFFL",
+      pop_value = "Y",
+      custom_pop_filter = "TRT01A %in% c('Placebo', 'Xanomeline High Dose') & !is.na(AESOC)",
+      treatment_var = "TRT01A",
+      treatment_refval = "Xanomeline High Dose",
+      group_by = list(list(AESOC = c())),
+      stratify_by = list(c("RACE")),
+      stat_by_strata_by_trt = list(n_sub, n_subev),
+      stat_by_strata_across_trt = list(n_subev),
+      endpoint_label = "AESOC: <AESOC>",
+      only_strata_with_events = TRUE
+    )
+
+  ep <- add_id(ep)
+
+  ep_fn_map <-
+    suppressWarnings(unnest_endpoint_functions(ep))
+  user_def_fn <-
+    mk_userdef_fn_dt(ep_fn_map, env = environment())
+
+  fn_map <-
+    merge(ep_fn_map[, .(endpoint_spec_id, fn_hash)], user_def_fn, by = "fn_hash")
+
+  adam_db <-
+    fetch_db_data(
+      study_metadata = ep$study_metadata[[1]],
+      fn_dt = user_def_fn
+    )
+
+  ep_and_data <- filter_db_data(ep, ep_fn_map, adam_db)
+  ep_data_key <- ep_and_data$ep
+  analysis_data_container <- ep_and_data$analysis_data_container
+  ep_expanded <-
+    expand_over_endpoints(ep_data_key, analysis_data_container)
+
+  ep_ev_index <-
+    add_event_index(ep_expanded, analysis_data_container)
+
+  ep_crit_endpoint <-
+    apply_criterion_endpoint(ep_ev_index, analysis_data_container, fn_map)
+  ep_crit_by_strata_by_trt <-
+    apply_criterion_by_strata(ep_crit_endpoint, analysis_data_container, fn_map)
+  ep_crit_by_strata_across_trt <-
+    apply_criterion_by_strata(ep_crit_by_strata_by_trt,
+                              analysis_data_container,
+                              fn_map,
+                              type = "by_strata_across_trt"
+    )
+
+
+  # ACT ---------------------------------------------------------------------
+
+  ep_prep_by_strata_by_trt <-
+    prepare_for_stats(ep_crit_by_strata_across_trt,
+                      analysis_data_container,
+                      fn_map,
+                      type = "stat_by_strata_by_trt")
+
+  ep_prep_by_strata_across_trt <-
+    prepare_for_stats(ep_crit_by_strata_across_trt,
+                      analysis_data_container,
+                      fn_map,
+                      type = "stat_by_strata_across_trt")
+
+  # INSPECT -----------------------------------------------------------------
+
+  dat <- analysis_data_container$dat[[1]]
+
+  # by_strata_by_trt
+  expect_equal(nrow(ep_prep_by_strata_by_trt), 256)
+
+  expected_n_combinations <-
+    nrow(unique(dat[, c("AESOC", "RACE", "TRT01A")]))
+  actual_n_combinations <-
+    nrow(unique(ep_prep_by_strata_by_trt[stat_event_exist == TRUE &
+                                           grepl("total", stat_filter) == 0,
+                                         c("endpoint_group_filter", "stat_filter")]))
+  expect_equal(expected_n_combinations, actual_n_combinations)
+
+  # Check specific SOC
+  ep_prep_bb_sub <- ep_prep_by_strata_by_trt[grepl("SURGICAL AND MEDICAL PROCEDURES", endpoint_group_filter)]
+  expect_equal(nrow(ep_prep_bb_sub), 12)
+  expect_equal(nrow(ep_prep_bb_sub[strata_var == "TOTAL_"]), 4)
+  expect_equal(nrow(ep_prep_bb_sub[strata_var == "RACE"]), 8)
+
+  event_index <- ep_prep_bb_sub$event_index[[1]]
+  expected_stat_event_exist <- unlist(lapply(ep_prep_bb_sub$stat_filter, function(x){
+    nrow(dat[list(event_index)][eval(parse(text=x))])>0
+  }))
+  actual_stat_event_exists <- ep_prep_bb_sub$stat_event_exist
+  expect_equal(expected_stat_event_exist, actual_stat_event_exists)
+
+  # by_strata_across_trt
+  expect_equal(nrow(ep_prep_by_strata_across_trt), 64)
+  expect_equal(all(ep_prep_by_strata_across_trt$stat_event_exist), TRUE)
+
 })
