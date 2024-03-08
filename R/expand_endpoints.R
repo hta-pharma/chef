@@ -162,7 +162,7 @@ index_expanded_ep_groups <- function(x, group_by, forced_group_levels = NULL) {
   combos_all <- combos_all[complete.cases(combos_all)]
 
   # Add forced group levels (if any)
-  combos_all <- handle_forced_group_levels(combos_all = combos_all, forced_group_levels = forced_group_levels)
+  combos_all <- add_forced_group_levels(combos_all = combos_all, forced_group_levels = forced_group_levels)
 
   specified_group_levels <-
     index_non_null_group_level(group_by)
@@ -242,7 +242,15 @@ add_missing_columns <- function(x){
   x1
 }
 
-handle_forced_group_levels <- function(combos_all, forced_group_levels) {
+#' Add forced group levels
+#'
+#' @description Expand the set of unique group levels of one grouping variables in a table containing all combinations of one or more grouping variables.
+#'
+#' @param combos_all A data.table containing all combinations of group levels found in the analysis data.
+#' @param forced_group_levels A one column data.table containing a required set of group levels of a grouping variable.
+#'
+#' @return A data.table containing all combinations of group levels exapnded with the forced grouping levels. 
+add_forced_group_levels <- function(combos_all, forced_group_levels) {
 
   # If no forced group levels are present then return early
   if (is.null(forced_group_levels)) {
