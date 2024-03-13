@@ -80,7 +80,7 @@ test_that("Discordant columns in result data model", {
             r_script_dir =
                 "R/"
         )), con = "_targets.R")
-        browser()
+        #browser()
         tar_make()
         x <- tar_meta() |> data.table::setDT()
     })
