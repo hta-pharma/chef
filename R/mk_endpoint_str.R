@@ -3,6 +3,7 @@
 #' @param study_metadata List. Metadata describing the clinical study.
 #' @param pop_var Character.
 #' @param pop_value Character.
+#' @param custom_pop_filter Character.
 #' @param treatment_var Character.
 #' @param treatment_refval Character.
 #' @param period_var Character.
@@ -14,10 +15,12 @@
 #' @param data_prepare List.
 #' @param stat_by_strata_by_trt List.
 #' @param stat_by_strata_across_trt List.
+#' @param stat_across_strata_across_trt List.
 #' @param crit_endpoint List.
 #' @param crit_by_strata_by_trt List.
 #' @param crit_by_strata_across_trt List.
 #' @param only_strata_with_events Boolean.
+#' @param env Environment.
 #'
 #' @return A data.table containing the endpoint specification.
 #' @export
@@ -25,7 +28,7 @@
 mk_endpoint_str <- function(study_metadata = NULL,
                             pop_var = NULL,
                             pop_value = NULL,
-                            custom_pop_filter=NA_character_,
+                            custom_pop_filter = NA_character_,
                             treatment_var = NULL,
                             treatment_refval = NULL,
                             period_var = NA_character_,

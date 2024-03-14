@@ -15,6 +15,8 @@ apply_criterion_by_strata(
 \item{ep}{A \code{data.table} containing endpoint data with applied endpoint
 criteria, typically the output from \code{apply_criterion_endpoint}.}
 
+\item{analysis_data_container}{data.table containing the analysis data.}
+
 \item{fn_map}{A \code{data.table} mapping endpoint definitions to by-strata
 criteria functions.}
 

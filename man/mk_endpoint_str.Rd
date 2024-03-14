@@ -35,6 +35,8 @@ mk_endpoint_str(
 
 \item{pop_value}{Character.}
 
+\item{custom_pop_filter}{Character.}
+
 \item{treatment_var}{Character.}
 
 \item{treatment_refval}{Character.}
@@ -57,6 +59,8 @@ mk_endpoint_str(
 
 \item{stat_by_strata_across_trt}{List.}
 
+\item{stat_across_strata_across_trt}{List.}
+
 \item{crit_endpoint}{List.}
 
 \item{crit_by_strata_by_trt}{List.}
@@ -64,6 +68,8 @@ mk_endpoint_str(
 \item{crit_by_strata_across_trt}{List.}
 
 \item{only_strata_with_events}{Boolean.}
+
+\item{env}{Environment.}
 }
 \value{
 A data.table containing the endpoint specification.

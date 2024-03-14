@@ -9,6 +9,7 @@
 #'   associated data, typically the output from `apply_criterion_by_strata`.
 #' @param fn_map A `data.table` mapping endpoint definitions to statistical
 #'   functions.
+#' @param analysis_data_container data.table containing the analysis data.
 #' @param type A character string specifying the type of statistics for which
 #'   the data is being prepared. Valid types are "stat_by_strata_by_trt",
 #'   "stat_by_strata_across_trt", and "stat_across_strata_across_trt".
@@ -169,6 +170,7 @@ list_group_and_levels <- function(
 #' @param ep A `data.table` containing endpoint data to be expanded.
 #' @param grouping_cols A character vector specifying the columns used for
 #'   grouping in the expansion.
+#' @param analysis_data_container data.table containing the analysis data.
 #' @param data_col The name of the column in `ep` that contains the ADaM
 #'   dataset.
 #' @param id_col The name of the column in `ep` that contains the unique

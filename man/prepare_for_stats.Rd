@@ -18,6 +18,8 @@ prepare_for_stats(
 \item{ep}{A \code{data.table} containing expanded endpoint definitions and
 associated data, typically the output from \code{apply_criterion_by_strata}.}
 
+\item{analysis_data_container}{data.table containing the analysis data.}
+
 \item{fn_map}{A \code{data.table} mapping endpoint definitions to statistical
 functions.}
 

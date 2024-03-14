@@ -6,7 +6,7 @@
 #'
 #' @param ep A `data.table` containing prepared endpoint data for statistical
 #'   analysis, typically the output from `prepare_for_stats`.
-#' @param fn_map A `data_table` mapping endpoint definitions to statistical
+#' @param analysis_data_container data.table containing the analysis data.
 #'   functions.
 #' @param type The type of statistical function. Can be one of
 #'   "stat_by_strata_by_trt", "stat_by_strata_across_trt", or "stat_across_strata_across_trt"

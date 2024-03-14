@@ -10,6 +10,8 @@ expand_over_endpoints(ep, analysis_data_container)
 \item{ep}{A \code{data.table} containing endpoint definitions, where each row
 corresponds to a different endpoint and contains relevant attributes such
 as the endpoint name, type, and criteria.}
+
+\item{analysis_data_container}{data.table containing the analysis data.}
 }
 \value{
 A \code{data.table} where each row corresponds to an expanded endpoint

@@ -11,6 +11,7 @@
 #' @param ep A `data.table` containing endpoint definitions, where each row
 #'   corresponds to a different endpoint and contains relevant attributes such
 #'   as the endpoint name, type, and criteria.
+#' @param analysis_data_container data.table containing the analysis data.
 #' @return A `data.table` where each row corresponds to an expanded endpoint
 #'   definition
 #' @export
@@ -104,6 +105,8 @@ out[]
 #' @param group_by A list specifying the grouping for endpoints, where
 #'   each element corresponds to a variable used for grouping endpoints and
 #'   contains the levels for that grouping variable.
+#' @param forced_group_levels data.table (optional). Table with group levels 
+#'   that must be included in the expansion, regardless of `group_by`.
 #' @param col_prefix A prefix used to create the names of the metadata and
 #'   filter columns in the output `data.table`. Defaults to "endpoint_group".
 #'

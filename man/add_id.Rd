@@ -7,7 +7,7 @@
 add_id(ep)
 }
 \arguments{
-\item{ep}{}
+\item{ep}{A \code{data.table} containing endpoint definitions.}
 }
 \value{
 data.table

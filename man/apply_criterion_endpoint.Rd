@@ -10,6 +10,8 @@ apply_criterion_endpoint(ep, analysis_data_container, fn_map)
 \item{ep}{A \code{data.table} containing expanded endpoint definitions and
 associated data, typically the output from \code{add_event_index}.}
 
+\item{analysis_data_container}{data.table containing the analysis data.}
+
 \item{fn_map}{A \code{data.table} mapping endpoint definitions to criterion
 functions.}
 }

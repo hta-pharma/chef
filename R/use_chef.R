@@ -18,7 +18,7 @@
 #'   `mk_adam_*()` and criterion functions for example, and any other functions
 #'   that are used in the pipelines.
 #' @param pipeline_id Character sting. Alphanumeric only
-#' @param endpoint_def_fn If you would like to use an existing
+#' @param mk_endpoint_def_fn If you would like to use an existing
 #'   `mk_endpoint_def_*()` function as the starting point for the pipeline,
 #'   supply the unquoted function name here. This assumes there are no arguments
 #'   to the function call and the functions have to be available from the global
@@ -39,6 +39,8 @@
 #'   `my_criteria_fn`). The functions have to be available from the global
 #'   environment (i.e if you type `my_criteria_fn()` into the console, it would
 #'   find the function and try to run in).
+#' @param branch_group_size Numeric.
+#' @param env Environment.
 #'
 #' @return Nothing, run for side effects.
 #' @export

@@ -14,18 +14,6 @@
 #'
 #' @return The result of the evaluated expression if successful and valid.
 #' @export
-
-
-
-#'
-#' @param expr_ Expression of type `call` to be wrapped
-#' @param debug_dir directory for debugging dump [/tmp]
-#' @param validator validation function, passthrough default.
-#' @param stage_debugging
-#'
-#' @return data.table::data.table
-#' @noRd
-#'
 try_and_validate <- function(expr_,
                              expr_name = NA_character_,
                              #TODO Allow forwarding of meaning full names.

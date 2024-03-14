@@ -29,6 +29,13 @@ that are used in the pipelines.}
 
 \item{pipeline_id}{Character sting. Alphanumeric only}
 
+\item{mk_endpoint_def_fn}{If you would like to use an existing
+\verb{mk_endpoint_def_*()} function as the starting point for the pipeline,
+supply the unquoted function name here. This assumes there are no arguments
+to the function call and the functions have to be available from the global
+enironment (i.e if you type \code{my_fun()} into the console, it would find the
+function and try to run in)}
+
 \item{mk_adam_fn}{List of functions used for making adam dataset. This is
 useful if you want to supply already existing functions. This must be a
 list, and each element must be an unquoted function name (e.g.
@@ -46,12 +53,9 @@ must be a list, and each element must be an unquoted function name (e.g.
 environment (i.e if you type \code{my_criteria_fn()} into the console, it would
 find the function and try to run in).}
 
-\item{endpoint_def_fn}{If you would like to use an existing
-\verb{mk_endpoint_def_*()} function as the starting point for the pipeline,
-supply the unquoted function name here. This assumes there are no arguments
-to the function call and the functions have to be available from the global
-enironment (i.e if you type \code{my_fun()} into the console, it would find the
-function and try to run in)}
+\item{branch_group_size}{Numeric.}
+
+\item{env}{Environment.}
 }
 \value{
 Nothing, run for side effects.
