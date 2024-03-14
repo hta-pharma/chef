@@ -20,17 +20,21 @@ expand_over_endpoints <- function(ep, analysis_data_container) {
   ep_with_data[, expand_specification := llist(define_expanded_ep(dat[[1]], group_by[[1]])),
           by = 1:nrow(ep_with_data)]
   ep_with_data[["dat"]] <- NULL
-  ep_expanded_1 <-
-    ep_with_data %>% tidyr::unnest(col = expand_specification) %>% setDT()
 
-  ep_expanded_2 <- add_missing_columns(ep_expanded_1)
-
-  ep_expanded_2[, endpoint_id := add_ep_id(.SD, .BY), by =
-                endpoint_spec_id]
+  # Expand by groups. If no grouping is present, then add empty group related columns
+  if(any(!is.na(ep_with_data$expand_specification))){
+    ep_exp <- ep_with_data %>% tidyr::unnest(col = expand_specification) %>% setDT()
+  }else{
+    ep_exp <- ep_with_data[, .SD, .SDcols = setdiff(names(ep_with_data), "expand_specification")]
+    ep_exp[, endpoint_group_filter := NA]
+    ep_exp[, endpoint_group_metadata := list()]
+  }
+  
+  ep_exp[, endpoint_id := add_ep_id(.SD, .BY), by = endpoint_spec_id]
 
   # Complete endpoint labels by replacing keywords with values
-  nm_set <- names(ep_expanded_2)
-  ep_expanded_2[,endpoint_label_evaluated := apply(ep_expanded_2, 1, function(x){
+  nm_set <- names(ep_exp)
+  ep_exp[,endpoint_label_evaluated := apply(ep_exp, 1, function(x){
 
     xlab <- x[["endpoint_label"]]
 
@@ -62,12 +66,12 @@ expand_over_endpoints <- function(ep, analysis_data_container) {
     }
     return(xlab)
   })]
-  ep_expanded_2[["endpoint_label"]] <- NULL
-  setnames(ep_expanded_2, "endpoint_label_evaluated", "endpoint_label")
+  ep_exp[["endpoint_label"]] <- NULL
+  setnames(ep_exp, "endpoint_label_evaluated", "endpoint_label")
 
   keep <-
     setdiff(
-      names(ep_expanded_2),
+      names(ep_exp),
       c(
         "data_prepare",
         "stat_by_strata_by_trt",
@@ -82,7 +86,7 @@ expand_over_endpoints <- function(ep, analysis_data_container) {
       )
     )
 
-out <- ep_expanded_2[, .SD, .SDcols=keep]
+out <- ep_exp[, .SD, .SDcols=keep]
 setkey(out, key_analysis_data)
 out[]
 }
@@ -223,22 +227,6 @@ add_ep_id <- function(x, grp) {
     format = "d",
     flag = "0"
   ))]
-}
-
-
-add_missing_columns <- function(x){
-  if(length(intersect(c("endpoint_group_filter", "endpoint_group_metadata"), names(x)))==2){
-    return(x)
-  }
-  x1 <- copy(x)
-  if(length(intersect(c("endpoint_group_filter"), names(x)))==0){
-    x1[, endpoint_group_filter:=NA]
-  }
-  if(length(intersect(c("endpoint_group_metadata"), names(x)))==0){
-    x1[, endpoint_group_metadata:=list()]
-  }
-
-  x1
 }
 
 #' Add forced group levels
