@@ -23,7 +23,7 @@ try_and_validate <- function(expr_,
                              },
                              stage_debugging = TRUE) {
   # Capture expression information
-  expr_sub = substitute(expr_)
+  expr_sub <- substitute(expr_)
   if (!identical(class(expr_sub), "call")) {
     stop(sprintf(
       "Expr_(%s) must be of class `call`. Found: (%s)",
@@ -32,7 +32,7 @@ try_and_validate <- function(expr_,
     ))
   }
 
-  expr_list = as.list(expr_sub) # un evaluated call list
+  expr_list <- as.list(expr_sub) # un evaluated call list
   # Find the function definition in the calling env.
   if (rlang::is_call_simple(expr_sub)) {
     expr_fn <- get(expr_list[[1]], envir = parent.frame())
@@ -48,8 +48,7 @@ try_and_validate <- function(expr_,
     err_msg <- paste0("Failed to EVALUATE function with error:",
                       "\n ", expr_result[[1]])
 
-  } else if (!is.na(validator_err <-
-                    validator(expr_result))) {
+  } else if (!is.na(validator_err <- validator(expr_result))) {
     #validate output
     err_msg <-
       paste("Failed to VALIDATE function output with error:",
@@ -64,12 +63,11 @@ try_and_validate <- function(expr_,
 
   # Match arguments with formals if possible
   if (is.primitive(expr_fn)) {
-    expr_call_char = deparse(expr_sub)
-    expr_arg_list = expr_list[-1]
+    expr_call_char <- deparse(expr_sub)
+    expr_arg_list <- expr_list[-1]
   } else {
-    expr_matched = match.call(definition = expr_fn,
-                              call = expr_sub)
-    expr_call_char = deparse(expr_matched)
+    expr_matched <- match.call(definition = expr_fn, call = expr_sub)
+    expr_call_char <- deparse(expr_matched)
     expr_arg_list <- as.list(expr_matched)[-1]
   }
   # Find a name if unset.
@@ -91,16 +89,17 @@ try_and_validate <- function(expr_,
   debug_file <- stage_debug(
     fn_name = expr_name,
     fn = expr_fn,
-    arg_list = lapply(expr_arg_list, eval, envir = parent.frame()),
-    err_msg = full_error,
-    debug_dir = debug_dir
+    arg_list <- lapply(expr_arg_list, eval, envir = parent.frame()),
+    err_msg <- full_error,
+    debug_dir <- debug_dir
   )
 
   full_error <- paste(
     full_error,
     "---",
     sprintf(
-      "Debugging session created: Launch with:\n chef::load_debug_session('%s')",
+      "Debugging session created: Launch with:\n
+       chef::load_debug_session('%s')",
       debug_file
     ),
     "---",
@@ -140,8 +139,8 @@ stage_debug <-
     debug_env[["ns"]] <- search()
 
     dir.create(debug_dir, showWarnings = FALSE, recursive = FALSE)
-    norm_dir = normalizePath(debug_dir)
-    filepath = file.path(norm_dir, paste0(fn_name, ".Rdata"))
+    norm_dir <- normalizePath(debug_dir)
+    filepath <- file.path(norm_dir, paste0(fn_name, ".Rdata"))
 
     saveRDS(debug_env, file = filepath) #Set dynamically
 
@@ -165,20 +164,19 @@ load_debug_session <- function(debug_file) {
   # Get debug env.
   debug_env <- readRDS(debug_file)
   cli::cli_h1("Launching debug session for: {.val {debug_env$fn_name}}")
-  #message(paste0("Launching debug session for: ", debug_env$fn_name))
 
   cli::cli_h3("Original error msg:")
   cli::cli_par()
   cli::cli_verbatim(debug_env$err_msg)
   cli::cli_text("──")
   cli::cli_end()
-  #message(paste("Original error msg:", debug_env$err_msg, sep="\n" ))
-
 
   if (is.primitive(debug_env$fn)) {
     cli::cli_alert_danger(
-      "The inspected function ({.val {deparse(debug_env$fn)}}) is a primitive and cannot be inspected using debugonce.\
-      You can still load the debug environemnt and inspect inputs and function: readRDS({.path {debug_file}})",
+      "The inspected function ({.val {deparse(debug_env$fn)}}) is a 
+      primitive and cannot be inspected using debugonce.\
+      You can still load the debug environemnt and inspect 
+      inputs and function: readRDS({.path {debug_file}})",
       wrap = TRUE
     )
     cli::cli_alert_info("Debug session ended")
@@ -195,7 +193,8 @@ load_debug_session <- function(debug_file) {
 
   extra_libraries <- setdiff(debug_env$ns, search())
   if (length(extra_libraries) > 0) {
-    cli::cli_alert_warning("The following libraries was available at runtime but isn't currently.")
+    cli::cli_alert_warning("The following libraries was available at runtime 
+    but isn't currently.")
     cli::cli_li(extra_libraries)
   }
 
@@ -218,10 +217,10 @@ load_debug_session <- function(debug_file) {
 #'
 #' @return An error message if validation fails, otherwise NA.
 validate_crit_output <- function(output) {
-  if (!(isTRUE(output) |
-        isFALSE(output))) {
+  if (!(isTRUE(output) | isFALSE(output))) {
     paste(
-      "The return value from the endpoint criterion function must be a logical of length 1, i.e.",
+      "The return value from the endpoint criterion 
+      function must be a logical of length 1, i.e.",
       "TRUE or FALSE"
     )
   }
@@ -241,14 +240,15 @@ validate_crit_output <- function(output) {
 validate_stat_output <- function(output) {
   # if not a DT return early
   if (!data.table::is.data.table(output)) {
-    err_msg <- paste0("Expected (data.table::data.table) Found: ", class(output))
+    err_msg <- paste0("Expected (data.table::data.table). Found: ",
+                      class(output))
     return(err_msg)
   }
 
   # if DT check if compliant
   err_messages <- c()
-  expected_sorted = sort(c("label","description", "qualifiers", "value"))
-  actual_sorted   = sort(names(output))
+  expected_sorted <- sort(c("label", "description", "qualifiers", "value"))
+  actual_sorted <- sort(names(output))
   if (!identical(expected_sorted, actual_sorted)) {
     actual_diff <- setdiff(actual_sorted, expected_sorted)
     expected_diff <- setdiff(expected_sorted, actual_sorted)

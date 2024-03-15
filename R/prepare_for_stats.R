@@ -61,7 +61,7 @@ prepare_for_stats <- function(ep,
      nrow(fn_map[fn_type == type]) == 0 |
      (type == "stat_across_strata_across_trt" & !any(ep_accepted[[grouping_cols[[1]]]] != "TOTAL_"))
      ){
-    return(data.table::data.table(SKIP_=TRUE))
+    return(data.table::data.table(SKIP_ = TRUE))
   }
 
   if (type %in% c("stat_by_strata_by_trt", "stat_by_strata_across_trt")) {
@@ -156,8 +156,8 @@ list_group_and_levels <- function(
     data,
     grouping_col
 ){
-  l = list(data[, unique(get(grouping_col))])
-  names(l) = grouping_col
+  l <- list(data[, unique(get(grouping_col))])
+  names(l) <- grouping_col
   return (l)
 }
 
@@ -189,7 +189,7 @@ expand_ep_for_stats <- function(
     col_prefix
 ){
 
-  name_expand_col = paste(col_prefix, "expand_spec", sep="_")
+  name_expand_col <- paste(col_prefix, "expand_spec", sep="_")
 
   ep[,"_i_" := .I]
   setkey(ep, key_analysis_data)
@@ -216,7 +216,7 @@ expand_ep_for_stats <- function(
 
   ep_exp[,"_i_":= .I]
   ep_exp_with_data <- ep_exp[analysis_data_container, nomatch = NULL]
-  filter_col_name = paste(col_prefix, "filter", sep="_")
+  filter_col_name <- paste(col_prefix, "filter", sep="_")
   ep_exp_with_data[, cell_index := llist(create_flag(get(data_col)[[1]],
                                                      singletons = c(get(filter_col_name)[[1]]))),
                    by = "_i_"]
@@ -249,17 +249,17 @@ define_expansion_cell_from_data <- function(
     col_prefix
 ){
   if (is.character(grouping_cols)){
-    grouping_cols = c(grouping_cols)
+    grouping_cols <- c(grouping_cols)
   }
   stopifnot(all(grouping_cols %in% names(row)))
 
   # Get the actual grouping variables
-  grouping_col_values = row[, .SD, .SDcols=grouping_cols]
-  grouping_var_list = vector(mode="list", length(grouping_col_values))
-  names(grouping_var_list) = grouping_col_values
+  grouping_col_values <- row[, .SD, .SDcols=grouping_cols]
+  grouping_var_list <- vector(mode="list", length(grouping_col_values))
+  names(grouping_var_list) <- grouping_col_values
 
   if(row[["only_strata_with_events"]]){
-    dat <-  row[,get(data_col)][[1]][row[["event_index"]]]
+    dat <- row[,get(data_col)][[1]][row[["event_index"]]]
   }else{
     dat <- row[,get(data_col)][[1]]
   }
