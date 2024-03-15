@@ -168,7 +168,7 @@ load_debug_session <- function(debug_file) {
   cli::cli_h3("Original error msg:")
   cli::cli_par()
   cli::cli_verbatim(debug_env$err_msg)
-  cli::cli_text("──")
+  cli::cli_text("--")
   cli::cli_end()
 
   if (is.primitive(debug_env$fn)) {
