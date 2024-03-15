@@ -42,6 +42,8 @@ create_flag <- function(dat, var_value_pairs=NULL, singletons=NULL) {
 #'   of the columns `pop_var`, `pop_value`, `period_var`, `period_value`,
 #'   `endpoint_filter`, `endpoint_group_filter`, and `custom_pop_filter`, which
 #'   are used to define the conditions for event indexing.
+#' 
+#' @param analysis_data_container A data.table containing the analysis data.
 #'
 #' @return A `data.table` similar to the input but with an additional
 #'   `event_index` column, which contains the indices of events as determined by

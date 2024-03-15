@@ -12,6 +12,8 @@ typically the output from \code{expand_over_endpoints}. It assumes the inclusion
 of the columns \code{pop_var}, \code{pop_value}, \code{period_var}, \code{period_value},
 \code{endpoint_filter}, \code{endpoint_group_filter}, and \code{custom_pop_filter}, which
 are used to define the conditions for event indexing.}
+
+\item{analysis_data_container}{A data.table containing the analysis data.}
 }
 \value{
 A \code{data.table} similar to the input but with an additional

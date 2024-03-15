@@ -6,6 +6,7 @@
 #'
 #' @param ep A `data.table` containing expanded endpoint definitions and
 #'   associated data, typically the output from `add_event_index`.
+#' @param analysis_data_container data.table containing the analysis data.
 #' @param fn_map A `data.table` mapping endpoint definitions to criterion
 #'   functions.
 #'
@@ -60,6 +61,7 @@ apply_criterion_endpoint <- function(ep, analysis_data_container, fn_map) {
 #'
 #' @param ep A `data.table` containing endpoint data with applied endpoint
 #'   criteria, typically the output from `apply_criterion_endpoint`.
+#' @param analysis_data_container data.table containing the analysis data.
 #' @param fn_map A `data.table` mapping endpoint definitions to by-strata
 #'   criteria functions.
 #' @param type The type of criterion to apply, either

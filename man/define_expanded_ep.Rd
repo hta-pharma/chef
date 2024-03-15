@@ -18,6 +18,9 @@ define_expanded_ep(
 each element corresponds to a variable used for grouping endpoints and
 contains the levels for that grouping variable.}
 
+\item{forced_group_levels}{data.table (optional). Table with group levels
+that must be included in the expansion, regardless of \code{group_by}.}
+
 \item{col_prefix}{A prefix used to create the names of the metadata and
 filter columns in the output \code{data.table}. Defaults to "endpoint_group".}
 }

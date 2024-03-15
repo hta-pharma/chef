@@ -1,6 +1,6 @@
 #' Add ID to user-defined endpoint groups
 #'
-#' @param ep
+#' @param ep A `data.table` containing endpoint definitions.
 #'
 #' @return data.table
 #' @export

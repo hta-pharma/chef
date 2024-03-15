@@ -15,11 +15,11 @@ apply_stats(
 \item{ep}{A \code{data.table} containing prepared endpoint data for statistical
 analysis, typically the output from \code{prepare_for_stats}.}
 
+\item{analysis_data_container}{data.table containing the analysis data.
+functions.}
+
 \item{type}{The type of statistical function. Can be one of
 "stat_by_strata_by_trt", "stat_by_strata_across_trt", or "stat_across_strata_across_trt"}
-
-\item{fn_map}{A \code{data_table} mapping endpoint definitions to statistical
-functions.}
 }
 \value{
 A \code{data.table} with statistical results appended.

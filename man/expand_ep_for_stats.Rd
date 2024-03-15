@@ -19,6 +19,8 @@ expand_ep_for_stats(
 \item{grouping_cols}{A character vector specifying the columns used for
 grouping in the expansion.}
 
+\item{analysis_data_container}{data.table containing the analysis data.}
+
 \item{data_col}{The name of the column in \code{ep} that contains the ADaM
 dataset.}
 
