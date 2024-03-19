@@ -16,16 +16,17 @@
 apply_stats <-
   function(ep,
            analysis_data_container,
-           type = c("stat_by_strata_by_trt",
-                    "stat_by_strata_across_trt",
-                    "stat_across_strata_across_trt")) {
-
+           type = c(
+             "stat_by_strata_by_trt",
+             "stat_by_strata_across_trt",
+             "stat_across_strata_across_trt"
+           )) {
     checkmate::assert_data_table(ep)
     # If no functions are given by the user, no results table needs to be
     # produced
     nm <- names(ep)
     if (length(nm) <= 3 &&
-        nm[1] == "SKIP_") {
+      nm[1] == "SKIP_") {
       return(data.table(NULL))
     }
     type <- match.arg(type)
@@ -34,8 +35,7 @@ apply_stats <-
     ep_cp <- ep[analysis_data_container]
 
     if (type == "stat_by_strata_by_trt") {
-
-      if (nrow(ep_cp[crit_accept_by_strata_by_trt == TRUE]) == 0){
+      if (nrow(ep_cp[crit_accept_by_strata_by_trt == TRUE]) == 0) {
         ep_cp[, stat_result := list()]
       } else {
         ep_cp[crit_accept_by_strata_by_trt == TRUE, stat_result := llist(
@@ -56,10 +56,8 @@ apply_stats <-
           )
         ), by = stat_result_id]
       }
-
     } else if (type == "stat_by_strata_across_trt") {
-
-      if (nrow(ep_cp[crit_accept_by_strata_across_trt == TRUE]) == 0 ){
+      if (nrow(ep_cp[crit_accept_by_strata_across_trt == TRUE]) == 0) {
         ep_cp[, stat_result := list()]
       } else {
         ep_cp[crit_accept_by_strata_across_trt == TRUE, stat_result := llist(
@@ -73,17 +71,16 @@ apply_stats <-
               event_index = unlist(event_index),
               cell_index = unlist(cell_index),
               subjectid_var = "USUBJID"
-              ),
+            ),
             validator = validate_stat_output,
             expr_name = fn_name
           )
         ), by = stat_result_id]
       }
-    } else if (type == "stat_across_strata_across_trt"){
-      if (nrow(ep_cp[crit_accept_by_strata_across_trt == TRUE]) == 0 ){
+    } else if (type == "stat_across_strata_across_trt") {
+      if (nrow(ep_cp[crit_accept_by_strata_across_trt == TRUE]) == 0) {
         ep_cp[, stat_result := list()]
       } else {
-
         ep_cp[crit_accept_by_strata_across_trt == TRUE, stat_result := llist(
           expr_ = try_and_validate(
             fn_callable[[1]](
@@ -103,5 +100,4 @@ apply_stats <-
 
     keep <- setdiff(names(ep_cp), c("fn_callable", "dat", "tar_group"))
     ep_cp[, .SD, .SDcols = keep]
-
   }

@@ -149,7 +149,7 @@ apply_criterion_by_strata <-
 #' @noRd
 unnest_ep_by_strata <- function(ep) {
   ep_accepted <- ep[(crit_accept_endpoint)]
-  ep_accepted[,strata_var := stratify_by]
+  ep_accepted[, strata_var := stratify_by]
   ep_unnested <-
     tidyr::unnest(ep_accepted, col = strata_var) |>
     setDT()

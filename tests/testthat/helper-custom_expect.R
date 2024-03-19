@@ -1,17 +1,17 @@
-expect_str_contains <- function(object, substring){
+expect_str_contains <- function(object, substring) {
   # Capture objet and label
   act <- quasi_label(rlang::enquo(object), arg = "object")
 
   # expect
   act$character <- as.character(object)
   expect(
-    grepl(substring, act$character, fixed=T),
+    grepl(substring, act$character, fixed = T),
     sprintf("%s Does not contain the substring\n(%s)%s\n(sub)'%s'", act$lab, act$lab, act$character, substring)
   )
   invisible(act$character)
 }
 
-expect_na_or_null <- function(object){
+expect_na_or_null <- function(object) {
   # Capture objet and label
   act <- quasi_label(rlang::enquo(object), arg = "object")
 
@@ -39,7 +39,7 @@ expect_same_items <- function(actual, expected, ...) {
     exp_msg <- paste0(
       "Expected: (", paste(expected_sorted, collapse = ", "), ")",
       "\nFound: (", paste(actual_sorted, collapse = ", ")
-      )
+    )
     if (length(actual_diff) > 0) {
       exp_msg <- paste(exp_msg, "\nExtra items in actual:", actual_diff)
     }

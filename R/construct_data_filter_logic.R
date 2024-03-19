@@ -27,15 +27,12 @@ construct_data_filter_logic <-
     }
     if (!is.null(singletons)) {
       singletons_no_na <- singletons[!sapply(singletons, is_null_or_na)]
-      if(length(singletons_no_na)>0){
+      if (length(singletons_no_na) > 0) {
         singletons_collapsed <- paste0(singletons_no_na, collapse = " & ")
       }
-
     }
-    paste0(c(pairs, singletons_collapsed),collapse = " & ")
-
-
+    paste0(c(pairs, singletons_collapsed), collapse = " & ")
   }
-is_null_or_na <- function(x){
-  is.null(x)||is.na(x)
+is_null_or_na <- function(x) {
+  is.null(x) || is.na(x)
 }

@@ -1,5 +1,4 @@
-test_that("base endpoint crit works",
-{
+test_that("base endpoint crit works", {
   # SETUP -------------------------------------------------------------------
   crit_endpoint <- function(dat,
                             event_index,
@@ -26,8 +25,10 @@ test_that("base endpoint crit works",
   fn_map <-
     merge(ep_fn_map[, .(endpoint_spec_id, fn_hash)], user_def_fn, by = "fn_hash")
   adam_db <-
-    fetch_db_data(study_metadata = list(),
-                  fn_dt = user_def_fn)
+    fetch_db_data(
+      study_metadata = list(),
+      fn_dt = user_def_fn
+    )
 
   ep_and_data <- filter_db_data(ep, ep_fn_map, adam_db)
   ep_data_key <- ep_and_data$ep
@@ -46,8 +47,7 @@ test_that("base endpoint crit works",
   expect_equal(nrow(actual), nrow(ep))
 })
 
-test_that("base endpoint crit works with multiple endpoints",
-{
+test_that("base endpoint crit works with multiple endpoints", {
   # SETUP -------------------------------------------------------------------
   crit_endpoint <- function(dat,
                             event_index,
@@ -75,8 +75,10 @@ test_that("base endpoint crit works with multiple endpoints",
   fn_map <-
     merge(ep_fn_map[, .(endpoint_spec_id, fn_hash)], user_def_fn, by = "fn_hash")
   adam_db <-
-    fetch_db_data(study_metadata = list(),
-                  fn_dt = user_def_fn)
+    fetch_db_data(
+      study_metadata = list(),
+      fn_dt = user_def_fn
+    )
 
   ep_and_data <- filter_db_data(ep, ep_fn_map, adam_db)
   ep_data_key <- ep_and_data$ep
@@ -99,8 +101,7 @@ test_that("base endpoint crit works with multiple endpoints",
 })
 
 
-test_that("base endpoint crit works with naked function",
-{
+test_that("base endpoint crit works with naked function", {
   # SETUP -------------------------------------------------------------------
   crit_endpoint <- function(dat,
                             event_index,
@@ -127,8 +128,10 @@ test_that("base endpoint crit works with naked function",
   fn_map <-
     merge(ep_fn_map[, .(endpoint_spec_id, fn_hash)], user_def_fn, by = "fn_hash")
   adam_db <-
-    fetch_db_data(study_metadata = list(),
-                  fn_dt = user_def_fn)
+    fetch_db_data(
+      study_metadata = list(),
+      fn_dt = user_def_fn
+    )
 
   ep_and_data <- filter_db_data(ep, ep_fn_map, adam_db)
   ep_data_key <- ep_and_data$ep
@@ -151,8 +154,7 @@ test_that("base endpoint crit works with naked function",
 })
 
 
-test_that("crit fn has access to correct data from chef",
-{
+test_that("crit fn has access to correct data from chef", {
   # SETUP -------------------------------------------------------------------
 
 
@@ -170,9 +172,9 @@ test_that("crit fn has access to correct data from chef",
                             endpoint_group_metadata,
                             stratify_by,
                             subjectid_var) {
-      out <- all(
+    out <- all(
       nrow(dat) == 7535,
-      #Same as nrows in filter adam data,
+      # Same as nrows in filter adam data,
       inherits(event_index, "integer"),
       is.na(endpoint_group_metadata),
       treatment_var == "TRT01A"
@@ -194,8 +196,10 @@ test_that("crit fn has access to correct data from chef",
   fn_map <-
     merge(ep_fn_map[, .(endpoint_spec_id, fn_hash)], user_def_fn, by = "fn_hash")
   adam_db <-
-    fetch_db_data(study_metadata = list(),
-                  fn_dt = user_def_fn)
+    fetch_db_data(
+      study_metadata = list(),
+      fn_dt = user_def_fn
+    )
   ep_and_data <- filter_db_data(ep, ep_fn_map, adam_db)
   ep_data_key <- ep_and_data$ep
   analysis_data_container <- ep_and_data$analysis_data_container
@@ -215,8 +219,7 @@ test_that("crit fn has access to correct data from chef",
   expect_true(actual$crit_accept_endpoint, label = "If this fails, check expectations inside crit_endpoint function")
 })
 
-test_that("error when crit fn does not return a logical value",
-{
+test_that("error when crit fn does not return a logical value", {
   # SETUP -------------------------------------------------------------------
   crit_endpoint <- function(dat,
                             event_index,
@@ -245,8 +248,10 @@ test_that("error when crit fn does not return a logical value",
   fn_map <-
     merge(ep_fn_map[, .(endpoint_spec_id, fn_hash)], user_def_fn, by = "fn_hash")
   adam_db <-
-    fetch_db_data(study_metadata = list(),
-                  fn_dt = user_def_fn)
+    fetch_db_data(
+      study_metadata = list(),
+      fn_dt = user_def_fn
+    )
 
   ep_and_data <- filter_db_data(ep, ep_fn_map, adam_db)
   ep_data_key <- ep_and_data$ep
@@ -261,5 +266,6 @@ test_that("error when crit fn does not return a logical value",
 
   # EXPECT ------------------------------------------------------------------
   expect_error(apply_criterion_endpoint(ep_ev_index, analysis_data_container, fn_map),
-               regexp = "The return value from the endpoint criterion function")
+    regexp = "The return value from the endpoint criterion function"
+  )
 })

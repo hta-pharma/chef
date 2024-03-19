@@ -7,9 +7,9 @@
 #' column.
 #' @export
 #'
-group_ep_for_targets <- function(ep, n_per_group){
+group_ep_for_targets <- function(ep, n_per_group) {
   x <- copy(ep)
   n_rows <- nrow(x)
-  x[, targets_group :=(.I-1) %/% n_per_group]
+  x[, targets_group := (.I - 1) %/% n_per_group]
   x[]
 }

@@ -11,15 +11,16 @@
 #' whether to keep the endpoint/strata or not.
 #' @export
 #'
-evaluate_criteria <- function(endpoints, adam_set, criteria_type = c("endpoint", "subgroup_description", "subgroup_analysis")){
-checkmate::assertDataTable(endpoints)
+evaluate_criteria <- function(endpoints, adam_set, criteria_type = c("endpoint", "subgroup_description", "subgroup_analysis")) {
+  checkmate::assertDataTable(endpoints)
 
   endpoints_out <- data.table::copy(endpoints)
 
   # Apply row-wise operations over the endpoint data to enrich data with an
   # evaluation of criteria and an updated log
-  endpoints_out[, c(paste0("keep_",criteria_type), "log") := criterion_wrapper(.SD, adam_set, criteria_type),
-                by = seq_len(nrow(endpoints_out))]
+  endpoints_out[, c(paste0("keep_", criteria_type), "log") := criterion_wrapper(.SD, adam_set, criteria_type),
+    by = seq_len(nrow(endpoints_out))
+  ]
 
   return(endpoints_out[])
 }
