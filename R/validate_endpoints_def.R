@@ -7,6 +7,7 @@
 #' @export
 #'
 validate_endpoints_def <- function(endpoint_base) {
+  col_name <- col_class <- class_nested <- NULL # To satisfy R CMD check
   checkmate::assertDataTable(endpoint_base)
 
 
@@ -135,6 +136,7 @@ build_actual_col_classes <- function(endpoint_base) {
 }
 
 check_fn_calls <- function(col_class_expected, ep_def) {
+  class_nested <- NULL # To satisfy R CMD check
   fn_inx <- col_class_expected[class_nested == "function"]
   lapply(fn_inx$col_name, function(i)
     lapply(ep_def[[i]], error_not_fn, i))

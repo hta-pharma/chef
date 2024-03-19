@@ -8,6 +8,7 @@
 #' @export
 #'
 group_ep_for_targets <- function(ep, n_per_group){
+  targets_group <- NULL # To satisfy R CMD check
   x <- copy(ep)
   n_rows <- nrow(x)
   x[, targets_group :=(.I-1) %/% n_per_group]

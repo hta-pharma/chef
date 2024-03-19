@@ -19,7 +19,21 @@ apply_stats <-
            type = c("stat_by_strata_by_trt",
                     "stat_by_strata_across_trt",
                     "stat_across_strata_across_trt")) {
-
+    key_analysis_data <-
+      crit_accept_by_strata_by_trt <-
+      stat_result <-
+      fn_callable <-
+      dat <-
+      treatment_var <-
+      stat_metadata <-
+      stat_metadata <-
+      event_index <-
+      cell_index <-
+      fn_name <-
+      stat_result_id <-
+      crit_accept_by_strata_across_trt <-
+      stratify_by <-
+      treatment_refval <- NULL # To satisfy R CMD check
     checkmate::assert_data_table(ep)
     # If no functions are given by the user, no results table needs to be
     # produced

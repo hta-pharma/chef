@@ -28,7 +28,9 @@
 #' @export
 #'
 mk_userdef_fn_dt <- function(x, env=parent.frame()){
-
+  fn_type <-
+    fn <-
+    fn_name <- fn_hash <- fn_callable <- NULL # To satisfy R CMD check
   # Take only the unique rows based on the hash.
   unique_hash_table <- unique(x, by="fn_hash")
 

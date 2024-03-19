@@ -1,8 +1,8 @@
 
 eval_data_fn <- function(fn_list, ...) {
-  out <- lapply(fn_list, function(fn) {
+  out <- lapply(fn_list, function(fn_) {
     x <- tryCatch({
-      fn(...)  # apply the function i
+      fn_(...)  # apply the function i
     }, error = function(e) {
       return(e)
     })

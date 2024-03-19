@@ -31,6 +31,13 @@ prepare_for_stats <- function(ep,
                               ),
                               data_col = "dat",
                               id_col = "strata_id") {
+  fn_type <-
+    stat_event_exist  <-
+    event_index <-
+    cell_index <-
+    stat_result_id <-
+    fn_hash <- key_analysis_data <- NULL # To satisfy R CMD check
+
   type <- match.arg(type)
 
   # Map stat function type to associated criterion variable
@@ -188,6 +195,8 @@ expand_ep_for_stats <- function(
     id_col,
     col_prefix
 ){
+  key_analysis_data <-
+    stat_expand_spec <- cell_index <- NULL # To satisfy R CMD check
 
   name_expand_col <- paste(col_prefix, "expand_spec", sep="_")
 

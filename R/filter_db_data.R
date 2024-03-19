@@ -14,6 +14,16 @@
 #'
 #' @export
 filter_db_data <- function(ep, ep_fn_map, adam_db) {
+  fn_type <-
+    endpoint_spec_id <-
+    dat <-
+    fn_hash <-
+    dat_analysis <-
+    pop_var <-
+    pop_value <-
+    custom_pop_filter <-
+    key_analysis_data <- NULL # To satisfy R CMD check
+
   ep_adam <-
     merge(ep,
           ep_fn_map[fn_type == "data_prepare", .(endpoint_spec_id, fn_hash, fn_type)],
@@ -106,6 +116,7 @@ apply_dt_filter <-
   function(adam_dt,
            filter_string,
            type = c("filter", "flag")) {
+    event_flag <- NULL # To satisfy R CMD check
     type <- match.arg(type)
     if (type == "filter") {
       return(adam_dt[eval(parse(text = filter_string))])

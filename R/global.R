@@ -1,3 +1,4 @@
+#' @noRd
 covr_ignore <- function() {
   list(
     "R/global.R"
@@ -45,13 +46,16 @@ utils::globalVariables(
   )
 )
 
+
+
+#' @noRd
 helper_calls_to_imports <- function(){
   # Some packages will be needed when the user runs the pipeline, so we want
   # those packages "Imported" in the DESCRIPTION file, so the user does not have
   # any additional steps to install them after installing chef. However, the
   # code for this is stored in the template files, and for some reason, R CMD
   # check does not see theses files, so it gives a warning that we have
-  # dependancies listed in the DESCRIPTION file that are not used in the
+  # dependencies listed in the DESCRIPTION file that are not used in the
   # package. These notes are not allowed in our CI/CD checks, so we use this
   # function to make just one call to each of those packages.
 

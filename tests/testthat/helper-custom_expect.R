@@ -48,7 +48,7 @@ expect_same_items <- function(actual, expected, ...) {
     }
 
     # Fail the test with the custom error message
-    testthat:::expect(FALSE, failure_message = exp_msg, ...)
+    testthat::expect(FALSE, failure_message = exp_msg, ...)
   }
   invisible(actual)
 }
