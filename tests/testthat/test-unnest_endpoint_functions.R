@@ -4,17 +4,19 @@ test_that("Unnest all functions", {
   crit_ep_dummy <- function(...) {
     return(T)
   }
-  crit_sgd_dummy <- function(...){
+  crit_sgd_dummy <- function(...) {
     return(T)
   }
-  crit_sga_dummy <- function(...){
+  crit_sga_dummy <- function(...) {
     return(T)
   }
 
   ep <- mk_ep_0001_base(
     data_prepare = mk_adae,
-    stat_by_strata_by_trt = list("n_sub" = n_sub,
-                                 "n_subev" = n_subev),
+    stat_by_strata_by_trt = list(
+      "n_sub" = n_sub,
+      "n_subev" = n_subev
+    ),
     stat_by_strata_across_trt = list("n_subev_trt_diff" = n_subev_trt_diff),
     stat_across_strata_across_trt = list("P-interaction" = contingency2x2_strata_test),
     crit_endpoint = list(crit_ep_dummy),
@@ -45,7 +47,9 @@ test_that("Unnest all functions", {
   # expect_equal(all(unlist(lapply(ep_fn[["fn"]], function(x){typeof(x) == "language"}))), TRUE)
   # ** Temporary **
   # Check that content of each fn is language or symbol
-  expect_equal(all(unlist(lapply(ep_fn[["fn"]], function(x){typeof(x) %in% c("language", "symbol")}))), TRUE)
+  expect_equal(all(unlist(lapply(ep_fn[["fn"]], function(x) {
+    typeof(x) %in% c("language", "symbol")
+  }))), TRUE)
 
   # Check uniqueness of fn_hash
   expect_equal(anyDuplicated(ep_fn[["fn_hash"]]), 0)
@@ -63,10 +67,12 @@ test_that("Unnest all functions", {
     "crit_sgd_dummy" = "crit_by_strata_by_trt",
     "crit_sga_dummy" = "crit_by_strata_across_trt"
   )
-  expect_equal(all(apply(ep_fn, 1,
-                         function(x) {
-                           return(x[["fn_type"]] == lookup[[x[["fn_name"]]]])
-                         })), TRUE)
+  expect_equal(all(apply(
+    ep_fn, 1,
+    function(x) {
+      return(x[["fn_type"]] == lookup[[x[["fn_name"]]]])
+    }
+  )), TRUE)
 })
 
 
@@ -76,10 +82,10 @@ test_that("Unnest criterion functions", {
   crit_ep_dummy <- function(...) {
     return(T)
   }
-  crit_sgd_dummy <- function(...){
+  crit_sgd_dummy <- function(...) {
     return(T)
   }
-  crit_sga_dummy <- function(...){
+  crit_sga_dummy <- function(...) {
     return(T)
   }
 
@@ -87,7 +93,8 @@ test_that("Unnest criterion functions", {
     data_prepare = mk_adae,
     stat_by_strata_by_trt = list(
       "n_sub" = n_sub,
-      "n_subev" = n_subev),
+      "n_subev" = n_subev
+    ),
     stat_by_strata_across_trt = list("n_subev_trt_diff" = n_subev_trt_diff),
     stat_across_strata_across_trt = list("P-interaction" = contingency2x2_ptest),
     crit_endpoint = list(crit_ep_dummy),
@@ -97,13 +104,15 @@ test_that("Unnest criterion functions", {
 
   ep <- add_id(ep)
 
-  fn_cols <- c("crit_endpoint", "crit_by_strata_by_trt",
-               "crit_by_strata_across_trt")
+  fn_cols <- c(
+    "crit_endpoint", "crit_by_strata_by_trt",
+    "crit_by_strata_across_trt"
+  )
 
 
   # ACT ---------------------------------------------------------------------
 
-  ep_fn <- suppressWarnings(unnest_endpoint_functions(ep, fn_cols=fn_cols))
+  ep_fn <- suppressWarnings(unnest_endpoint_functions(ep, fn_cols = fn_cols))
 
   # EXPECT ------------------------------------------------------------------
 
@@ -121,7 +130,9 @@ test_that("Unnest criterion functions", {
   # expect_equal(all(unlist(lapply(ep_fn[["fn"]], function(x){typeof(x) == "language"}))), TRUE)
   # ** Temporary **
   # Check that content of each fn is language or symbol
-  expect_equal(all(unlist(lapply(ep_fn[["fn"]], function(x){typeof(x) %in% c("language", "symbol")}))), TRUE)
+  expect_equal(all(unlist(lapply(ep_fn[["fn"]], function(x) {
+    typeof(x) %in% c("language", "symbol")
+  }))), TRUE)
 
   # Check uniqueness of fn_hash
   expect_equal(anyDuplicated(ep_fn[["fn_hash"]]), 0)
@@ -134,10 +145,12 @@ test_that("Unnest criterion functions", {
     "crit_sgd_dummy" = "crit_by_strata_by_trt",
     "crit_sga_dummy" = "crit_by_strata_across_trt"
   )
-  expect_equal(all(apply(ep_fn, 1,
-                         function(x) {
-                           return(x[["fn_type"]] == lookup[[x[["fn_name"]]]])
-                         })), TRUE)
+  expect_equal(all(apply(
+    ep_fn, 1,
+    function(x) {
+      return(x[["fn_type"]] == lookup[[x[["fn_name"]]]])
+    }
+  )), TRUE)
 })
 
 
@@ -146,8 +159,10 @@ test_that("Unnest statistical functions", {
 
   ep <- mk_ep_0001_base(
     data_prepare = mk_adae,
-    stat_by_strata_by_trt = list("n_sub" = n_sub,
-                                     "n_subev" = n_subev),
+    stat_by_strata_by_trt = list(
+      "n_sub" = n_sub,
+      "n_subev" = n_subev
+    ),
     stat_by_strata_across_trt = list("n_subev_trt_diff" = n_subev_trt_diff),
     stat_across_strata_across_trt = list("P-interaction" = contingency2x2_strata_test)
   )
@@ -159,7 +174,7 @@ test_that("Unnest statistical functions", {
 
   # ACT ---------------------------------------------------------------------
 
-  ep_fn <- suppressWarnings(unnest_endpoint_functions(ep, fn_cols=fn_cols))
+  ep_fn <- suppressWarnings(unnest_endpoint_functions(ep, fn_cols = fn_cols))
 
   # EXPECT ------------------------------------------------------------------
 
@@ -177,7 +192,9 @@ test_that("Unnest statistical functions", {
   # expect_equal(all(unlist(lapply(ep_fn[["fn"]], function(x){typeof(x) == "language"}))), TRUE)
   # ** Temporary **
   # Check that content of each fn is language or symbol
-  expect_equal(all(unlist(lapply(ep_fn[["fn"]], function(x){typeof(x) %in% c("language", "symbol")}))), TRUE)
+  expect_equal(all(unlist(lapply(ep_fn[["fn"]], function(x) {
+    typeof(x) %in% c("language", "symbol")
+  }))), TRUE)
 
   # Check uniqueness of fn_hash
   expect_equal(anyDuplicated(ep_fn[["fn_hash"]]), 0)
@@ -191,10 +208,12 @@ test_that("Unnest statistical functions", {
     "n_subev_trt_diff" = "stat_by_strata_across_trt",
     "P-interaction" = "stat_across_strata_across_trt"
   )
-  expect_equal(all(apply(ep_fn, 1,
-                         function(x) {
-                           return(x[["fn_type"]] == lookup[[x[["fn_name"]]]])
-                         })), TRUE)
+  expect_equal(all(apply(
+    ep_fn, 1,
+    function(x) {
+      return(x[["fn_type"]] == lookup[[x[["fn_name"]]]])
+    }
+  )), TRUE)
 })
 
 test_that("Unnest adam and adsl functions", {
@@ -211,7 +230,7 @@ test_that("Unnest adam and adsl functions", {
 
   # ACT ---------------------------------------------------------------------
 
-  ep_fn <- suppressWarnings(unnest_endpoint_functions(ep, fn_cols=fn_cols))
+  ep_fn <- suppressWarnings(unnest_endpoint_functions(ep, fn_cols = fn_cols))
 
   # EXPECT ------------------------------------------------------------------
 
@@ -229,7 +248,9 @@ test_that("Unnest adam and adsl functions", {
   # expect_equal(all(unlist(lapply(ep_fn[["fn"]], function(x){typeof(x) == "language"}))), TRUE)
   # ** Temporary **
   # Check that content of each fn is language or symbol
-  expect_equal(all(unlist(lapply(ep_fn[["fn"]], function(x){typeof(x) %in% c("language", "symbol")}))), TRUE)
+  expect_equal(all(unlist(lapply(ep_fn[["fn"]], function(x) {
+    typeof(x) %in% c("language", "symbol")
+  }))), TRUE)
 
   # Check uniqueness of fn_hash
   expect_equal(anyDuplicated(ep_fn[["fn_hash"]]), 0)
@@ -240,8 +261,10 @@ test_that("Unnest adam and adsl functions", {
   lookup <- c(
     "mk_adae" = "data_prepare"
   )
-  expect_equal(all(apply(ep_fn, 1,
-                         function(x) {
-                           return(x[["fn_type"]] == lookup[[x[["fn_name"]]]])
-                         })), TRUE)
+  expect_equal(all(apply(
+    ep_fn, 1,
+    function(x) {
+      return(x[["fn_type"]] == lookup[[x[["fn_name"]]]])
+    }
+  )), TRUE)
 })

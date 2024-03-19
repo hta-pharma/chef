@@ -45,7 +45,7 @@ utils::globalVariables(
   )
 )
 
-helper_calls_to_imports <- function(){
+helper_calls_to_imports <- function() {
   # Some packages will be needed when the user runs the pipeline, so we want
   # those packages "Imported" in the DESCRIPTION file, so the user does not have
   # any additional steps to install them after installing chef. However, the
@@ -60,5 +60,4 @@ helper_calls_to_imports <- function(){
   future.callr::callr
   tarchetypes::walk_ast
   targets::tar_warning
-
 }

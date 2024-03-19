@@ -5,8 +5,10 @@
 #' @return A data.table containing the unnested endpoint information.
 #' @export
 #'
-format_stats_results <- function(ep){
-  if(is.null(ep))return(NULL)
+format_stats_results <- function(ep) {
+  if (is.null(ep)) {
+    return(NULL)
+  }
   out <- ep %>%
     tidyr::unnest(cols = results) %>%
     as.data.table()
@@ -14,8 +16,8 @@ format_stats_results <- function(ep){
   names_out <- names(out)
   cols_to_move_actual <- intersect(cols_to_move_suggested, names_out)
   setcolorder(out, c(setdiff(names_out, cols_to_move_actual), cols_to_move_actual))
-  if(length(intersect("strata_val", names_out))==0){
+  if (length(intersect("strata_val", names_out)) == 0) {
     return(out)
   }
-  out[stratify_by=="TOTAL_", strata_val := "total"]
+  out[stratify_by == "TOTAL_", strata_val := "total"]
 }

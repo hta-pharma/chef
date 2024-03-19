@@ -7,7 +7,7 @@
 #' @export
 #'
 check_duplicate_functions <- function(dir) {
-  if(!dir.exists(dir)){
+  if (!dir.exists(dir)) {
     stop(paste0("Directory ", dir, " does not exist"))
   }
   dir_norm <- normalizePath(dir)
@@ -16,8 +16,9 @@ check_duplicate_functions <- function(dir) {
   fn_names_ls <- lapply(x, function(i) {
     lang_objs <- Filter(is.language, parse(i))
     fun_entries <-
-      Filter(function(x)
-        grepl(", function", toString(x)), lang_objs)
+      Filter(function(x) {
+        grepl(", function", toString(x))
+      }, lang_objs)
     sapply(fun_entries, function(fun_entry_i) {
       trimws(strsplit(toString(fun_entry_i), ",")[[1]][2])
     })
@@ -37,6 +38,4 @@ check_duplicate_functions <- function(dir) {
       "\n\n Please change the name so there are no duplicated names, otherwise it will be unclear which function will be used in the program.\n"
     )
   )
-
-
 }

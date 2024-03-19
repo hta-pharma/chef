@@ -526,9 +526,9 @@ test_that("strata_var remains a character variable when some endpoint have been 
   # ACT ---------------------------------------------------------------------
   actual <-
     apply_criterion_by_strata(ep,
-                              analysis_data_container,
-                              fn_map,
-                              type = "by_strata_by_trt"
+      analysis_data_container,
+      fn_map,
+      type = "by_strata_by_trt"
     )
 
   # EXPECT ------------------------------------------------------------------
@@ -541,5 +541,4 @@ test_that("strata_var remains a character variable when some endpoint have been 
 
   # Check that the column type is correct
   expect_equal(typeof(actual[["strata_var"]]), "character")
-
 })

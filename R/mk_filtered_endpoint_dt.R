@@ -8,14 +8,13 @@
 #'
 #' @export
 #'
-apply_dt_filter <- function(adam_dt, filter_string, type=c("filter", "flag")) {
+apply_dt_filter <- function(adam_dt, filter_string, type = c("filter", "flag")) {
   type <- match.arg(type)
-  if(type=="filter"){
+  if (type == "filter") {
     return(adam_dt[eval(parse(text = filter_string))])
   }
   out <- copy(adam_dt)
-  out[, event_flag:=FALSE]
-  out[eval(parse(text = filter_string)), event_flag :=TRUE]
+  out[, event_flag := FALSE]
+  out[eval(parse(text = filter_string)), event_flag := TRUE]
   return(out)
-
 }
