@@ -18,8 +18,7 @@
 #'
 #' @noRd
 
-create_flag <- function(dat, var_value_pairs=NULL, singletons=NULL) {
-
+create_flag <- function(dat, var_value_pairs = NULL, singletons = NULL) {
   filter_str <-
     construct_data_filter_logic(
       var_value_pairs = var_value_pairs,
@@ -65,11 +64,16 @@ add_event_index <- function(ep, analysis_data_container) {
   ep_out[, event_index := llist(
     create_flag(
       dat[[1]],
-      var_value_pairs = list(c(pop_var[[1]], pop_value[[1]]),
-                             c(period_var[[1]], period_value[[1]])),
-      singletons = c(endpoint_filter[[1]],
-                     endpoint_group_filter[[1]],
-                     custom_pop_filter[[1]])
-    )), by = endpoint_id]
-  ep_out[, dat:=NULL]
+      var_value_pairs = list(
+        c(pop_var[[1]], pop_value[[1]]),
+        c(period_var[[1]], period_value[[1]])
+      ),
+      singletons = c(
+        endpoint_filter[[1]],
+        endpoint_group_filter[[1]],
+        custom_pop_filter[[1]]
+      )
+    )
+  ), by = endpoint_id]
+  ep_out[, dat := NULL]
 }

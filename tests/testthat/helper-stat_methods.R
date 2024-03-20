@@ -65,7 +65,6 @@ summary_stats <- function(dat,
                           var,
                           var_type = c("cont", "cat"),
                           ...) {
-
   # Check argument
   var_type <- match.arg(var_type)
 
@@ -138,7 +137,6 @@ contingency2x2_ptest <- function(dat,
                                  cell_index,
                                  treatment_var,
                                  ...) {
-
   # Test a 2x2 contingency table ie. is there a link between treatment and total number of events
   dat_cell <- dat[J(cell_index), ]
   dat_cell[, is_event := INDEX_ %in% event_index]
@@ -171,7 +169,6 @@ contingency2x2_strata_test <- function(dat,
                                        treatment_var,
                                        subjectid_var,
                                        ...) {
-
   # Test a 2x2 contingency table i.e. is there a link between treatment and
   # patients with events over multiple strata
   dt_unique_subjects <- dat %>%

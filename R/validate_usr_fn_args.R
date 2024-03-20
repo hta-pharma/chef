@@ -59,7 +59,6 @@ validate_usr_fn_args <- function(fn,
         "treatment_refval",
         "subjectid_var"
       ),
-
     stat_across_strata_across_trt =
       c(
         "dat",

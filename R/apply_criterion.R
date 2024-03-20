@@ -177,7 +177,7 @@ unnest_ep_by_strata <- function(ep) {
   crit_accept_endpoint <-
     strata_var <- stratify_by <- NULL # To satisfy R CMD check
   ep_accepted <- ep[(crit_accept_endpoint)]
-  ep_accepted[,strata_var := stratify_by]
+  ep_accepted[, strata_var := stratify_by]
   ep_unnested <-
     tidyr::unnest(ep_accepted, col = strata_var) |>
     setDT()

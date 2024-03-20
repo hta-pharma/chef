@@ -10,6 +10,6 @@ llist <- function(...) {
   list(list(...))
 }
 
-str_to_sentence_base <- function(x){
+str_to_sentence_base <- function(x) {
   paste0(toupper(substring(x, 1, 1)), substring(x, 2))
 }

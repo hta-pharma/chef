@@ -49,43 +49,43 @@ mk_endpoint_str <- function(study_metadata = NULL,
   if (!is.function(data_prepare)) {
     stop("Argument 'data_prepare' needs to be an unquoted function name")
   }
-  data_prepare  <- substitute(list(data_prepare))
+  data_prepare <- substitute(list(data_prepare))
 
   if (is.function(crit_endpoint)) {
     crit_endpoint <- substitute(list(crit_endpoint))
-  } else{
+  } else {
     crit_endpoint <- substitute(crit_endpoint)
   }
 
   if (is.function(crit_by_strata_across_trt)) {
     crit_by_strata_across_trt <- substitute(list(crit_by_strata_across_trt))
-  } else{
+  } else {
     crit_by_strata_across_trt <- substitute(crit_by_strata_across_trt)
   }
 
   if (is.function(crit_by_strata_by_trt)) {
     crit_by_strata_by_trt <- substitute(list(crit_by_strata_by_trt))
-  } else{
+  } else {
     crit_by_strata_by_trt <- substitute(crit_by_strata_by_trt)
   }
 
 
   if (is.function(stat_by_strata_by_trt)) {
     stat_by_strata_by_trt <- substitute(list(stat_by_strata_by_trt))
-  } else{
+  } else {
     stat_by_strata_by_trt <- substitute(stat_by_strata_by_trt)
   }
 
 
   if (is.function(stat_by_strata_across_trt)) {
     stat_by_strata_across_trt <- substitute(list(stat_by_strata_across_trt))
-  } else{
+  } else {
     stat_by_strata_across_trt <- substitute(stat_by_strata_across_trt)
   }
 
   if (is.function(stat_across_strata_across_trt)) {
     stat_across_strata_across_trt <- substitute(list(stat_across_strata_across_trt))
-  } else{
+  } else {
     stat_across_strata_across_trt <- substitute(stat_across_strata_across_trt)
   }
 
@@ -104,7 +104,7 @@ mk_endpoint_str <- function(study_metadata = NULL,
     treatment_refval = treatment_refval,
     period_var = period_var,
     period_value = period_value,
-    custom_pop_filter=custom_pop_filter,
+    custom_pop_filter = custom_pop_filter,
     endpoint_filter = endpoint_filter,
     group_by = group_by,
     stratify_by = stratify_by,

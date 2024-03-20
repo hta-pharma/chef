@@ -53,7 +53,7 @@ use_chef <-
            mk_criteria_fn = NULL,
            branch_group_size = 100,
            env = parent.frame()) {
-    file_name = paste0("pipeline_", pipeline_id, ".R")
+    file_name <- paste0("pipeline_", pipeline_id, ".R")
     mk_ep_def_template <- "template-mk_endpoint_def.R"
 
     # Create directories if none exist
@@ -76,8 +76,9 @@ use_chef <-
     pkg_file_exists <- file.exists(pkg_file_path_norm)
     if (!pkg_file_exists) {
       usethis::use_template("packages_template.R",
-                            package = "chef",
-                            save_as = pkg_file_path)
+        package = "chef",
+        save_as = pkg_file_path
+      )
     }
 
     # Write the pipeline scaffold
@@ -157,7 +158,6 @@ run_pipeline <- function(pipeline_id = NULL,
 
   stage_pipeline(pipeline_name = nm)
   targets::tar_make()
-
 }
 
 #' Stage a {targets} pipeline so that you can work interactively with it
@@ -186,5 +186,4 @@ stage_pipeline <-
     }
 
     Sys.setenv(TAR_PROJECT = nm)
-
   }

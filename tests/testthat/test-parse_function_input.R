@@ -1,10 +1,10 @@
 test_that("parse function works with namesspace defined", {
-  test_data <- rnorm(20, mean=50, sd=100)
+  test_data <- rnorm(20, mean = 50, sd = 100)
 
   # Defining statistical functions of interest:
   # to be included in endpoints definition.
 
-  stat_funcs = list(
+  stat_funcs <- list(
     mean,
     c(base::mean, trim = 0.4), # include arguments.
     max,
@@ -16,21 +16,22 @@ test_that("parse function works with namesspace defined", {
 })
 
 test_that("functions parsed can be excecuted", {
-  withr::with_seed(123, {data <- rnbinom(n = 20, size = 2, prob = 0.1)})
+  withr::with_seed(123, {
+    data <- rnbinom(n = 20, size = 2, prob = 0.1)
+  })
 
   # Defining statistical functions of interest:
   # to be included in endpoints definition.
 
-  stat_funcs = list(
+  stat_funcs <- list(
     mean,
     c(base::mean, trim = 0.4), # include arguments.
     max
   )
   fn_parsed <- lapply(stat_funcs, parse_function_input)
   # apply the functions
-  out <- sapply(fn_parsed, function(fn){
+  out <- sapply(fn_parsed, function(fn) {
     fn(data)
   })
   expect_equal(out, c(14.1, 12.75, 36))
-
 })

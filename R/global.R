@@ -64,5 +64,4 @@ helper_calls_to_imports <- function(){
   future.callr::callr
   tarchetypes::walk_ast
   targets::tar_warning
-
 }

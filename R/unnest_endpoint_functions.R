@@ -28,7 +28,8 @@ unnest_endpoint_functions <- function(endpoint_defs,
                                         "stat_across_strata_across_trt",
                                         "crit_endpoint",
                                         "crit_by_strata_by_trt",
-                                        "crit_by_strata_across_trt"),
+                                        "crit_by_strata_across_trt"
+                                      ),
                                       env = parent.frame()) {
   fn_hash <- fn <- fn_type <- fn_name <- NULL # To satisfy R CMD check
   endpoints_long <- unnest_by_fns(endpoint_defs, fn_cols)

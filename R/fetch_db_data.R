@@ -31,12 +31,16 @@ fetch_db_data <-
 
     adam <- fn_dt[fn_type == "data_prepare"]
     adam[, c("dat", "error_flag", "error_msg") := eval_data_fn(
-                                                          study_metadata = study_metadata,
-                                                          fn_list = fn_callable), by =
-           seq_len(nrow(adam))]
-    adam[, error_flag  := unlist(error_flag)]
-    if (sum(adam$error_flag) > 0)
+      study_metadata = study_metadata,
+      fn = fn_callable
+    ),
+    by =
+      seq_len(nrow(adam))
+    ]
+    adam[, error_flag := unlist(error_flag)]
+    if (sum(adam$error_flag) > 0) {
       throw_error_adam(adam)
+    }
 
     return(adam[, .(fn_type, fn_hash, fn_name, fn_call_char, fn_callable, dat)])
   }

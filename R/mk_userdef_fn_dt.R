@@ -32,17 +32,18 @@ mk_userdef_fn_dt <- function(x, env=parent.frame()){
     fn <-
     fn_name <- fn_hash <- fn_callable <- NULL # To satisfy R CMD check
   # Take only the unique rows based on the hash.
-  unique_hash_table <- unique(x, by="fn_hash")
+  unique_hash_table <- unique(x, by = "fn_hash")
 
   # Run the function over all rows
   functions_table <- unique_hash_table[,
-                    generate_function_table_row(fn_type, fn, fn_name, fn_hash, env),
-                    by=seq_len(nrow(unique_hash_table))]
+    generate_function_table_row(fn_type, fn, fn_name, fn_hash, env),
+    by = seq_len(nrow(unique_hash_table))
+  ]
 
   # Validate functions by their expected inputs.
   functions_table[,
-                 validate_usr_fn_args(fn=fn_callable[[1]], fn_type = fn_type, fn_name = fn_name),
-                 by=seq_len(nrow(functions_table))
+    validate_usr_fn_args(fn = fn_callable[[1]], fn_type = fn_type, fn_name = fn_name),
+    by = seq_len(nrow(functions_table))
   ]
 
   # Drop the column used for the running.
@@ -66,10 +67,8 @@ mk_userdef_fn_dt <- function(x, env=parent.frame()){
 #' @param env The environment in which to evaluate the function.
 #'
 #' @return A `data.table` row with the function's details.
-generate_function_table_row <- function(fn_type, fn, fn_name, fn_hash, env){
-
-
-  if (is.null(fn[[1]])){
+generate_function_table_row <- function(fn_type, fn, fn_name, fn_hash, env) {
+  if (is.null(fn[[1]])) {
     out_row <- data.table::data.table(
       fn_type = as.character(fn_type),
       fn_hash = fn_hash,
@@ -80,12 +79,12 @@ generate_function_table_row <- function(fn_type, fn, fn_name, fn_hash, env){
     return(out_row)
   }
   out_row <- data.table::data.table(
-      fn_type = as.character(fn_type),
-      fn_hash = fn_hash,
-      fn_name = fn_name,
-      fn_call_char = as.character(fn),
-      fn_callable = parse_function_input(eval(fn[[1]], envir = env))
-    )
+    fn_type = as.character(fn_type),
+    fn_hash = fn_hash,
+    fn_name = fn_name,
+    fn_call_char = as.character(fn),
+    fn_callable = parse_function_input(eval(fn[[1]], envir = env))
+  )
 
   return(out_row)
 }

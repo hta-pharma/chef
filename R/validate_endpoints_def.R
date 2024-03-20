@@ -44,33 +44,31 @@ validate_endpoints_def <- function(endpoint_base) {
       ),
       call. = FALSE
     )
-
   }
 
-  validate_period_specification  <-
+  validate_period_specification <-
     function(period_var, period_value) {
       arg_list <- list(period_var = period_var, period_value = period_value)
       if (!anyNA(arg_list)) {
         return(invisible(TRUE))
       }
-      if (all(is.na(arg_list))){
+      if (all(is.na(arg_list))) {
         return(invisible(TRUE))
       }
 
 
-  missing_arg <-
-    arg_list[vapply(arg_list, is.na, logical(1L))] |> names()
-  non_missing_arg <-
-    arg_list[!vapply(arg_list, is.na, logical(1L))] |> names()
-  stop(
-    "`",non_missing_arg,"`",
-    " is supplied in the endpoint specification, but ",
-    "`",missing_arg,"`",
-    " is not. Either both need to be provided (non-`NA` values), or both need to be empty",
-    call. = FALSE
-
-  )
-}
+      missing_arg <-
+        arg_list[vapply(arg_list, is.na, logical(1L))] |> names()
+      non_missing_arg <-
+        arg_list[!vapply(arg_list, is.na, logical(1L))] |> names()
+      stop(
+        "`", non_missing_arg, "`",
+        " is supplied in the endpoint specification, but ",
+        "`", missing_arg, "`",
+        " is not. Either both need to be provided (non-`NA` values), or both need to be empty",
+        call. = FALSE
+      )
+    }
 
   validate_period_specification(endpoint_base$period_var, endpoint_base$period_value)
 
@@ -86,13 +84,14 @@ validate_endpoints_def <- function(endpoint_base) {
       paste0(
         "The following columns in the endpoint definition data.table have the incorrect class:\n-",
         paste0(cli::style_bold(
-          missmatch$col_name), collapse = "\n-"),
+          missmatch$col_name
+        ), collapse = "\n-"),
         ". \n\n Please check the endpoint_definition function"
       )
     )
   }
   col_class_expected[grepl("data_prepare|stat_by_strata_by_trt|analysis_stats", col_name), class_nested :=
-                       "function"]
+    "function"]
   check_fn_calls(col_class_expected, endpoint_base)
 
 
@@ -108,7 +107,7 @@ build_expected_col_classes <- function() {
     treatment_refval = "character",
     period_var = "character",
     period_value = "character",
-    custom_pop_filter="character",
+    custom_pop_filter = "character",
     endpoint_filter = "character",
     group_by = "list",
     group_by = "character",
@@ -123,8 +122,10 @@ build_expected_col_classes <- function() {
     crit_by_strata_across_trt = "list",
     only_strata_with_events = "logical"
   )
-  data.table::data.table(col_name = names(col_class_expected_vec),
-                         col_class = col_class_expected_vec)
+  data.table::data.table(
+    col_name = names(col_class_expected_vec),
+    col_class = col_class_expected_vec
+  )
 }
 
 build_actual_col_classes <- function(endpoint_base) {
@@ -138,12 +139,15 @@ build_actual_col_classes <- function(endpoint_base) {
 check_fn_calls <- function(col_class_expected, ep_def) {
   class_nested <- NULL # To satisfy R CMD check
   fn_inx <- col_class_expected[class_nested == "function"]
-  lapply(fn_inx$col_name, function(i)
-    lapply(ep_def[[i]], error_not_fn, i))
+  lapply(fn_inx$col_name, function(i) {
+    lapply(ep_def[[i]], error_not_fn, i)
+  })
 }
 
 error_not_fn <- function(x, i) {
-  if(is.null(x)|| is.null(x[[1]]))return(message("No functions provided for: ", i))
+  if (is.null(x) || is.null(x[[1]])) {
+    return(message("No functions provided for: ", i))
+  }
   if (!is.call(x)) {
     stop(
       "The argument to ",
