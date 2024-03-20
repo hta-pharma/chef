@@ -6,3 +6,11 @@
 ^chef\.Rproj$
 ^docs$
 ^pkgdown$
+^.env
+^.githooks$
+^README.Rmd
+^_pkgdown.yml
+^.vscode$
+^.github$
+^.githooks$
+^.pre-commit-config.yaml

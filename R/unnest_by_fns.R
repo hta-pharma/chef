@@ -14,7 +14,8 @@
 #' @export
 #'
 unnest_by_fns <- function(dt, cols) {
-  if (nrow(dt) == 0) {
+  fn <- fn_list <- fn_name <- fn_hash <- NULL # To satisfy R CMD check
+  if(nrow(dt)==0){
     stop("Provided data.table to unnest was empty", call. = FALSE)
   }
 

@@ -52,6 +52,14 @@ create_flag <- function(dat, var_value_pairs = NULL, singletons = NULL) {
 #' @export
 
 add_event_index <- function(ep, analysis_data_container) {
+  event_index <-
+    dat <-
+    pop_var <-
+    pop_value <-
+    period_var <-
+    period_value <-
+    endpoint_filter <-
+    endpoint_group_filter <- custom_pop_filter <- NULL
   ep_out <- ep[analysis_data_container]
   ep_out[, event_index := llist(
     create_flag(

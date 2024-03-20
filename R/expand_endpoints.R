@@ -16,6 +16,14 @@
 #'   definition
 #' @export
 expand_over_endpoints <- function(ep, analysis_data_container) {
+  expand_specification <-
+    dat <-
+    group_by <-
+    endpoint_group_filter <-
+    endpoint_group_metadata <-
+    endpoint_spec_id <-
+    endpoint_label_evaluated <-
+    key_analysis_data <- NULL # To satisfy R CMD check
   ep_with_data <- ep[analysis_data_container]
   ep_with_data[, expand_specification := llist(define_expanded_ep(dat[[1]], group_by[[1]])),
     by = 1:nrow(ep_with_data)
@@ -146,7 +154,7 @@ define_expanded_ep <- function(x, group_by, forced_group_levels = NULL, col_pref
 #' @return A list containing only the non-null elements from the input list.
 #' @export
 index_non_null_group_level <- function(x) {
-  x[!purrr:::map_lgl(x, is.null)]
+  x[!purrr::map_lgl(x, is.null)]
 }
 
 #' Index the expanded endpoints
@@ -174,7 +182,7 @@ index_expanded_ep_groups <- function(x, group_by, forced_group_levels = NULL) {
   combos_all <- x[, unique(.SD), .SDcols = grouping_vars]
 
   # Only want rows that contains values as the other rows indicate non-events
-  combos_all <- combos_all[complete.cases(combos_all)]
+  combos_all <- combos_all[stats::complete.cases(combos_all)]
 
   # Add forced group levels (if any)
   combos_all <- add_forced_group_levels(combos_all = combos_all, forced_group_levels = forced_group_levels)

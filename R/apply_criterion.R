@@ -14,6 +14,19 @@
 #'   indicating whether each endpoint meets the defined criteria.
 #' @export
 apply_criterion_endpoint <- function(ep, analysis_data_container, fn_map) {
+  fn_type <-
+    crit_accept_endpoint <-
+    fn_callable <-
+    event_index <-
+    treatment_var <-
+    treatment_refval <-
+    period_var <-
+    endpoint_filter <-
+    endpoint_group_metadata <-
+    stratify_by <-
+    key_analysis_data <-
+    dat <- period_value <- NULL # To satisfy R CMD check
+
   ep_with_data <- ep[analysis_data_container]
   ep_with_crit <-
     merge(ep_with_data, fn_map[fn_type == "crit_endpoint"], by = "endpoint_spec_id", all.x = TRUE)
@@ -78,6 +91,19 @@ apply_criterion_by_strata <-
              "by_strata_by_trt",
              "by_strata_across_trt"
            )) {
+    key_analysis_data <-
+      strata_id <-
+      fn_type <-
+      crit_accept_endpoint <-
+      fn_callable <-
+      dat <-
+      event_index <-
+      treatment_var <-
+      treatment_refval <-
+      period_value <-
+      endpoint_filter <-
+      endpoint_group_metadata <-
+      stratify_by <- period_var <- NULL # To satisfy R CMD check
     type <- match.arg(type)
     ep_ <- copy(ep)
     output_variable_name <- "crit_accept_by_strata_across_trt"
@@ -148,6 +174,8 @@ apply_criterion_by_strata <-
 #'
 #' @noRd
 unnest_ep_by_strata <- function(ep) {
+  crit_accept_endpoint <-
+    strata_var <- stratify_by <- NULL # To satisfy R CMD check
   ep_accepted <- ep[(crit_accept_endpoint)]
   ep_accepted[, strata_var := stratify_by]
   ep_unnested <-

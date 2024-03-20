@@ -23,6 +23,11 @@ fetch_db_data <-
            fn_dt,
            env = parent.frame()) {
     fn_dt[fn_type == "data_prepare", purrr::map2(fn_callable, fn_name, validate_mk_adam_fn)]
+    fn_type <-
+      fn_callable <-
+      fn_name <-
+      error_flag <-
+      fn_hash <- fn_call_char <- dat <- NULL # To satisfy R CMD check
 
     adam <- fn_dt[fn_type == "data_prepare"]
     adam[, c("dat", "error_flag", "error_msg") := eval_data_fn(
@@ -51,6 +56,8 @@ fetch_db_data <-
 #'
 #' @noRd
 throw_error_adam <- function(x) {
+  error_flag <-
+    fn_call_char <-  error_msg <- NULL # To satisfy R CMD check
   errors <- x[error_flag == TRUE, .(fn_call_char, error_msg)]
   stop(
     "The following functions contained errors. Try running these functions interactively to debug\n",
