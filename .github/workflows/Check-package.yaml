@@ -1,0 +1,16 @@
+on:
+  push:
+    branches: [main, stage, dev]
+  pull_request:
+    branches: [main, stage, dev]
+  workflow_dispatch:
+
+name: Check Package 📦
+
+jobs:
+  check:
+    name: Checks (from ramnog)
+    uses: hta-pharma/ramnog/.github/workflows/Check-package.yaml@feature/workflows_final
+
+
+  
