@@ -10,7 +10,7 @@ name: Check Package 📦
 jobs:
   check:
     name: Release (from ramnog)
-    uses: hta-pharma/ramnog/.github/workflows/Release-package.yaml@feature/workflows_final
+    uses: hta-pharma/ramnog/.github/workflows/Release-package.yaml@main
 
 
   
