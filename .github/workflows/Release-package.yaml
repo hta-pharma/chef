@@ -5,7 +5,7 @@ on:
     branches: [main, stage, dev]
   workflow_dispatch:
 
-name: Check Package 📦
+name: Release Package 🚀
 
 jobs:
   check:
