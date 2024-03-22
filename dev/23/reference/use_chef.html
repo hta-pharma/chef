@@ -49,7 +49,6 @@
 <span>  mk_endpoint_def_fn <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  mk_adam_fn <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  mk_criteria_fn <span class="op">=</span> <span class="cn">NULL</span>,</span>
-<span>  branch_group_size <span class="op">=</span> <span class="fl">100</span>,</span>
 <span>  env <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/sys.parent.html" class="external-link">parent.frame</a></span><span class="op">(</span><span class="op">)</span></span>
 <span><span class="op">)</span></span></code></pre></div>
     </div>
@@ -103,10 +102,6 @@ must be a list, and each element must be an unquoted function name (e.g.
 <code>my_criteria_fn</code>). The functions have to be available from the global
 environment (i.e if you type <code>my_criteria_fn()</code> into the console, it would
 find the function and try to run in).</p></dd>
-
-
-<dt>branch_group_size</dt>
-<dd><p>Numeric.</p></dd>
 
 
 <dt>env</dt>
