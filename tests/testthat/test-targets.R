@@ -150,8 +150,7 @@ test_that("branching after prepare for stats step works", {
     r_functions_dir = "R/",
     pipeline_id = "01",
     mk_endpoint_def_fn = mk_ep_def,
-    mk_adam_fn = list(mk_adae),
-    branch_group_size = 1
+    mk_adam_fn = list(mk_adae)
   )
   dump("n_subev", file = "R/custom_functions.R")
   dump("n_sub", file = "R/custom_functions.R", append = TRUE)
