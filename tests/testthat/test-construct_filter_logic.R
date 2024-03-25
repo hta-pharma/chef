@@ -42,8 +42,6 @@ test_that("constructing filter logic works with non-paired filters (singletons)"
     construct_data_filter_logic(list(
       c(ep$pop_var[[1]], ep$pop_value[[1]]),
       c(ep$period_var[[1]], ep$period_value[[1]])
-    ),singletons = ep$endpoint_filter[[1]]
-    )
+    ), singletons = ep$endpoint_filter[[1]])
   expect_equal(actual1, "A==\"TT\" & period==\"F\" & AGE < 50")
-
 })

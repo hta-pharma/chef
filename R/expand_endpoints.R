@@ -16,27 +16,36 @@
 #'   definition
 #' @export
 expand_over_endpoints <- function(ep, analysis_data_container) {
-
+  expand_specification <-
+    dat <-
+    group_by <-
+    endpoint_group_filter <-
+    endpoint_group_metadata <-
+    endpoint_spec_id <-
+    endpoint_label_evaluated <-
+    key_analysis_data <- NULL # To satisfy R CMD check
   ep_with_data <- ep[analysis_data_container]
   ep_with_data[, expand_specification := llist(define_expanded_ep(dat[[1]], group_by[[1]])),
-          by = 1:nrow(ep_with_data)]
+    by = 1:nrow(ep_with_data)
+  ]
   ep_with_data[["dat"]] <- NULL
 
   # Expand by groups. If no grouping is present, then add empty group related columns
-  if(any(!is.na(ep_with_data$expand_specification))){
-    ep_exp <- ep_with_data %>% tidyr::unnest(col = expand_specification) %>% setDT()
-  }else{
+  if (any(!is.na(ep_with_data$expand_specification))) {
+    ep_exp <- ep_with_data %>%
+      tidyr::unnest(col = expand_specification) %>%
+      setDT()
+  } else {
     ep_exp <- ep_with_data[, .SD, .SDcols = setdiff(names(ep_with_data), "expand_specification")]
     ep_exp[, endpoint_group_filter := NA]
     ep_exp[, endpoint_group_metadata := list()]
   }
-  
+
   ep_exp[, endpoint_id := add_ep_id(.SD, .BY), by = endpoint_spec_id]
 
   # Complete endpoint labels by replacing keywords with values
   nm_set <- names(ep_exp)
-  ep_exp[,endpoint_label_evaluated := apply(ep_exp, 1, function(x){
-
+  ep_exp[, endpoint_label_evaluated := apply(ep_exp, 1, function(x) {
     xlab <- x[["endpoint_label"]]
 
     # Replace keywords. Do only accept keywords which reference to either
@@ -45,9 +54,11 @@ expand_over_endpoints <- function(ep, analysis_data_container) {
       if (grepl(paste0("<", i, ">"), xlab)) {
         if (is.character(x[[i]]) || is.numeric(x[[i]])) {
           xlab <-
-            xlab %>% gsub(paste0("<", i, ">"),
-                          paste0(str_to_sentence_base(x[[i]]), collapse = ","),
-                          .)
+            xlab %>% gsub(
+              paste0("<", i, ">"),
+              paste0(str_to_sentence_base(x[[i]]), collapse = ","),
+              .
+            )
         }
       }
     }
@@ -59,9 +70,11 @@ expand_over_endpoints <- function(ep, analysis_data_container) {
       for (j in group_keywords) {
         if (!is.null(x$endpoint_group_metadata[[j]])) {
           xlab <-
-            xlab %>% gsub(paste0("<", j, ">"),
-                          as.character(x$endpoint_group_metadata[[j]]),
-                          .)
+            xlab %>% gsub(
+              paste0("<", j, ">"),
+              as.character(x$endpoint_group_metadata[[j]]),
+              .
+            )
         }
       }
     }
@@ -87,9 +100,9 @@ expand_over_endpoints <- function(ep, analysis_data_container) {
       )
     )
 
-out <- ep_exp[, .SD, .SDcols=keep]
-setkey(out, key_analysis_data)
-out[]
+  out <- ep_exp[, .SD, .SDcols = keep]
+  setkey(out, key_analysis_data)
+  out[]
 }
 
 
@@ -105,7 +118,7 @@ out[]
 #' @param group_by A list specifying the grouping for endpoints, where
 #'   each element corresponds to a variable used for grouping endpoints and
 #'   contains the levels for that grouping variable.
-#' @param forced_group_levels data.table (optional). Table with group levels 
+#' @param forced_group_levels data.table (optional). Table with group levels
 #'   that must be included in the expansion, regardless of `group_by`.
 #' @param col_prefix A prefix used to create the names of the metadata and
 #'   filter columns in the output `data.table`. Defaults to "endpoint_group".
@@ -116,15 +129,16 @@ out[]
 #' @export
 #'
 define_expanded_ep <- function(x, group_by, forced_group_levels = NULL, col_prefix = "endpoint_group") {
-  if (!is.list(group_by) || all(is.na(group_by)))
+  if (!is.list(group_by) || all(is.na(group_by))) {
     return(NA)
+  }
 
-  col_name_meta = paste(col_prefix, "metadata", sep="_")
-  col_name_filter = paste(col_prefix, "filter", sep="_")
+  col_name_meta <- paste(col_prefix, "metadata", sep = "_")
+  col_name_filter <- paste(col_prefix, "filter", sep = "_")
 
   out <- index_expanded_ep_groups(x, group_by, forced_group_levels) %>%
     construct_group_filter(col_name_filter = col_name_filter)
-  out[, (col_name_meta) := .(list(lapply(.SD, identity))), by=1:nrow(out), .SDcols = names(group_by)]
+  out[, (col_name_meta) := .(list(lapply(.SD, identity))), by = 1:nrow(out), .SDcols = names(group_by)]
   out[, .SD, .SDcols = c(col_name_meta, col_name_filter)]
 }
 
@@ -140,7 +154,7 @@ define_expanded_ep <- function(x, group_by, forced_group_levels = NULL, col_pref
 #' @return A list containing only the non-null elements from the input list.
 #' @export
 index_non_null_group_level <- function(x) {
-  x[!purrr:::map_lgl(x, is.null)]
+  x[!purrr::map_lgl(x, is.null)]
 }
 
 #' Index the expanded endpoints
@@ -168,7 +182,7 @@ index_expanded_ep_groups <- function(x, group_by, forced_group_levels = NULL) {
   combos_all <- x[, unique(.SD), .SDcols = grouping_vars]
 
   # Only want rows that contains values as the other rows indicate non-events
-  combos_all <- combos_all[complete.cases(combos_all)]
+  combos_all <- combos_all[stats::complete.cases(combos_all)]
 
   # Add forced group levels (if any)
   combos_all <- add_forced_group_levels(combos_all = combos_all, forced_group_levels = forced_group_levels)
@@ -177,10 +191,11 @@ index_expanded_ep_groups <- function(x, group_by, forced_group_levels = NULL) {
     index_non_null_group_level(group_by)
   if (length(specified_group_levels) > 0) {
     var_group_levels <- names(specified_group_levels)
-    if (length(var_group_levels) > 1)
+    if (length(var_group_levels) > 1) {
       stop("Support for multiple variables specifying group levels not yet supported")
+    }
     combos_subset <-
-      combos_all[tolower(get(var_group_levels)) %in% tolower(specified_group_levels[[var_group_levels]]),]
+      combos_all[tolower(get(var_group_levels)) %in% tolower(specified_group_levels[[var_group_levels]]), ]
   } else {
     combos_subset <- combos_all
   }
@@ -188,14 +203,14 @@ index_expanded_ep_groups <- function(x, group_by, forced_group_levels = NULL) {
   # Expand by all possible combinations of group-by columns in combos_subset.
   if (length(group_by) == 1) {
     return(combos_subset)
-  }else{
+  } else {
     unique_vals <- lapply(combos_subset, unique)
     combos_expanded <- setDT(expand.grid(unique_vals, stringsAsFactors = FALSE))
     return(combos_expanded)
   }
 }
 
-construct_group_filter <- function(x, col_name_filter="endpoint_group_filter") {
+construct_group_filter <- function(x, col_name_filter = "endpoint_group_filter") {
   out <- copy(x)
   filter_str_vec <-
     purrr::pmap(x, create_condition_str) %>% unlist(recursive = F)
@@ -209,7 +224,7 @@ create_condition_str <- function(...) {
     purrr::map2_chr(names(lst), lst, ~ paste0(.x, ' == "', .y, '"'))
 
   # Concatenate all condition strings with ' & ' and return the result
-  return(paste(conditions, collapse = ' & '))
+  return(paste(conditions, collapse = " & "))
 }
 
 
@@ -239,9 +254,8 @@ add_ep_id <- function(x, grp) {
 #' @param combos_all A data.table containing all combinations of group levels found in the analysis data.
 #' @param forced_group_levels A one column data.table containing a required set of group levels of a grouping variable.
 #'
-#' @return A data.table containing all combinations of group levels exapnded with the forced grouping levels. 
+#' @return A data.table containing all combinations of group levels exapnded with the forced grouping levels.
 add_forced_group_levels <- function(combos_all, forced_group_levels) {
-
   # If no forced group levels are present then return early
   if (is.null(forced_group_levels)) {
     return(combos_all)
@@ -250,7 +264,7 @@ add_forced_group_levels <- function(combos_all, forced_group_levels) {
   # Only forced group levels on one group variable is supported, so check that forced_group_levels has one column only
   checkmate::assertDataTable(forced_group_levels, ncols = 1)
 
-  # Check that the variable that is subject to the forced group levels is present in the analysis data 
+  # Check that the variable that is subject to the forced group levels is present in the analysis data
   unsupported_forced_group_levels <- setdiff(names(forced_group_levels), names(combos_all)) |>
     length() > 0
   if (unsupported_forced_group_levels) {
@@ -268,12 +282,16 @@ add_forced_group_levels <- function(combos_all, forced_group_levels) {
 
   # Check if the forced group levels covers more than the existing group levels. If not then no need to force them.
   forced_group_levels_already_present <- setequal(actual_group_levels[[1]], forced_group_levels[[1]])
- 
+
   # If the forced group levels cover more than the existing group levels then add them to the group level combinations
   if (!forced_group_levels_already_present) {
     cols_from_combos_all <- names(combos_all) != names(forced_group_levels)
-    col_list_combos_all <- lapply(combos_all[, .SD, .SDcols = cols_from_combos_all], function(x){x})
-    col_list_2 <-lapply(forced_group_levels, function(x){x}) 
+    col_list_combos_all <- lapply(combos_all[, .SD, .SDcols = cols_from_combos_all], function(x) {
+      x
+    })
+    col_list_2 <- lapply(forced_group_levels, function(x) {
+      x
+    })
     grid_list <- c(col_list_combos_all, col_list_2)
     return(expand.grid(grid_list) |> setDT())
   }

@@ -6,12 +6,13 @@ test_that("Invalid 'type' errors out ", {
 
 
   # EXPECT ------------------------------------------------------------------
-  expect_error(prepare_for_stats(
-    ep = data.table(),
-    fn_map = data.table(),
-    type = "x"
-  ),
-  regexp = "'arg' should be one of"
+  expect_error(
+    prepare_for_stats(
+      ep = data.table(),
+      fn_map = data.table(),
+      type = "x"
+    ),
+    regexp = "'arg' should be one of"
   )
 })
 
@@ -476,7 +477,6 @@ test_that("base - dataprep", {
 })
 
 test_that("Check that only strata levels with events are kept", {
-
   # SETUP -------------------------------------------------------------------
 
   ep <-
@@ -527,9 +527,9 @@ test_that("Check that only strata levels with events are kept", {
     apply_criterion_by_strata(ep_crit_endpoint, analysis_data_container, fn_map)
   ep_crit_by_strata_across_trt <-
     apply_criterion_by_strata(ep_crit_by_strata_by_trt,
-                              analysis_data_container,
-                              fn_map,
-                              type = "by_strata_across_trt"
+      analysis_data_container,
+      fn_map,
+      type = "by_strata_across_trt"
     )
 
 
@@ -537,15 +537,17 @@ test_that("Check that only strata levels with events are kept", {
 
   ep_prep_by_strata_by_trt <-
     prepare_for_stats(ep_crit_by_strata_across_trt,
-                      analysis_data_container,
-                      fn_map,
-                      type = "stat_by_strata_by_trt")
+      analysis_data_container,
+      fn_map,
+      type = "stat_by_strata_by_trt"
+    )
 
   ep_prep_by_strata_across_trt <-
     prepare_for_stats(ep_crit_by_strata_across_trt,
-                      analysis_data_container,
-                      fn_map,
-                      type = "stat_by_strata_across_trt")
+      analysis_data_container,
+      fn_map,
+      type = "stat_by_strata_across_trt"
+    )
 
   # INSPECT -----------------------------------------------------------------
 
@@ -557,9 +559,11 @@ test_that("Check that only strata levels with events are kept", {
   expected_n_combinations <-
     nrow(unique(dat[, c("AESOC", "RACE", "TRT01A")]))
   actual_n_combinations <-
-    nrow(unique(ep_prep_by_strata_by_trt[stat_event_exist == TRUE &
-                                           grepl("total", stat_filter) == 0,
-                                         c("endpoint_group_filter", "stat_filter")]))
+    nrow(unique(ep_prep_by_strata_by_trt[
+      stat_event_exist == TRUE &
+        grepl("total", stat_filter) == 0,
+      c("endpoint_group_filter", "stat_filter")
+    ]))
   expect_equal(expected_n_combinations, actual_n_combinations)
 
   # Check specific SOC
@@ -569,8 +573,8 @@ test_that("Check that only strata levels with events are kept", {
   expect_equal(nrow(ep_prep_bb_sub[strata_var == "RACE"]), 8)
 
   event_index <- ep_prep_bb_sub$event_index[[1]]
-  expected_stat_event_exist <- unlist(lapply(ep_prep_bb_sub$stat_filter, function(x){
-    nrow(dat[list(event_index)][eval(parse(text=x))])>0
+  expected_stat_event_exist <- unlist(lapply(ep_prep_bb_sub$stat_filter, function(x) {
+    nrow(dat[list(event_index)][eval(parse(text = x))]) > 0
   }))
   actual_stat_event_exists <- ep_prep_bb_sub$stat_event_exist
   expect_equal(expected_stat_event_exist, actual_stat_event_exists)
@@ -578,5 +582,4 @@ test_that("Check that only strata levels with events are kept", {
   # by_strata_across_trt
   expect_equal(nrow(ep_prep_by_strata_across_trt), 64)
   expect_equal(all(ep_prep_by_strata_across_trt$stat_event_exist), TRUE)
-
 })

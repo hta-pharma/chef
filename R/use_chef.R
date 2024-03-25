@@ -39,7 +39,6 @@
 #'   `my_criteria_fn`). The functions have to be available from the global
 #'   environment (i.e if you type `my_criteria_fn()` into the console, it would
 #'   find the function and try to run in).
-#' @param branch_group_size Numeric.
 #' @param env Environment.
 #'
 #' @return Nothing, run for side effects.
@@ -51,9 +50,8 @@ use_chef <-
            mk_endpoint_def_fn = NULL,
            mk_adam_fn = NULL,
            mk_criteria_fn = NULL,
-           branch_group_size = 100,
            env = parent.frame()) {
-    file_name = paste0("pipeline_", pipeline_id, ".R")
+    file_name <- paste0("pipeline_", pipeline_id, ".R")
     mk_ep_def_template <- "template-mk_endpoint_def.R"
 
     # Create directories if none exist
@@ -76,8 +74,9 @@ use_chef <-
     pkg_file_exists <- file.exists(pkg_file_path_norm)
     if (!pkg_file_exists) {
       usethis::use_template("packages_template.R",
-                            package = "chef",
-                            save_as = pkg_file_path)
+        package = "chef",
+        save_as = pkg_file_path
+      )
     }
 
     # Write the pipeline scaffold
@@ -89,8 +88,7 @@ use_chef <-
       template = "template-pipeline.R",
       data = list(
         mk_endpoint_def_fn = paste0("mk_endpoint_def_", pipeline_id, "()"),
-        r_script_dir = r_functions_dir,
-        branch_group_size = branch_group_size
+        r_script_dir = r_functions_dir
       ),
       package = "chef",
       save_as = pipeline_path,
@@ -157,7 +155,6 @@ run_pipeline <- function(pipeline_id = NULL,
 
   stage_pipeline(pipeline_name = nm)
   targets::tar_make()
-
 }
 
 #' Stage a {targets} pipeline so that you can work interactively with it
@@ -186,5 +183,4 @@ stage_pipeline <-
     }
 
     Sys.setenv(TAR_PROJECT = nm)
-
   }

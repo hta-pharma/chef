@@ -16,7 +16,7 @@
 #' @export
 try_and_validate <- function(expr_,
                              expr_name = NA_character_,
-                             #TODO Allow forwarding of meaning full names.
+                             # TODO Allow forwarding of meaning full names.
                              debug_dir = "debug",
                              validator = function(expr_result) {
                                NA_character_
@@ -45,15 +45,17 @@ try_and_validate <- function(expr_,
 
   expr_result <- try(expr = expr_, silent = TRUE)
   if (inherits(expr_result, "try-error")) {
-    err_msg <- paste0("Failed to EVALUATE function with error:",
-                      "\n ", expr_result[[1]])
-
+    err_msg <- paste0(
+      "Failed to EVALUATE function with error:",
+      "\n ", expr_result[[1]]
+    )
   } else if (!is.na(validator_err <- validator(expr_result))) {
-    #validate output
+    # validate output
     err_msg <-
       paste("Failed to VALIDATE function output with error:",
-            validator_err,
-            sep = "\n")
+        validator_err,
+        sep = "\n"
+      )
   } else {
     # Return valid result
     return(expr_result)
@@ -79,8 +81,9 @@ try_and_validate <- function(expr_,
   # Prepare error message.
   full_error <-
     paste(sprintf("\nError during evaluation of: %s", expr_name),
-          err_msg,
-          sep = "\n")
+      err_msg,
+      sep = "\n"
+    )
 
   if (!stage_debugging) {
     stop(full_error)
@@ -106,7 +109,6 @@ try_and_validate <- function(expr_,
     sep = "\n"
   )
   stop(full_error)
-
 }
 
 
@@ -142,7 +144,7 @@ stage_debug <-
     norm_dir <- normalizePath(debug_dir)
     filepath <- file.path(norm_dir, paste0(fn_name, ".Rdata"))
 
-    saveRDS(debug_env, file = filepath) #Set dynamically
+    saveRDS(debug_env, file = filepath) # Set dynamically
 
     return(filepath)
   }
@@ -173,9 +175,9 @@ load_debug_session <- function(debug_file) {
 
   if (is.primitive(debug_env$fn)) {
     cli::cli_alert_danger(
-      "The inspected function ({.val {deparse(debug_env$fn)}}) is a 
+      "The inspected function ({.val {deparse(debug_env$fn)}}) is a
       primitive and cannot be inspected using debugonce.\
-      You can still load the debug environemnt and inspect 
+      You can still load the debug environemnt and inspect
       inputs and function: readRDS({.path {debug_file}})",
       wrap = TRUE
     )
@@ -193,7 +195,7 @@ load_debug_session <- function(debug_file) {
 
   extra_libraries <- setdiff(debug_env$ns, search())
   if (length(extra_libraries) > 0) {
-    cli::cli_alert_warning("The following libraries was available at runtime 
+    cli::cli_alert_warning("The following libraries was available at runtime
     but isn't currently.")
     cli::cli_li(extra_libraries)
   }
@@ -219,7 +221,7 @@ load_debug_session <- function(debug_file) {
 validate_crit_output <- function(output) {
   if (!(isTRUE(output) | isFALSE(output))) {
     paste(
-      "The return value from the endpoint criterion 
+      "The return value from the endpoint criterion
       function must be a logical of length 1, i.e.",
       "TRUE or FALSE"
     )
@@ -240,8 +242,10 @@ validate_crit_output <- function(output) {
 validate_stat_output <- function(output) {
   # if not a DT return early
   if (!data.table::is.data.table(output)) {
-    err_msg <- paste0("Expected (data.table::data.table). Found: ",
-                      class(output))
+    err_msg <- paste0(
+      "Expected (data.table::data.table). Found: ",
+      class(output)
+    )
     return(err_msg)
   }
 
@@ -263,10 +267,12 @@ validate_stat_output <- function(output) {
       " )"
     )
     if (length(actual_diff) > 0) {
-      err_msg <- paste0(err_msg,
-                        "\n\tExtra items in actual: ( ",
-                        paste(actual_diff, collapse = ", "),
-                        " )")
+      err_msg <- paste0(
+        err_msg,
+        "\n\tExtra items in actual: ( ",
+        paste(actual_diff, collapse = ", "),
+        " )"
+      )
     }
     if (length(expected_diff) > 0) {
       err_msg <- paste0(

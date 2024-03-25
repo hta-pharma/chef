@@ -51,7 +51,7 @@ test_that("Manual pipeline works", {
     group_by = list(list(RACE = c())),
     stat_by_strata_by_trt = list(
       "n_subev" = n_subev,
-      c("p_subev" = p_subev, a="USUBJID")
+      c("p_subev" = p_subev, a = "USUBJID")
     ),
     stat_by_strata_across_trt = list("n_subev_trt_diff" = n_subev_trt_diff),
     stat_across_strata_across_trt = list("P-interaction" = contingency2x2_strata_test),
@@ -142,7 +142,8 @@ test_that("Manual pipeline works", {
     as.data.table()
 
   ep_stat <- rbind(ep_stat_eval, ep_crit_by_strata_across_trt[!(crit_accept_endpoint)],
-                   fill = TRUE) |>
+    fill = TRUE
+  ) |>
     setorder(endpoint_id, stat_result_id, stat_result_label)
 
   expect_equal(nrow(ep_stat), 54)
