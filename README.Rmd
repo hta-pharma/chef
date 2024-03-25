@@ -2,6 +2,8 @@
 output: github_document
 ---
 
+# chef <a href="https://hta-pharma.github.io/chef/"><img src="man/figures/logo.png" align="right" height="139" alt="chef website" /></a>
+
 
 <!-- Insert badges here -->
 [![R-CMD-check](https://github.com/hta-pharma/chef/actions/workflows/package-check-test.yaml/badge.svg)](https://github.com/hta-pharma/chef/actions/workflows/package-check-test.yaml)
@@ -10,7 +12,6 @@ output: github_document
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo = TRUE)
 ```
-# chef <a href="https://hta-pharma.github.io/chef/"><img src="man/figures/logo.png" align="right" height="139" alt="chef website" /></a>
 
 # Purpose
 
