@@ -16,10 +16,9 @@ handle_mk_fn <-
     type <- match.arg(type)
 
     if (is.null(fn)) {
-
       if (type != "mk_endpoint_def") {
         nm <- paste0(type, "_scaffold.R")
-      } else{
+      } else {
         nm <- paste0(type, ".R")
       }
       path <- paste0(r_functions_dir, nm)
@@ -32,7 +31,6 @@ handle_mk_fn <-
           open = TRUE
         )
       ))
-
     }
     if (length(fn) == 1) {
       return(
@@ -58,7 +56,6 @@ handle_mk_fn <-
       nm,
       env = env
     )
-
   }
 
 handle_mk_fn_ <-
@@ -81,8 +78,10 @@ handle_mk_fn_ <-
       fn_out <- paste0(deparse(fn_evaled), "()")
     } else {
       if (!is.function(fn_evaled)) {
-        stop(type,
-             "_fn must be a call to a function defining the endpoints")
+        stop(
+          type,
+          "_fn must be a call to a function defining the endpoints"
+        )
       }
       fn_bod <- deparse(fn_evaled)
       fn_bod[1] <- gsub("\\s+", "", fn_bod[1])
@@ -97,7 +96,7 @@ handle_mk_fn_ <-
       file.create(path_normalized)
 
       writeLines(fn_out, path_normalized)
-    } else{
+    } else {
       overwrite <-
         usethis::ui_yeah("Overwrite pre-existing file {path}?")
       if (overwrite) {
@@ -110,5 +109,4 @@ handle_mk_fn_ <-
     # Open file for user
     usethis::edit_file(path)
     return(invisible(normalizePath(path, mustWork = FALSE)))
-
   }

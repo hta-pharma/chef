@@ -1,6 +1,5 @@
 test_that("error if expecting more variables", {
-
-  my_data_prepare <- function(study_metadata, some_specific_var){
+  my_data_prepare <- function(study_metadata, some_specific_var) {
     a <- study_metadata
     b <- some_specific_var
   }
@@ -12,15 +11,14 @@ test_that("error if expecting more variables", {
     ),
     sprintf(
       "Function (%s) of type (%s) expects argument(s) which is not supplied",
-      "my_data_prepare", "data_prepare"),
-    fixed=TRUE
+      "my_data_prepare", "data_prepare"
+    ),
+    fixed = TRUE
   )
-
-
 })
 
-test_that("error is not thrown for partialized functions",{
-  my_data_prepare <- function(study_metadata, some_specific_var){
+test_that("error is not thrown for partialized functions", {
+  my_data_prepare <- function(study_metadata, some_specific_var) {
     a <- study_metadata
     b <- some_specific_var
 
@@ -39,26 +37,25 @@ test_that("error is not thrown for partialized functions",{
     ),
     sprintf(
       "Function (%s) of type (%s) expects argument(s) which is not supplied",
-      "my_data_prepare", "data_prepare" ),
-    fixed=TRUE
+      "my_data_prepare", "data_prepare"
+    ),
+    fixed = TRUE
   )
 
   expect_na_or_null(
     validate_usr_fn_args(
       fn = my_data_partial,
       fn_type = "data_prepare"
-      )
+    )
   )
-}
-)
+})
 
-test_that("Under defined functions fail, but is rescued by dots.",{
-
-  my_fun <- function(){
-    1+1
-    }
-  my_fun_dots <- function(...){
-    1+1
+test_that("Under defined functions fail, but is rescued by dots.", {
+  my_fun <- function() {
+    1 + 1
+  }
+  my_fun_dots <- function(...) {
+    1 + 1
   }
 
   expect_error(
@@ -67,7 +64,7 @@ test_that("Under defined functions fail, but is rescued by dots.",{
       fn_type = "data_prepare"
     ),
     "is supplied arguments it does not expect",
-    fixed=TRUE
+    fixed = TRUE
   )
 
   expect_na_or_null(
@@ -76,39 +73,36 @@ test_that("Under defined functions fail, but is rescued by dots.",{
       fn_type = "data_prepare"
     )
   )
-
 })
 
-test_that("Ekstra args but with default args are allowed",{
-  my_data_prep <- function(study_metadata, arg_no_default, ...){
+test_that("Ekstra args but with default args are allowed", {
+  my_data_prep <- function(study_metadata, arg_no_default, ...) {
     message(study_metadata, arg_no_default, ...)
   }
 
   expect_error(
     validate_usr_fn_args(
       fn = my_data_prep,
-      fn_type = "data_prepare"),
+      fn_type = "data_prepare"
+    ),
     "expects argument(s) which is not supplied",
-    fixed=TRUE
-    )
+    fixed = TRUE
+  )
 
 
-  my_data_prep <- function(study_metadata, arg_with_default=1, ...){
+  my_data_prep <- function(study_metadata, arg_with_default = 1, ...) {
     message(study_metadata, arg_with_default)
   }
 
   expect_na_or_null(
     validate_usr_fn_args(
-      fn=my_data_prep,
+      fn = my_data_prep,
       fn_type = "data_prepare"
     )
   )
-
-
 })
 
-test_that("Test implementation in mk_userdef_fn_dt",{
-
+test_that("Test implementation in mk_userdef_fn_dt", {
   crit_endpoint <- function(...) {
     return(T)
   }
@@ -119,8 +113,12 @@ test_that("Test implementation in mk_userdef_fn_dt",{
     return(T)
   }
 
-  stat_bad_input <- function(dat, missing_arg){"woooh"}
-  stat_good_input <- function(dat, cell_index, defaulted_arg=1, ...){"wububu"}
+  stat_bad_input <- function(dat, missing_arg) {
+    "woooh"
+  }
+  stat_good_input <- function(dat, cell_index, defaulted_arg = 1, ...) {
+    "wububu"
+  }
 
   ep_good <- mk_endpoint_str(
     study_metadata = list(),
@@ -174,19 +172,17 @@ test_that("Test implementation in mk_userdef_fn_dt",{
   ep_fn_map_good <-
     suppressWarnings(unnest_endpoint_functions(ep_good))
 
-# ACT ---------------------------------------------------------------------
+  # ACT ---------------------------------------------------------------------
   expect_true(
     inherits(
       mk_userdef_fn_dt(ep_fn_map_good, env = environment()),
       "data.table"
-      )
+    )
   )
 
   expect_error(
     mk_userdef_fn_dt(ep_fn_map_err, env = environment()),
     "Function (stat_bad_input) of type (stat_by_strata_by_trt) expects argument(s) which is not supplied",
-    fixed=TRUE
+    fixed = TRUE
   )
-
-
 })

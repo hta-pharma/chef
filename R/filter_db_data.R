@@ -14,17 +14,29 @@
 #'
 #' @export
 filter_db_data <- function(ep, ep_fn_map, adam_db) {
+  fn_type <-
+    endpoint_spec_id <-
+    dat <-
+    fn_hash <-
+    dat_analysis <-
+    pop_var <-
+    pop_value <-
+    custom_pop_filter <-
+    key_analysis_data <- NULL # To satisfy R CMD check
+
   ep_adam <-
     merge(ep,
-          ep_fn_map[fn_type == "data_prepare", .(endpoint_spec_id, fn_hash, fn_type)],
-          by = "endpoint_spec_id")
+      ep_fn_map[fn_type == "data_prepare", .(endpoint_spec_id, fn_hash, fn_type)],
+      by = "endpoint_spec_id"
+    )
 
   ep_adam <-
     merge(ep_adam,
-          adam_db[, .(fn_hash, dat)],
-          by = "fn_hash",
-          all.x = TRUE,
-          all.y = FALSE)
+      adam_db[, .(fn_hash, dat)],
+      by = "fn_hash",
+      all.x = TRUE,
+      all.y = FALSE
+    )
 
 
   ep_adam[, dat_analysis := llist(
@@ -42,11 +54,14 @@ filter_db_data <- function(ep, ep_fn_map, adam_db) {
   setnames(ep_adam, "dat_analysis", "dat")
 
   ep_adam[,
-          key_analysis_data := digest::digest(list(fn_hash,
-                                                   pop_var,
-                                                   pop_value,
-                                                   custom_pop_filter)),
-          by = 1:nrow(ep_adam)]
+    key_analysis_data := digest::digest(list(
+      fn_hash,
+      pop_var,
+      pop_value,
+      custom_pop_filter
+    )),
+    by = 1:nrow(ep_adam)
+  ]
   setkey(ep_adam, key_analysis_data)
   # The data container only keeps one row per unique analysis dataset
   analysis_data_container <- ep_adam[, .(dat, key_analysis_data)]
@@ -54,8 +69,10 @@ filter_db_data <- function(ep, ep_fn_map, adam_db) {
     analysis_data_container[, unique(analysis_data_container, by = "key_analysis_data")]
 
   ep_adam[["dat"]] <- NULL
-  return(list(ep = ep_adam,
-              analysis_data_container = analysis_data_container))
+  return(list(
+    ep = ep_adam,
+    analysis_data_container = analysis_data_container
+  ))
 }
 
 
@@ -80,7 +97,8 @@ filter_adam_db <-
     filter_str <-
       construct_data_filter_logic(
         var_value_pairs = list(c(pop_var, pop_value)),
-        singletons = custom_pop_filter)
+        singletons = custom_pop_filter
+      )
     apply_dt_filter(dat, filter_str, type = "filter")
   }
 
@@ -106,6 +124,7 @@ apply_dt_filter <-
   function(adam_dt,
            filter_string,
            type = c("filter", "flag")) {
+    event_flag <- NULL # To satisfy R CMD check
     type <- match.arg(type)
     if (type == "filter") {
       return(adam_dt[eval(parse(text = filter_string))])
@@ -114,5 +133,4 @@ apply_dt_filter <-
     out[, event_flag := FALSE]
     out[eval(parse(text = filter_string)), event_flag := TRUE]
     return(out)
-
   }

@@ -11,7 +11,6 @@ use_chef(
   mk_endpoint_def_fn = NULL,
   mk_adam_fn = NULL,
   mk_criteria_fn = NULL,
-  branch_group_size = 100,
   env = parent.frame()
 )
 }
@@ -52,8 +51,6 @@ must be a list, and each element must be an unquoted function name (e.g.
 \code{my_criteria_fn}). The functions have to be available from the global
 environment (i.e if you type \code{my_criteria_fn()} into the console, it would
 find the function and try to run in).}
-
-\item{branch_group_size}{Numeric.}
 
 \item{env}{Environment.}
 }

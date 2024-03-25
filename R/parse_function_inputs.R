@@ -18,17 +18,18 @@ parse_function_input <- function(fn_input) {
   # returns functions with arguments wrapped in partial
   # Should include checks to ensure function and args are valid
 
-  if (length(fn_input) == 1){
-    if(is.list(fn_input)){
+  if (length(fn_input) == 1) {
+    if (is.list(fn_input)) {
       fn_input <- fn_input[[1]]
     }
-    if(!is.function(fn_input))
+    if (!is.function(fn_input)) {
       stop("`", fn_input, "` is not a valid function")
+    }
     # check it is a function
     return(fn_input)
   } else {
     # Check that arguments are valid.
-    #...
+    # ...
 
     return(purrr::partial(fn_input[[1]], !!!fn_input[-1]))
   }
