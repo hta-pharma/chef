@@ -9,7 +9,7 @@ output: github_document
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo = TRUE)
 ```
-# chef
+# chef <img src="man/figures/logo.png" align="right" height="139" alt="" />
 
 # Purpose
 
