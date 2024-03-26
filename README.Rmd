@@ -27,3 +27,8 @@ The chef aim is that a programmer has to write minimal code, and no programming 
 Behind the scenes chef uses the {[targets](https://books.ropensci.org/targets/)} package to handle the pipelines.
 
 For help and guidance visit building a analysis pipeline, see the [ramnog website](https://hta-pharma.github.io/ramnog/)
+
+# Developer Documentation
+
+Please refer to the {ramnog} for general developer documentation.
+[Ramnog Developer Documentation](https://hta-pharma.github.io/ramnog/articles/#:~:text=Debugging-,Development,-Git%20Workflow)

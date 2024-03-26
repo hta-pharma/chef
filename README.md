@@ -36,3 +36,9 @@ pipelines.
 
 For help and guidance visit building a analysis pipeline, see the
 [ramnog website](https://hta-pharma.github.io/ramnog/)
+
+# Developer Documentation
+
+Please refer to the {ramnog} for general developer documentation.
+[Ramnog Developer
+Documentation](https://hta-pharma.github.io/ramnog/articles/#:~:text=Debugging-,Development,-Git%20Workflow)
