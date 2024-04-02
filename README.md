@@ -10,7 +10,7 @@
 
 To provide an open-source opinionated framework for setting up pipelines
 for AMNOG-style HTA analyses in conjunction with the
-[{ramnog}](https://github.com/hta-pharma/ramnog) package.
+{[ramnog](https://github.com/hta-pharma/ramnog)} package.
 
 # Aim
 
@@ -38,6 +38,5 @@ For help and guidance visit building an analysis pipeline, see the
 
 # Developer Documentation
 
-Please refer to {ramnog} for general developer documentation. [Ramnog
-Developer
-Documentation](https://hta-pharma.github.io/ramnog/articles/#:~:text=Debugging-,Development,-Git%20Workflow)
+Please refer to {ramnog} for general [developer
+documentation](https://hta-pharma.github.io/ramnog/articles/#:~:text=Debugging-,Development,-Git%20Workflow).
