@@ -33,8 +33,8 @@ Behind the scenes {chef} uses the
 {[targets](https://books.ropensci.org/targets/)} package to handle the
 pipelines.
 
-For help and guidance visit building a analysis pipeline, see the
-[ramnog website](https://hta-pharma.github.io/ramnog/)
+For help and guidance visit building an analysis pipeline, see the
+{[ramnog](https://hta-pharma.github.io/ramnog/)} package.
 
 # Developer Documentation
 
