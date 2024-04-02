@@ -1,5 +1,5 @@
 
-# chef <img src="man/figures/logo.png" align="right" height="139" alt="" />
+# A framework for AMNOG style HTA analyses <img src="man/figures/logo.png" align="right" height="139" alt="" />
 
 <!-- Insert badges here -->
 
@@ -10,12 +10,11 @@
 
 To provide an open-source opinionated framework for setting up pipelines
 for AMNOG-style HTA analyses in conjunction with the
-[ramnog](https://github.com/hta-pharma/ramnog) package. Chef is
-currently in a development phase, so should be used with caution.
+[{ramnog}](https://github.com/hta-pharma/ramnog) package.
 
 # Aim
 
-The chef aim is that a programmer has to write minimal code, and no
+The aim of {chef} is that a programmer has to write minimal code, and no
 programming to in order to set-up a new AMNOG-type analyses. For each
 study, the programmer will need to make, adjust, or check the following
 four types of code:
@@ -30,7 +29,7 @@ four types of code:
 4.  A specification of the statistical functions used to
     summarize/analyze the data.
 
-Behind the scenes chef uses the
+Behind the scenes {chef} uses the
 {[targets](https://books.ropensci.org/targets/)} package to handle the
 pipelines.
 
@@ -39,6 +38,6 @@ For help and guidance visit building a analysis pipeline, see the
 
 # Developer Documentation
 
-Please refer to the {ramnog} for general developer documentation.
-[Ramnog Developer
+Please refer to {ramnog} for general developer documentation. [Ramnog
+Developer
 Documentation](https://hta-pharma.github.io/ramnog/articles/#:~:text=Debugging-,Development,-Git%20Workflow)
