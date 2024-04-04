@@ -27,7 +27,8 @@ Imports:
     tarchetypes,
     usethis,
     purrr,
-    stats
+    stats,
+    crew
 Suggests:
     covr,
     fs,
@@ -38,7 +39,6 @@ Suggests:
     plyr,
     dplyr,
     glue,
-    crew,
     pryr,
     rmarkdown,
     testr,
