@@ -2,7 +2,7 @@ pandoc: 3.1.11
 pkgdown: 2.0.7
 pkgdown_sha: ~
 articles: {}
-last_built: 2024-04-02T11:14Z
+last_built: 2024-04-04T09:35Z
 urls:
   reference: https://hta-pharma.github.io/chef/reference
   article: https://hta-pharma.github.io/chef/articles
