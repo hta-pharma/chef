@@ -64,7 +64,10 @@ test_that("Base case: targets pipeline works", {
   tar_load(ep_stat)
   expect_equal(NROW(ep_stat), 36)
   expect_equal(NCOL(ep_stat), 37)
-  expect_snapshot(ep_stat$stat_result_value)
+  expect_snapshot_value(ep_stat$stat_result_value,
+                        tolerance = 1e-8,
+                        style = "json2")
+
 })
 
 test_that("targets pipeline works no criteria fn and missing by_* functions", {
@@ -115,7 +118,10 @@ test_that("targets pipeline works no criteria fn and missing by_* functions", {
   tar_load(ep_stat)
   expect_equal(NROW(ep_stat), 18)
   expect_equal(NCOL(ep_stat), 37)
-  expect_snapshot(ep_stat$stat_result_value)
+  expect_snapshot_value(ep_stat$stat_result_value,
+                        tolerance = 1e-8,
+                        style = "json2")
+
 })
 
 test_that("branching after prepare for stats step works", {
@@ -164,7 +170,10 @@ test_that("branching after prepare for stats step works", {
   tar_load(ep_stat)
   expect_equal(NROW(ep_stat), 12)
   expect_equal(NCOL(ep_stat), 37)
-  expect_snapshot(ep_stat$stat_result_value)
+  expect_snapshot_value(ep_stat$stat_result_value,
+                        tolerance = 1e-8,
+                        style = "json2")
+
 })
 
 test_that("ep_fn_map is always outdated", {
