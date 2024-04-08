@@ -69,9 +69,7 @@ use_chef <-
     # Write packages.R file in script_dir if none exists
     pkg_file_path <-
       paste0(r_functions_dir, "/packages.R")
-    pkg_file_path_norm <-
-      normalizePath(pkg_file_path, mustWork = FALSE)
-    pkg_file_exists <- file.exists(pkg_file_path_norm)
+    pkg_file_exists <- file.exists(pkg_file_path)
     if (!pkg_file_exists) {
       usethis::use_template("packages_template.R",
         package = "chef",
@@ -82,7 +80,7 @@ use_chef <-
     # Write the pipeline scaffold
     pipeline_dir <- gsub("\\/", "", pipeline_dir)
     pipeline_path <-
-      normalizePath(paste0(pipeline_dir, "/", file_name), mustWork = FALSE)
+      paste0(pipeline_dir, "/", file_name)
 
     usethis::use_template(
       template = "template-pipeline.R",
