@@ -52,18 +52,13 @@ use_chef <-
            mk_criteria_fn = NULL,
            env = parent.frame()) {
     file_name <- paste0("pipeline_", pipeline_id, ".R")
-    mk_ep_def_template <- "template-mk_endpoint_def.R"
 
     # Create directories if none exist
-    pipeline_dir_norm <-
-      normalizePath(pipeline_dir, mustWork = FALSE)
-    r_functions_dir_norm <-
-      normalizePath(r_functions_dir, mustWork = FALSE)
-    if (!dir.exists(pipeline_dir_norm)) {
-      dir.create(pipeline_dir_norm)
+    if (!dir.exists(pipeline_dir)) {
+      dir.create(pipeline_dir)
     }
-    if (!dir.exists(r_functions_dir_norm)) {
-      dir.create(r_functions_dir_norm)
+    if (!dir.exists(r_functions_dir)) {
+      dir.create(r_functions_dir)
     }
 
     # Write packages.R file in script_dir if none exists
@@ -121,8 +116,8 @@ use_chef <-
     # Configure the yaml file to include the added pipeline
     file_name_naked <- gsub(pattern = ".R", "", file_name)
     targets::tar_config_set(
-      script = normalizePath(paste0(pipeline_dir, "/", file_name), mustWork = FALSE),
-      store = normalizePath(paste0(pipeline_dir, "/", file_name_naked), mustWork = FALSE),
+      script = paste0(pipeline_dir, "/", file_name),
+      store = paste0(pipeline_dir, "/", file_name_naked),
       project = file_name_naked
     )
 
