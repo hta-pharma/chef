@@ -65,7 +65,7 @@ test_that("Base case: targets pipeline works", {
   expect_equal(NROW(ep_stat), 36)
   expect_equal(NCOL(ep_stat), 37)
   expect_snapshot_value(ep_stat$stat_result_value,
-                        tolerance = 1e-6,
+                        tolerance = 1e-8,
                         style = "json2")
 
 })
@@ -119,7 +119,7 @@ test_that("targets pipeline works no criteria fn and missing by_* functions", {
   expect_equal(NROW(ep_stat), 18)
   expect_equal(NCOL(ep_stat), 37)
   expect_snapshot_value(ep_stat$stat_result_value,
-                        tolerance = 1e-6,
+                        tolerance = 1e-8,
                         style = "json2")
 
 })
@@ -171,7 +171,7 @@ test_that("branching after prepare for stats step works", {
   expect_equal(NROW(ep_stat), 12)
   expect_equal(NCOL(ep_stat), 37)
   expect_snapshot_value(ep_stat$stat_result_value,
-                        tolerance = 1e-6,
+                        tolerance = 1e-8,
                         style = "json2")
 
 })
