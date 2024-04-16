@@ -1,6 +1,6 @@
 Package: chef
 Title: Framework for generating statistical evidence
-Version: 0.1.0
+Version: 0.1.1
 Authors@R: c(
     person("MEWP (Matthew David Phelps)", , , "mewp@novonordisk.com", role = "aut"),
     person("NOSJ (Nicolai Skov Johnsen)", , , "nosj@novonordisk.com", role = "aut"),
@@ -56,4 +56,3 @@ RoxygenNote: 7.3.1
 URL: 
   https://hta-pharma.github.io/chef/,
   https://github.com/hta-pharma/chef
-  
