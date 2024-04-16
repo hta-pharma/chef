@@ -31,8 +31,8 @@ fetch_db_data <-
 
     adam <- fn_dt[fn_type == "data_prepare"]
     adam[, c("dat", "error_flag", "error_msg") := eval_data_fn(
-      study_metadata = study_metadata,
-      fn = fn_callable
+      fn_list = fn_callable,
+      study_metadata = study_metadata
     ),
     by =
       seq_len(nrow(adam))

@@ -447,6 +447,7 @@ test_that("Only affected branches outdated when mk_adam are updated", {
     }
 
     dump("mk_adae", file = "R/mk_adae.R")
+
     tar_make()
     x <- tar_meta() |> data.table::setDT()
 
@@ -455,12 +456,11 @@ test_that("Only affected branches outdated when mk_adam are updated", {
     expect_outdated_patterns <-
       c(
         "study_data",
-        "ep_prep_by_strata_by_trt_",
-        "ep_stat_by_strata_by_trt_",
-        "ep_crit_by_strata_by_trt_",
-        "ep_crit_endpoint_"
+        "ep_prep_by_strata_across_trt_",
+        "ep_stat_across_strata_across_trt_"
       )
 
+    # Take the time stamp of ep_fn_map, one of the early targets.
     timestamp_re_run_target <-
       x[grepl("ep_fn_map", name), time][2]
 
@@ -468,15 +468,15 @@ test_that("Only affected branches outdated when mk_adam are updated", {
     # skipped
     actual <-
       vapply(expect_outdated_patterns, function(i) {
+
         rgx <- paste0(i, collapse = "|")
         compar_dt <- x[grepl(rgx, name), .(name, time)]
-        NROW(compar_dt[time < timestamp_re_run_target]) == 1
+        NROW(compar_dt[time < timestamp_re_run_target]) == 2
       }, FUN.VALUE = logical(1L))
-
 
     # We expect a FALSE for study_data, as this  target should NOT run
     # before ep_fn_map
-    expect_equal(actual, c(FALSE, TRUE, TRUE, TRUE, TRUE), ignore_attr = TRUE)
+    expect_equal(actual, c(FALSE, TRUE, TRUE), ignore_attr = TRUE)
 
     })
 })
