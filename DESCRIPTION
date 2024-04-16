@@ -1,6 +1,6 @@
 Package: chef
 Title: Framework for generating statistical evidence
-Version: 0.0.1.9001
+Version: 0.1.0
 Authors@R: c(
     person("MEWP (Matthew David Phelps)", , , "mewp@novonordisk.com", role = "aut"),
     person("NOSJ (Nicolai Skov Johnsen)", , , "nosj@novonordisk.com", role = "aut"),
