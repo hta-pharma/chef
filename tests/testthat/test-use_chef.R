@@ -1,7 +1,8 @@
 test_that("use_chef makes top-level dirs and files", {
   # SETUP -------------------------------------------------------------------
-  testr::skip_on_devops()
-  testr::create_local_project()
+  testthat::skip_on_ci()
+  tmp <- withr::local_tempdir()
+  withr::local_dir(tmp)
 
   # ACT ---------------------------------------------------------------------
   use_chef(pipeline_id = "001")
@@ -14,8 +15,9 @@ test_that("use_chef makes top-level dirs and files", {
 
 test_that("use_chef makes top-level dirs and fils when in Rproj", {
   # SETUP -------------------------------------------------------------------
-  testr::skip_on_devops()
-  testr::create_local_project(rstudio = TRUE)
+  testthat::skip_on_ci()
+  tmp <- withr::local_tempdir()
+  withr::local_dir(tmp)
   # ACT ---------------------------------------------------------------------
   use_chef(pipeline_id = "001")
 
@@ -30,8 +32,9 @@ test_that("use_chef makes top-level dirs and fils when in Rproj", {
 
 test_that("use_chef writes default R files", {
   # SETUP -------------------------------------------------------------------
-  testr::skip_on_devops()
-  testr::create_local_project()
+  testthat::skip_on_ci()
+  tmp <- withr::local_tempdir()
+  withr::local_dir(tmp)
 
   # ACT ---------------------------------------------------------------------
   use_chef(pipeline_id = "001")
@@ -49,8 +52,9 @@ test_that("use_chef writes default R files", {
 
 test_that("use_chef writes ammnog crit functions", {
   # SETUP -------------------------------------------------------------------
-  testr::skip_on_devops()
-  testr::create_local_project()
+  testthat::skip_on_ci()
+  tmp <- withr::local_tempdir()
+  withr::local_dir(tmp)
   crit_endpoint <- function() {
     "check"
   }
@@ -74,8 +78,9 @@ test_that("use_chef writes ammnog crit functions", {
 
 test_that("use_chef writes custom mk_endpoint_def fn, and uses standard name", {
   # SETUP -------------------------------------------------------------------
-  testr::skip_on_devops()
-  testr::create_local_project()
+  testthat::skip_on_ci()
+  tmp <- withr::local_tempdir()
+  withr::local_dir(tmp)
   mk_endpoint_custom <- function() {
     "check"
   }
@@ -96,8 +101,9 @@ test_that("use_chef writes custom mk_endpoint_def fn, and uses standard name", {
 
 test_that("use_chef writes custom mk_adam fn", {
   # SETUP -------------------------------------------------------------------
-  testr::skip_on_devops()
-  testr::create_local_project()
+  testthat::skip_on_ci()
+  tmp <- withr::local_tempdir()
+  withr::local_dir(tmp)
   mk_adam_custom <- function() {
     "check"
   }
@@ -120,8 +126,9 @@ test_that("use_chef writes custom mk_adam fn", {
 
 test_that("use_chef writes multiple mk_adam fn's", {
   # SETUP -------------------------------------------------------------------
-  testr::skip_on_devops()
-  testr::create_local_project()
+  testthat::skip_on_ci()
+  tmp <- withr::local_tempdir()
+  withr::local_dir(tmp)
   mk_adam_custom <- function() {
     "check"
   }
@@ -155,8 +162,9 @@ test_that("use_chef writes multiple mk_adam fn's", {
 
 test_that("use_chef set-up in README works", {
   # SETUP -------------------------------------------------------------------
-  testr::skip_on_devops()
-  testr::create_local_project()
+  testthat::skip_on_ci()
+  tmp <- withr::local_tempdir()
+  withr::local_dir(tmp)
   mk_endpoint_definition <- function() {
     mk_endpoint_str(
       study_metadata = list(),
@@ -192,8 +200,9 @@ test_that("use_chef set-up in README works", {
 })
 test_that("use_chef with custom pipeline_dir names works", {
   # SETUP -------------------------------------------------------------------
-  testr::skip_on_devops()
-  testr::create_local_project()
+  testthat::skip_on_ci()
+  tmp <- withr::local_tempdir()
+  withr::local_dir(tmp)
   mk_endpoint_definition <- function() {
     mk_endpoint_str(
       study_metadata = list(),

@@ -1,7 +1,7 @@
 test_that("base: stat_by_strata_by_trt", {
   # SETUP -------------------------------------------------------------------
 
-  skip_on_devops()
+  testthat::skip_on_ci()
   ep <- mk_ep_0001_base(
     stratify_by = list(c("SEX")),
     data_prepare = mk_adcm,
@@ -76,7 +76,7 @@ test_that("base: stat_by_strata_by_trt", {
 
 test_that("validate: by_strata_by_trt returns same value as manual calculation with period flag", {
   # SETUP -------------------------------------------------------------------
-  skip_on_devops()
+  testthat::skip_on_ci()
   ep <- mk_ep_0001_base(
     stratify_by = list(c("SEX")),
     data_prepare = mk_adcm,
@@ -157,7 +157,7 @@ test_that("validate: by_strata_by_trt returns same value as manual calculation w
 
 test_that("by_strata_by_trt returns same value as manual calculation without period flag", {
   # SETUP -------------------------------------------------------------------
-  skip_on_devops()
+  testthat::skip_on_ci()
   ep <- mk_ep_0001_base(
     stratify_by = list(c("SEX")),
     data_prepare = mk_adcm,
@@ -239,7 +239,7 @@ test_that("by_strata_by_trt returns same value as manual calculation without per
 
 test_that("validate: n_sub return correct value", {
   # SETUP -------------------------------------------------------------------
-  skip_on_devops()
+  testthat::skip_on_ci()
   ep <- mk_ep_0001_base(
     stratify_by = list(c("SEX")),
     data_prepare = mk_adcm,
@@ -317,7 +317,7 @@ test_that("validate: n_sub return correct value", {
 
 test_that("apply_stats stat_by_strata_across_trt", {
   # SETUP -------------------------------------------------------------------
-  skip_on_devops()
+  testthat::skip_on_ci()
 
   ep <- mk_ep_0001_base(
     custom_pop_filter = "TRT01A %in% c('Placebo', 'Xanomeline High Dose')",
@@ -396,7 +396,7 @@ test_that("apply_stats stat_by_strata_across_trt", {
 
 test_that("apply_stats stat_across_strata_across_trt when no across_strata_across_trt fn supplied", {
   # SETUP -------------------------------------------------------------------
-  skip_on_devops()
+  testthat::skip_on_ci()
   ep <- mk_endpoint_str(
     study_metadata = list(),
     pop_var = "SAFFL",
@@ -472,7 +472,7 @@ test_that("apply_stats stat_across_strata_across_trt when no across_strata_acros
 test_that("apply_stats: with all FALSE for criteria", {
   # SETUP -------------------------------------------------------------------
 
-  skip_on_devops()
+  testthat::skip_on_ci()
 
   crit_false <- function(...) FALSE
 

@@ -96,7 +96,7 @@ test_that("add_event_index works over multiple rows in ep with custom filter", {
 
 test_that("add_event_index works over expanded endpoints", {
   # SETUP -------------------------------------------------------------------
-  testr::skip_on_devops()
+  testthat::skip_on_ci()
   ep <- mk_ep_0001_base(
     stratify_by = list(c("SEX")),
     data_prepare = mk_adcm,
@@ -136,7 +136,7 @@ test_that("add_event_index works over expanded endpoints", {
 
 test_that("add_event_index works over expanded endpoints with endpoint filter", {
   # SETUP -------------------------------------------------------------------
-  testr::skip_on_devops()
+  testthat::skip_on_ci()
   ep <- mk_ep_0001_base(
     stratify_by = list(c("SEX")),
     data_prepare = mk_adcm,

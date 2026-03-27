@@ -1,5 +1,5 @@
 test_that("Manual pipeline works", {
-  testr::skip_on_devops()
+  testthat::skip_on_ci()
 
   crit_endpoint <- function(dat,
                             event_index,

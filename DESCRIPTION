@@ -40,15 +40,12 @@ Suggests:
     glue,
     pryr,
     rmarkdown,
-    testr,
     testthat (>= 3.0.0),
     tidyr,
     withr,
     whisker
-VignetteBuilder: 
+VignetteBuilder:
     knitr
-Remotes:
-    matthew-phelps/testr
 Config/testthat/edition: 3
 Encoding: UTF-8
 Roxygen: list(markdown = TRUE)

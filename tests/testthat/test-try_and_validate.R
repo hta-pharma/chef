@@ -151,10 +151,11 @@ test_that(
 )
 
 test_that("test in a targets setting.", {
-  testr::skip_on_devops()
+  testthat::skip_on_ci()
 
   # SETUP -------------------------------------------------------------------
-  testr::create_local_project()
+  tmp <- withr::local_tempdir()
+  withr::local_dir(tmp)
   crit_endpoint <- function(...) {
     return(T)
   }
@@ -264,10 +265,11 @@ test_that("loaded packages are included.", {
 
 
 test_that("loaded packages are included - In targets setting", {
-  testr::skip_on_devops()
+  testthat::skip_on_ci()
 
   # SETUP -------------------------------------------------------------------
-  testr::create_local_project()
+  tmp <- withr::local_tempdir()
+  withr::local_dir(tmp)
   crit_endpoint <- function(...) {
     return(T)
   }
