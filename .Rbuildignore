@@ -14,8 +14,3 @@
 ^.github$
 ^.githooks$
 ^.pre-commit-config.yaml
-^\.claude$
-^PHASE2_.*\.md$
-^README_PHASE2_PACKAGE\.md$
-^cran-plan\.md$
-^define\.xml$
