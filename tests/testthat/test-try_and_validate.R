@@ -156,6 +156,7 @@ test_that("test in a targets setting.", {
   # SETUP -------------------------------------------------------------------
   tmp <- withr::local_tempdir()
   withr::local_dir(tmp)
+  usethis::local_project(tmp, force = TRUE, setwd = FALSE, quiet = TRUE)
   crit_endpoint <- function(...) {
     return(T)
   }
@@ -270,6 +271,7 @@ test_that("loaded packages are included - In targets setting", {
   # SETUP -------------------------------------------------------------------
   tmp <- withr::local_tempdir()
   withr::local_dir(tmp)
+  usethis::local_project(tmp, force = TRUE, setwd = FALSE, quiet = TRUE)
   crit_endpoint <- function(...) {
     return(T)
   }

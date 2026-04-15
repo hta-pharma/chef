@@ -155,9 +155,9 @@ test_that("filter_db_data works with >1 row in ep dataset", {
   actual <- filter_db_data(ep, ep_fn_map, adam_db)
 
   # EXPECT ------------------------------------------------------------------
-  expect_equal(actual$analysis_data_container$dat[[1]], adam[SAFFL == "Y" &
-    CMSEQ >= 60])
   expect_equal(actual$analysis_data_container$dat[[2]], adam[SAFFL == "Y" &
+    CMSEQ >= 60])
+  expect_equal(actual$analysis_data_container$dat[[1]], adam[SAFFL == "Y" &
     CMSEQ >= 75])
 })
 

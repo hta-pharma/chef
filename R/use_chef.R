@@ -10,7 +10,7 @@
 #'
 #' @param pipeline_dir Character string ending with `/`. The directory where the
 #'   targets pipeline scripts are to be stored. Keep in mind, wherever these
-#'   pipeline scripts are stored, the {targets} cache files will also be stored
+#'   pipeline scripts are stored, the targets cache files will also be stored
 #'   (these cache files will not be under version control and thus only exist on
 #'   your "machine").
 #' @param r_functions_dir Character string ending with `/`. The directory where
@@ -34,7 +34,7 @@
 #'   written, set `mk_adam_fn = NA`.
 #' @param mk_criteria_fn List of functions used for making the criteria for
 #'   endpoint/analysis inclusion. This is useful if you want to supply already
-#'   existing functions that are not part of the {chefcriterion} package. This
+#'   existing functions that are not part of the chefcriterion package. This
 #'   must be a list, and each element must be an unquoted function name (e.g.
 #'   `my_criteria_fn`). The functions have to be available from the global
 #'   environment (i.e if you type `my_criteria_fn()` into the console, it would
@@ -124,7 +124,7 @@ use_chef <-
     stage_pipeline(pipeline_id = pipeline_id)
   }
 
-#' Run a {targets} pipeline
+#' Run a targets pipeline
 #'
 #' @description A wrapper for targets::tar_make() that ensures the correct
 #'   pipeline is run, and the correct cache location is used for that pipeline.
@@ -150,9 +150,9 @@ run_pipeline <- function(pipeline_id = NULL,
   targets::tar_make()
 }
 
-#' Stage a {targets} pipeline so that you can work interactively with it
+#' Stage a targets pipeline so that you can work interactively with it
 #'
-#' @description To interact with a {targets} pipeline (e.g., run the pipeline,
+#' @description To interact with a targets pipeline (e.g., run the pipeline,
 #'   load the completed targets from cache into memory), targets needs to know
 #'   which pipeline you want to work with. `This function` is a thin wrapper
 #'   apound a Sys.setenv() call, and depends on the _targets.yaml file being set

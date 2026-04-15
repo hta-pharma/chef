@@ -2,6 +2,7 @@ test_that("Base case: targets pipeline works", {
   # SETUP -------------------------------------------------------------------
   tmp <- withr::local_tempdir()
   withr::local_dir(tmp)
+  usethis::local_project(tmp, force = TRUE, setwd = FALSE, quiet = TRUE)
   crit_endpoint <- function(...) {
     return(T)
   }
@@ -74,6 +75,7 @@ test_that("targets pipeline works no criteria fn and missing by_* functions",
             # SETUP -------------------------------------------------------------------
             tmp <- withr::local_tempdir()
             withr::local_dir(tmp)
+  usethis::local_project(tmp, force = TRUE, setwd = FALSE, quiet = TRUE)
 
             mk_ep_def <- function() {
               ep <- mk_endpoint_str(
@@ -129,6 +131,7 @@ test_that("branching after prepare for stats step works", {
   # SETUP -------------------------------------------------------------------
   tmp <- withr::local_tempdir()
   withr::local_dir(tmp)
+  usethis::local_project(tmp, force = TRUE, setwd = FALSE, quiet = TRUE)
 
   mk_ep_def <- function() {
     ep <- mk_endpoint_str(
@@ -180,6 +183,7 @@ test_that("ep_fn_map is always outdated", {
   # SETUP -------------------------------------------------------------------
   tmp <- withr::local_tempdir()
   withr::local_dir(tmp)
+  usethis::local_project(tmp, force = TRUE, setwd = FALSE, quiet = TRUE)
 
   mk_ep_def <- function() {
     ep <- mk_endpoint_str(
@@ -225,6 +229,7 @@ test_that("study_data responds to changes in source data", {
   # SETUP -------------------------------------------------------------------
   tmp <- withr::local_tempdir()
   withr::local_dir(tmp)
+  usethis::local_project(tmp, force = TRUE, setwd = FALSE, quiet = TRUE)
   saveRDS(data.table(runif(10)), file = "tmp_data_obj.rds")
   mk_test_fn <- function(study_metadata) {
     readRDS("tmp_data_obj.rds")

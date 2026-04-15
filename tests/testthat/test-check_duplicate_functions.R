@@ -1,6 +1,7 @@
 test_that("check_duplicate_functions handles empty directory correctly", {
   tmp <- withr::local_tempdir()
   withr::local_dir(tmp)
+  dir.create("R")
   expect_null(check_duplicate_functions("R/"))
 })
 
@@ -9,6 +10,7 @@ test_that(
   {
     tmp <- withr::local_tempdir()
     withr::local_dir(tmp)
+    dir.create("R")
     write("f1 <- function(){}", "R/tmp.R")
     write("f2 <- function(){}", "R/tmp.R", append = TRUE)
     expect_null(check_duplicate_functions(dir = "R/"))
@@ -18,6 +20,7 @@ test_that(
 test_that("check_duplicate_functions correctly identifies duplicate function names", {
   tmp <- withr::local_tempdir()
   withr::local_dir(tmp)
+  dir.create("R")
   write("f1 <- function(){}", "R/tmp.R")
   write("f1 <- function(){}", "R/tmp.R", append = TRUE)
   expect_error(
@@ -37,6 +40,7 @@ test_that("check_duplicate_functions handles non-existent directory correctly", 
 test_that("check_duplicate_functions handles directory with non-R files correctly", {
   tmp <- withr::local_tempdir()
   withr::local_dir(tmp)
+  dir.create("R")
   write("f1 <- function(){}", "R/tmp.R")
   write("f1 <- function(){}", "R/tmp.txt")
   expect_null(check_duplicate_functions("R"))
@@ -45,6 +49,7 @@ test_that("check_duplicate_functions handles directory with non-R files correctl
 test_that("check_duplicate_functions handles directory with R files but no function definitions correctly", {
   tmp <- withr::local_tempdir()
   withr::local_dir(tmp)
+  dir.create("R")
   write("f1 <- function(){}", "R/tmp.R")
   write("f1 <- 5", "R/tmp.R", append = TRUE)
   expect_null(check_duplicate_functions("R"))
@@ -53,6 +58,7 @@ test_that("check_duplicate_functions handles directory with R files but no funct
 test_that("check_duplicate_functions correctly identifies all duplicate function names", {
   tmp <- withr::local_tempdir()
   withr::local_dir(tmp)
+  dir.create("R")
   write("f1 <- function(){}", "R/tmp.R")
   write("f1 <- function(){}", "R/tmp.R", append = TRUE)
   write("f2 <- function(){}", "R/tmp.R", append = TRUE)
@@ -67,6 +73,7 @@ test_that("check_duplicate_functions correctly identifies all duplicate function
 test_that("check_duplicate_functions handles function definitions with different parameters but same name correctly", {
   tmp <- withr::local_tempdir()
   withr::local_dir(tmp)
+  dir.create("R")
   write("f1 <- function(x){x}", "R/tmp.R")
   write("f1 <- function(y){y}", "R/tmp.R", append = TRUE)
   expect_error(
@@ -79,6 +86,7 @@ test_that("check_duplicate_functions handles function definitions with different
 test_that("check_duplicate_functions treats functions with the same name but different case as distinct", {
   tmp <- withr::local_tempdir()
   withr::local_dir(tmp)
+  dir.create("R")
   write("f1 <- function(x){x}", "R/tmp.R")
   write("F1 <- function(x){x}", "R/tmp.R", append = TRUE)
   expect_null(check_duplicate_functions("R"))

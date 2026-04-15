@@ -3,6 +3,7 @@ test_that("use_chef makes top-level dirs and files", {
   testthat::skip_on_ci()
   tmp <- withr::local_tempdir()
   withr::local_dir(tmp)
+  usethis::local_project(tmp, force = TRUE, setwd = FALSE, quiet = TRUE)
 
   # ACT ---------------------------------------------------------------------
   use_chef(pipeline_id = "001")
@@ -18,6 +19,7 @@ test_that("use_chef makes top-level dirs and fils when in Rproj", {
   testthat::skip_on_ci()
   tmp <- withr::local_tempdir()
   withr::local_dir(tmp)
+  usethis::local_project(tmp, force = TRUE, setwd = FALSE, quiet = TRUE)
   # ACT ---------------------------------------------------------------------
   use_chef(pipeline_id = "001")
 
@@ -35,6 +37,7 @@ test_that("use_chef writes default R files", {
   testthat::skip_on_ci()
   tmp <- withr::local_tempdir()
   withr::local_dir(tmp)
+  usethis::local_project(tmp, force = TRUE, setwd = FALSE, quiet = TRUE)
 
   # ACT ---------------------------------------------------------------------
   use_chef(pipeline_id = "001")
@@ -55,6 +58,7 @@ test_that("use_chef writes ammnog crit functions", {
   testthat::skip_on_ci()
   tmp <- withr::local_tempdir()
   withr::local_dir(tmp)
+  usethis::local_project(tmp, force = TRUE, setwd = FALSE, quiet = TRUE)
   crit_endpoint <- function() {
     "check"
   }
@@ -81,6 +85,7 @@ test_that("use_chef writes custom mk_endpoint_def fn, and uses standard name", {
   testthat::skip_on_ci()
   tmp <- withr::local_tempdir()
   withr::local_dir(tmp)
+  usethis::local_project(tmp, force = TRUE, setwd = FALSE, quiet = TRUE)
   mk_endpoint_custom <- function() {
     "check"
   }
@@ -104,6 +109,7 @@ test_that("use_chef writes custom mk_adam fn", {
   testthat::skip_on_ci()
   tmp <- withr::local_tempdir()
   withr::local_dir(tmp)
+  usethis::local_project(tmp, force = TRUE, setwd = FALSE, quiet = TRUE)
   mk_adam_custom <- function() {
     "check"
   }
@@ -129,6 +135,7 @@ test_that("use_chef writes multiple mk_adam fn's", {
   testthat::skip_on_ci()
   tmp <- withr::local_tempdir()
   withr::local_dir(tmp)
+  usethis::local_project(tmp, force = TRUE, setwd = FALSE, quiet = TRUE)
   mk_adam_custom <- function() {
     "check"
   }
@@ -165,6 +172,7 @@ test_that("use_chef set-up in README works", {
   testthat::skip_on_ci()
   tmp <- withr::local_tempdir()
   withr::local_dir(tmp)
+  usethis::local_project(tmp, force = TRUE, setwd = FALSE, quiet = TRUE)
   mk_endpoint_definition <- function() {
     mk_endpoint_str(
       study_metadata = list(),
@@ -203,6 +211,7 @@ test_that("use_chef with custom pipeline_dir names works", {
   testthat::skip_on_ci()
   tmp <- withr::local_tempdir()
   withr::local_dir(tmp)
+  usethis::local_project(tmp, force = TRUE, setwd = FALSE, quiet = TRUE)
   mk_endpoint_definition <- function() {
     mk_endpoint_str(
       study_metadata = list(),

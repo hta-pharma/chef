@@ -17,7 +17,7 @@ use_chef(
 \arguments{
 \item{pipeline_dir}{Character string ending with \code{/}. The directory where the
 targets pipeline scripts are to be stored. Keep in mind, wherever these
-pipeline scripts are stored, the {targets} cache files will also be stored
+pipeline scripts are stored, the targets cache files will also be stored
 (these cache files will not be under version control and thus only exist on
 your "machine").}
 
@@ -46,7 +46,7 @@ written, set \code{mk_adam_fn = NA}.}
 
 \item{mk_criteria_fn}{List of functions used for making the criteria for
 endpoint/analysis inclusion. This is useful if you want to supply already
-existing functions that are not part of the {chefcriterion} package. This
+existing functions that are not part of the chefcriterion package. This
 must be a list, and each element must be an unquoted function name (e.g.
 \code{my_criteria_fn}). The functions have to be available from the global
 environment (i.e if you type \code{my_criteria_fn()} into the console, it would

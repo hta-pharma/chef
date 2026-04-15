@@ -15,6 +15,45 @@
 #' @return A `data.table` where each row corresponds to an expanded endpoint
 #'   definition
 #' @export
+#'
+#' @examples
+#' library(data.table)
+#' library(pharmaverseadam)
+#'
+#' # Prepare ADCM data
+#' adcm <- as.data.table(pharmaverseadam::adcm)[!is.na(CMCLAS)]
+#' cmclas_vals <- unique(adcm$CMCLAS)
+#'
+#' # Create endpoint definition expanding by therapeutic class
+#' endpoint_def <- data.table(
+#'   endpoint_spec_id = 1L,
+#'   endpoint_label = "Concomitant Medications: <CMCLAS>",
+#'   pop_var = "SAFFL",
+#'   pop_value = "Y",
+#'   period_var = NA_character_,
+#'   period_value = NA_character_,
+#'   treatment_var = "TRT01A",
+#'   treatment_refval = "Xanomeline High Dose",
+#'   endpoint_filter = NA_character_,
+#'   custom_pop_filter = NA_character_,
+#'   stratify_by = list(list()),
+#'   group_by = list(list(CMCLAS = cmclas_vals)),
+#'   key_analysis_data = "a"
+#' )
+#'
+#' # Create analysis data container
+#' analysis_data <- data.table(dat = list(adcm), key_analysis_data = "a")
+#' setkey(analysis_data, key_analysis_data)
+#' setkey(endpoint_def, key_analysis_data)
+#'
+#' # Expand: 1 row becomes one row per unique CMCLAS value
+#' expanded_ep <- expand_over_endpoints(
+#'   ep = endpoint_def,
+#'   analysis_data_container = analysis_data
+#' )
+#' nrow(expanded_ep)
+#' expanded_ep[, .(endpoint_id, endpoint_label, endpoint_group_filter)]
+#'
 expand_over_endpoints <- function(ep, analysis_data_container) {
   expand_specification <-
     dat <-
@@ -38,7 +77,7 @@ expand_over_endpoints <- function(ep, analysis_data_container) {
   } else {
     ep_exp <- ep_with_data[, .SD, .SDcols = setdiff(names(ep_with_data), "expand_specification")]
     ep_exp[, endpoint_group_filter := NA]
-    ep_exp[, endpoint_group_metadata := list()]
+    ep_exp[["endpoint_group_metadata"]] <- vector("list", nrow(ep_exp))
   }
 
   ep_exp[, endpoint_id := add_ep_id(.SD, .BY), by = endpoint_spec_id]
@@ -127,6 +166,25 @@ expand_over_endpoints <- function(ep, analysis_data_container) {
 #'   conditions for each endpoint group. If the endpoint group is empty or
 #'   consists only of `NA` values, the function returns `NA`.
 #' @export
+#'
+#' @examples
+#' library(data.table)
+#' library(pharmaverseadam)
+#'
+#' # Load sample data and add INDEX_ column
+#' adcm <- as.data.table(pharmaverseadam::adcm)
+#' adcm <- adcm[!is.na(CMCLAS)][1:50]  # Subset for brevity
+#'
+#' # Define grouping: expand endpoint by therapeutic class
+#' group_by <- list(CMCLAS = unique(adcm$CMCLAS))
+#'
+#' # Generate expanded endpoint specifications
+#' expanded <- define_expanded_ep(x = adcm, group_by = group_by)
+#'
+#' # View structure: each row = one group level
+#' expanded
+#' # Note: endpoint_group_metadata contains the group values
+#' # endpoint_group_filter contains the filter string (e.g., 'CMCLAS == "NERVOUS SYSTEM"')
 #'
 define_expanded_ep <- function(x, group_by, forced_group_levels = NULL, col_prefix = "endpoint_group") {
   if (!is.list(group_by) || all(is.na(group_by))) {

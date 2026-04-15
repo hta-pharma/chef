@@ -24,3 +24,54 @@ Applies the user-supplied criteria functions to each endpoint to
 determine eligibility based on the criteria. The result is a logical column
 added to the data indicating whether each endpoint meets the criteria.
 }
+\examples{
+library(data.table)
+library(pharmaverseadam)
+
+# Create a simple criterion function: keep endpoint if n events >= 5
+min_events_fn <- function(dat, event_index, ...) {
+  length(event_index) >= 5
+}
+
+# Prepare endpoint with event index
+adcm_data <- as.data.table(pharmaverseadam::adcm)
+adcm_data[, INDEX_ := .I]
+
+analysis_data_container <- data.table(
+  dat = list(adcm_data),
+  key_analysis_data = "a"
+)
+setkey(analysis_data_container, key_analysis_data)
+
+ep <- data.table(
+  endpoint_id = "1-0001",
+  endpoint_spec_id = 1L,
+  pop_var = "SAFFL",
+  pop_value = "Y",
+  period_var = NA_character_,
+  period_value = NA_character_,
+  endpoint_filter = NA_character_,
+  endpoint_group_filter = NA_character_,
+  custom_pop_filter = NA_character_,
+  stratify_by = list(),
+  treatment_var = "TRT01A",
+  treatment_refval = "Xanomeline High Dose",
+  event_index = list(1:20),  # Simulated event indices
+  key_analysis_data = "a"
+)
+setkey(ep, key_analysis_data)
+
+# Create function map linking endpoint to criterion
+fn_map <- data.table(
+  endpoint_spec_id = 1L,
+  fn_type = "crit_endpoint",
+  fn_callable = list(min_events_fn),
+  fn_name = "min_events"
+)
+
+# Apply endpoint criterion
+ep_filtered <- apply_criterion_endpoint(ep, analysis_data_container, fn_map)
+
+# Result: crit_accept_endpoint = TRUE (20 events >= 5)
+ep_filtered[, .(endpoint_id, crit_accept_endpoint)]
+}
