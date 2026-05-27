@@ -31,7 +31,6 @@ Imports:
     purrr,
     stats
 Suggests:
-    arrow,
     covr,
     dplyr,
     fs,

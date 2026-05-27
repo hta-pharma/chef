@@ -6,7 +6,7 @@ chef::check_duplicate_functions(fun_dir)
 ## Load your R files
 lapply(list.files(normalizePath(fun_dir), full.names = TRUE), source)
 
-targets::tar_option_set(packages = c("chef", "data.table"), format = "feather")
+targets::tar_option_set(packages = c("chef", "data.table"), format = "rds")
 list(
   targets::tar_target(ep,
                       mk_endpoint_def()),
