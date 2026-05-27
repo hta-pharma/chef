@@ -1,0 +1,116 @@
+# A framework for AMNOG style HTA analyses
+
+[![R-CMD-check](https://github.com/hta-pharma/chef/actions/workflows/package-check-test.yaml/badge.svg)](https://github.com/hta-pharma/chef/actions/workflows/package-check-test.yaml)
+
+# Purpose
+
+To provide an open-source opinionated framework for setting up pipelines
+for AMNOG-style HTA analyses in conjunction with the
+{[ramnog](https://github.com/hta-pharma/ramnog)} package.
+
+# Aim
+
+The aim of {chef} is that a programmer has to write minimal code, and no
+programming to in order to set-up a new AMNOG-type analyses. For each
+study, the programmer will need to make, adjust, or check the following
+four types of code:
+
+1.  The definition of each endpoint (or group of endpoints).
+2.  A set of adam functions that makes any modifications to existing
+    ADaM datasets (e.g., new age grouping in ADSL), or makes new ADaM
+    datasets if none exist for the required output.
+3.  (If needed) Define a set of criteria for when an endpoint should be
+    included in the results. A library of these criteria are stored in
+    the companion package {chefCriteria}
+4.  A specification of the statistical functions used to
+    summarize/analyze the data.
+
+Behind the scenes {chef} uses the
+{[targets](https://books.ropensci.org/targets/)} package to handle the
+pipelines.
+
+For help and guidance on building an analysis pipeline, see the
+{[ramnog](https://hta-pharma.github.io/ramnog/)} package.
+
+# Developer Documentation
+
+Please refer to {ramnog} for general [developer
+documentation](https://hta-pharma.github.io/ramnog/articles/#:~:text=Debugging-,Development,-Git%20Workflow).
+
+# Package index
+
+## All functions
+
+- [`add_event_index()`](https://hta-pharma.github.io/chef/reference/add_event_index.md)
+  : Add Event Index to Expanded Endpoints
+- [`add_forced_group_levels()`](https://hta-pharma.github.io/chef/reference/add_forced_group_levels.md)
+  : Add forced group levels
+- [`add_id()`](https://hta-pharma.github.io/chef/reference/add_id.md) :
+  Add ID to user-defined endpoint groups
+- [`apply_criterion_by_strata()`](https://hta-pharma.github.io/chef/reference/apply_criterion_by_strata.md)
+  : Apply criterion by strata
+- [`apply_criterion_endpoint()`](https://hta-pharma.github.io/chef/reference/apply_criterion_endpoint.md)
+  : Apply Endpoint Criterion
+- [`apply_dt_filter()`](https://hta-pharma.github.io/chef/reference/apply_dt_filter.md)
+  : Apply filtering logic to a data.table
+- [`apply_stats()`](https://hta-pharma.github.io/chef/reference/apply_stats.md)
+  : Apply Statistical Methods
+- [`check_duplicate_functions()`](https://hta-pharma.github.io/chef/reference/check_duplicate_functions.md)
+  : Check for duplicate function definitions
+- [`define_expanded_ep()`](https://hta-pharma.github.io/chef/reference/define_expanded_ep.md)
+  : Define Expanded Endpoint Specifications
+- [`define_expansion_cell_from_data()`](https://hta-pharma.github.io/chef/reference/define_expansion_cell_from_data.md)
+  : Create Expansion Cell Containing a Data Table Based on Strata
+- [`evaluate_criteria()`](https://hta-pharma.github.io/chef/reference/evaluate_criteria.md)
+  : Evaluate criteria for inclusion of endpoints or endpoint strata
+- [`expand_ep_for_stats()`](https://hta-pharma.github.io/chef/reference/expand_ep_for_stats.md)
+  : Expand Endpoint Data for Statistics
+- [`expand_over_endpoints()`](https://hta-pharma.github.io/chef/reference/expand_over_endpoints.md)
+  : Expand endpoint definitions
+- [`fetch_db_data()`](https://hta-pharma.github.io/chef/reference/fetch_db_data.md)
+  : Fetch ADaM tables from a source based on endpoint specifications
+- [`filter_adam_db()`](https://hta-pharma.github.io/chef/reference/filter_adam_db.md)
+  : Title
+- [`filter_db_data()`](https://hta-pharma.github.io/chef/reference/filter_db_data.md)
+  : Filter study data based on endpoint specifications
+- [`generate_function_table_row()`](https://hta-pharma.github.io/chef/reference/generate_function_table_row.md)
+  : Generate a row for the function table
+- [`group_ep_for_targets()`](https://hta-pharma.github.io/chef/reference/group_ep_for_targets.md)
+  : Group endpoints for targets pipeline
+- [`index_expanded_ep_groups()`](https://hta-pharma.github.io/chef/reference/index_expanded_ep_groups.md)
+  : Index the expanded endpoints
+- [`index_non_null_group_level()`](https://hta-pharma.github.io/chef/reference/index_non_null_group_level.md)
+  : Index Non-Null Group Levels
+- [`llist()`](https://hta-pharma.github.io/chef/reference/llist.md) :
+  Make list of lists
+- [`load_debug_session()`](https://hta-pharma.github.io/chef/reference/load_debug_session.md)
+  : Load Debugging Session
+- [`mk_endpoint_str()`](https://hta-pharma.github.io/chef/reference/mk_endpoint_str.md)
+  : Make an endpoint specification record
+- [`mk_userdef_fn_dt()`](https://hta-pharma.github.io/chef/reference/mk_userdef_fn_dt.md)
+  : Parse functions supplied by user
+- [`parse_function_input()`](https://hta-pharma.github.io/chef/reference/parse_function_input.md)
+  : Parse function inputs
+- [`prepare_for_stats()`](https://hta-pharma.github.io/chef/reference/prepare_for_stats.md)
+  : Prepare (and Expand) Endpoint for Statistical Analysis
+- [`run_pipeline()`](https://hta-pharma.github.io/chef/reference/run_pipeline.md)
+  : Run a targets pipeline
+- [`stage_pipeline()`](https://hta-pharma.github.io/chef/reference/stage_pipeline.md)
+  : Stage a targets pipeline so that you can work interactively with it
+- [`try_and_validate()`](https://hta-pharma.github.io/chef/reference/try_and_validate.md)
+  : Try and Validate Wrapper for Statistical Functions
+- [`unnest_by_fns()`](https://hta-pharma.github.io/chef/reference/unnest_by_fns.md)
+  : Unnest data model by the supplied function columns
+- [`unnest_endpoint_functions()`](https://hta-pharma.github.io/chef/reference/unnest_endpoint_functions.md)
+  : Unnest over user-supplied functions in endpoint definitions
+- [`use_chef()`](https://hta-pharma.github.io/chef/reference/use_chef.md)
+  : Build a pipeline from a template
+- [`validate_crit_output()`](https://hta-pharma.github.io/chef/reference/validate_crit_output.md)
+  : Validate Output from Criterion Functions
+- [`validate_endpoints_def()`](https://hta-pharma.github.io/chef/reference/validate_endpoints_def.md)
+  : Validate user inputs to endpoint definition
+- [`validate_stat_output()`](https://hta-pharma.github.io/chef/reference/validate_stat_output.md)
+  : Validate Output from Statistical Functions
+- [`validate_usr_fn_args()`](https://hta-pharma.github.io/chef/reference/validate_usr_fn_args.md)
+  : Validate the user supplied functions arguments.
+
