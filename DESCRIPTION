@@ -42,6 +42,7 @@ Suggests:
     knitr,
     pharmaverseadam,
     plyr,
+    qs,
     rmarkdown,
     tarchetypes,
     testthat (>= 3.0.0),
