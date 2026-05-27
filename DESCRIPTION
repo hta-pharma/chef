@@ -31,6 +31,7 @@ Imports:
     purrr,
     stats
 Suggests:
+    arrow,
     covr,
     dplyr,
     fs,
@@ -42,7 +43,6 @@ Suggests:
     knitr,
     pharmaverseadam,
     plyr,
-    qs,
     rmarkdown,
     tarchetypes,
     testthat (>= 3.0.0),
