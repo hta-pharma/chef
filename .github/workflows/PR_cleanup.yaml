@@ -11,3 +11,5 @@ jobs:
       - uses: stefanluptak/delete-old-pr-artifacts@v1
         with:
           workflow_filename: Check.yaml
+          token: ${{ secrets.GITHUB_TOKEN }}
+name: PR cleanup
