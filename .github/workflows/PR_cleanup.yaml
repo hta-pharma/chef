@@ -14,4 +14,3 @@ jobs:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
           gh actions-cache delete-all -R ${{ github.repository }} --confirm
-name: PR cleanup
