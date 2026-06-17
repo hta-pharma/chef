@@ -9,8 +9,6 @@ covr_ignore <- function() {
 utils::globalVariables(
   c(
     ":=",
-    "%>%",
-    ".",
     ".SD",
     ".I",
     "..keep",

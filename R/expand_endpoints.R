@@ -71,8 +71,8 @@ expand_over_endpoints <- function(ep, analysis_data_container) {
 
   # Expand by groups. If no grouping is present, then add empty group related columns
   if (any(!is.na(ep_with_data$expand_specification))) {
-    ep_exp <- ep_with_data %>%
-      tidyr::unnest(col = expand_specification) %>%
+    ep_exp <- ep_with_data |>
+      tidyr::unnest(col = expand_specification) |>
       setDT()
   } else {
     ep_exp <- ep_with_data[, .SD, .SDcols = setdiff(names(ep_with_data), "expand_specification")]
@@ -84,19 +84,20 @@ expand_over_endpoints <- function(ep, analysis_data_container) {
 
   # Complete endpoint labels by replacing keywords with values
   nm_set <- names(ep_exp)
-  ep_exp[, endpoint_label_evaluated := apply(ep_exp, 1, function(x) {
-    xlab <- x[["endpoint_label"]]
+  evaluate_label <- function(row_idx) {
+    xlab <- ep_exp[[row_idx, "endpoint_label"]]
 
     # Replace keywords. Do only accept keywords which reference to either
     # character or numeric values (which excludes group_by)
     for (i in nm_set) {
       if (grepl(paste0("<", i, ">"), xlab)) {
-        if (is.character(x[[i]]) || is.numeric(x[[i]])) {
+        val <- ep_exp[[row_idx, i]]
+        if (is.character(val) || is.numeric(val)) {
           xlab <-
-            xlab %>% gsub(
+            gsub(
               paste0("<", i, ">"),
-              paste0(str_to_sentence_base(x[[i]]), collapse = ","),
-              .
+              paste0(str_to_sentence_base(val), collapse = ","),
+              xlab
             )
         }
       }
@@ -104,21 +105,23 @@ expand_over_endpoints <- function(ep, analysis_data_container) {
 
     # Replace group keywords
     group_keywords <-
-      stringr::str_extract_all(xlab, "(?<=<)[^<>]*(?=>)") %>% unlist()
+      stringr::str_extract_all(xlab, "(?<=<)[^<>]*(?=>)") |> unlist()
     if (length(group_keywords) > 0) {
       for (j in group_keywords) {
-        if (!is.null(x$endpoint_group_metadata[[j]])) {
+        meta <- ep_exp[[row_idx, "endpoint_group_metadata"]]
+        if (!is.null(meta[[j]])) {
           xlab <-
-            xlab %>% gsub(
+            gsub(
               paste0("<", j, ">"),
-              as.character(x$endpoint_group_metadata[[j]]),
-              .
+              as.character(meta[[j]]),
+              xlab
             )
         }
       }
     }
     return(xlab)
-  })]
+  }
+  ep_exp[, endpoint_label_evaluated := lapply(seq_len(.N), evaluate_label) |> unlist()]
   ep_exp[["endpoint_label"]] <- NULL
   setnames(ep_exp, "endpoint_label_evaluated", "endpoint_label")
 
@@ -194,7 +197,7 @@ define_expanded_ep <- function(x, group_by, forced_group_levels = NULL, col_pref
   col_name_meta <- paste(col_prefix, "metadata", sep = "_")
   col_name_filter <- paste(col_prefix, "filter", sep = "_")
 
-  out <- index_expanded_ep_groups(x, group_by, forced_group_levels) %>%
+  out <- index_expanded_ep_groups(x, group_by, forced_group_levels) |>
     construct_group_filter(col_name_filter = col_name_filter)
   out[, (col_name_meta) := .(list(lapply(.SD, identity))), by = 1:nrow(out), .SDcols = names(group_by)]
   out[, .SD, .SDcols = c(col_name_meta, col_name_filter)]
@@ -271,7 +274,7 @@ index_expanded_ep_groups <- function(x, group_by, forced_group_levels = NULL) {
 construct_group_filter <- function(x, col_name_filter = "endpoint_group_filter") {
   out <- copy(x)
   filter_str_vec <-
-    purrr::pmap(x, create_condition_str) %>% unlist(recursive = F)
+    purrr::pmap(x, create_condition_str) |> unlist(recursive = FALSE)
   out[, (col_name_filter) := filter_str_vec]
 }
 

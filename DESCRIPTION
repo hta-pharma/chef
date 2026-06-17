@@ -23,7 +23,6 @@ Imports:
     cli,
     data.table (>= 1.14.2),
     digest,
-    magrittr,
     methods,
     rlang,
     stringr,

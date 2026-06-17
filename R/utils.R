@@ -7,7 +7,6 @@
 #' @param ... Elements to be included in the nested list
 #' @return A list object containing a list where each element is defined by
 #'   `...`
-#' @importFrom  magrittr %>%
 #' @import targets
 #' @export
 #' @examples
