@@ -144,10 +144,11 @@ test_that("validate: by_strata_by_trt returns same value as manual calculation w
     .[SAFFL == "Y" & ANL01FL == "Y" & AOCCPFL == "Y"] %>%
     unique(., by = c("SUBJID")) %>%
     .[, .N, by = TRT01A] %>%
+    setorder(TRT01A) %>%
     .[["N"]]
 
   actual_counts <-
-    actual[strata_var == "TOTAL_" & fn_name == "n_subev"] %>%
+    actual[strata_var == "TOTAL_" & fn_name == "n_subev"][order(treatment_value)] %>%
     .[, stat_result] %>%
     rbindlist() %>%
     .[["value"]]
@@ -225,10 +226,11 @@ test_that("by_strata_by_trt returns same value as manual calculation without per
     .[SAFFL == "Y" & AOCCPFL == "Y"] %>%
     unique(., by = c("SUBJID")) %>%
     .[, .N, by = TRT01A] %>%
+    setorder(TRT01A) %>%
     .[["N"]]
 
   actual_counts <-
-    actual[strata_var == "TOTAL_" & fn_name == "n_subev"] %>%
+    actual[strata_var == "TOTAL_" & fn_name == "n_subev"][order(treatment_value)] %>%
     .[, stat_result] %>%
     rbindlist() %>%
     .[["value"]]
@@ -307,7 +309,8 @@ test_that("validate: n_sub return correct value", {
     nrow()
 
   actual_counts <-
-    actual[strata_var == "TOTAL_" & fn_name == "n_sub"][, stat_result] |>
+    actual[strata_var == "TOTAL_" & fn_name == "n_sub" &
+             treatment_value == "Placebo"][, stat_result] |>
     rbindlist()
 
 
