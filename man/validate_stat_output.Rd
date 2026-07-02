@@ -16,7 +16,7 @@ Use with \code{\link[=try_and_validate]{try_and_validate()}} to automatically ha
 \description{
 Validates the output of statistical functions to ensure it
 conforms to expected structure. The expected structure includes specific
-column names (\code{label}, \code{description}, \code{qualifiers}, \code{value}) and at least one row.
+column names (\code{label}, \code{description}, \code{qualifiers}, \code{value}, \code{method}) and at least one row.
 This validator is typically used with \code{\link[=try_and_validate]{try_and_validate()}} to ensure
 statistical functions return correctly formatted results.
 }
@@ -32,7 +32,8 @@ valid_stats <- data.table(
     "Percentage with events"
   ),
   qualifiers = NA_character_,
-  value = c(250L, 45L, 18.0)
+  value = c(250L, 45L, 18.0),
+  method = NA_character_
 )
 
 # Validation passes
@@ -54,7 +55,8 @@ empty_stats <- data.table(
   label = character(),
   description = character(),
   qualifiers = character(),
-  value = numeric()
+  value = numeric(),
+  method = character()
 )
 validate_stat_output(empty_stats)  # Error: 0 rows returned
 }

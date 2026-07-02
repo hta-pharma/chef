@@ -10,7 +10,8 @@ test_that("validate_stat_output in simple cases", {
       label = character(),
       value = numeric(),
       description = character(),
-      qualifiers = character()
+      qualifiers = character(),
+      method = character()
     )
   simple_dt <- data.table::data.table()
   valid_dt <-
@@ -18,7 +19,8 @@ test_that("validate_stat_output in simple cases", {
       label = "log",
       value = 1,
       description = "Natural log",
-      qualifiers = NA_character_
+      qualifiers = NA_character_,
+      method = NA_character_
     )
 
   expect_str_contains(
@@ -108,7 +110,8 @@ test_that(
           label = "log",
           value = log10(x),
           description = "Natural log",
-          qualifiers = NA_character_
+          qualifiers = NA_character_,
+          method = NA_character_
         )
       }
     tmp <- withr::local_tempdir()

@@ -69,7 +69,7 @@ test_that("base: stat_by_strata_by_trt", {
     stats <- actual[["stat_result"]][[i]]
     expect_true(is.data.table(stats))
     expect_equal(nrow(stats), 1)
-    expect_same_items(names(stats), c("label", "description", "qualifiers", "value"))
+    expect_same_items(names(stats), c("label", "description", "qualifiers", "value", "method"))
   }
 })
 
@@ -389,7 +389,7 @@ test_that("apply_stats stat_by_strata_across_trt", {
     expect_true(is.data.table(stats))
     expect_equal(nrow(stats), 1)
 
-    expect_same_items(names(stats), c("label", "description", "qualifiers", "value"))
+    expect_same_items(names(stats), c("label", "description", "qualifiers", "value", "method"))
   }
 })
 
@@ -571,7 +571,8 @@ test_that("Complex application of stats functions", {
       label = "N",
       description = "Number of subjects",
       qualifiers = NA_character_,
-      value = stat
+      value = stat,
+      method = NA_character_
     ))
   }
 

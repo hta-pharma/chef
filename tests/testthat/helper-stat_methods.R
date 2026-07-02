@@ -12,7 +12,8 @@ n_sub <- function(dat,
     label = "N",
     description = "Number of subjects",
     qualifiers = NA_character_,
-    value = stat
+    value = stat,
+    method = NA_character_
   ))
 }
 
@@ -29,7 +30,8 @@ n_subev <- function(dat,
     label = "n",
     description = "Number of subjects with events",
     qualifiers = NA_character_,
-    value = stat
+    value = stat,
+    method = NA_character_
   ))
 }
 
@@ -50,9 +52,9 @@ p_subev <- function(dat,
       label = "(%)",
       description = "Proportion of subjects with events",
       qualifiers = NA_character_,
-      value = n_subev / n_sub * 100
+      value = n_subev / n_sub * 100,
+      method = NA_character_
     )
-
 
   return(out)
 }
@@ -96,7 +98,8 @@ summary_stats <- function(dat,
     label = names(stat),
     description = "Summary statistics",
     qualifiers = NA_character_,
-    value = as.list(stat)
+    value = as.list(stat),
+    method = NA_character_
   ))
 }
 
@@ -124,9 +127,9 @@ n_subev_trt_diff <- function(dat,
       label = "n_trt_diff",
       description = "Absolute difference in number of subjects with events between treatment arms",
       qualifiers = NA_character_,
-      value = stat
+      value = stat,
+      method = NA_character_
     )
-
 
   return(out)
 }
@@ -154,7 +157,8 @@ contingency2x2_ptest <- function(dat,
     label = c("Pval_independency", "CI_upper", "CI_lower"),
     description = "Fisher's exact test for count data",
     qualifiers = NA_character_,
-    value = c(res$p.value, res$conf.int[1], res$conf.int[2])
+    value = c(res$p.value, res$conf.int[1], res$conf.int[2]),
+    method = NA_character_
   )
   return(out)
 }
@@ -187,7 +191,8 @@ contingency2x2_strata_test <- function(dat,
     label = c("Pval_independency", "CI_lower", "CI_upper"),
     description = "Cochran-mante-haenszel test for odds ratios across strata",
     qualifiers = NA_character_,
-    value = c(res$p.value, res$conf.int[[1]], res$conf.int[[2]])
+    value = c(res$p.value, res$conf.int[[1]], res$conf.int[[2]]),
+    method = NA_character_
   )
   return(out)
 }

@@ -233,7 +233,7 @@ validate_crit_output <- function(output) {
 #'
 #' @description Validates the output of statistical functions to ensure it
 #'   conforms to expected structure. The expected structure includes specific
-#'   column names (`label`, `description`, `qualifiers`, `value`) and at least one row.
+#'   column names (`label`, `description`, `qualifiers`, `value`, `method`) and at least one row.
 #'   This validator is typically used with [try_and_validate()] to ensure
 #'   statistical functions return correctly formatted results.
 #'
@@ -256,7 +256,8 @@ validate_crit_output <- function(output) {
 #'     "Percentage with events"
 #'   ),
 #'   qualifiers = NA_character_,
-#'   value = c(250L, 45L, 18.0)
+#'   value = c(250L, 45L, 18.0),
+#'   method = NA_character_
 #' )
 #'
 #' # Validation passes
@@ -278,7 +279,8 @@ validate_crit_output <- function(output) {
 #'   label = character(),
 #'   description = character(),
 #'   qualifiers = character(),
-#'   value = numeric()
+#'   value = numeric(),
+#'   method = character()
 #' )
 #' validate_stat_output(empty_stats)  # Error: 0 rows returned
 validate_stat_output <- function(output) {
@@ -293,7 +295,7 @@ validate_stat_output <- function(output) {
 
   # if DT check if compliant
   err_messages <- c()
-  expected_sorted <- sort(c("label", "description", "qualifiers", "value"))
+  expected_sorted <- sort(c("label", "description", "qualifiers", "value", "method"))
   actual_sorted <- sort(names(output))
   if (!identical(expected_sorted, actual_sorted)) {
     actual_diff <- setdiff(actual_sorted, expected_sorted)

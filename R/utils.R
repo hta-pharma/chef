@@ -18,7 +18,8 @@
 #'       label = "N",
 #'       description = "Number of subjects",
 #'       qualifiers = NA_character_,
-#'       value = nrow(dat)
+#'       value = nrow(dat),
+#'       method = NA_character_
 #'     )
 #'   },
 #'   mean_value = function(dat, var, ...) {
@@ -26,7 +27,8 @@
 #'       label = "Mean",
 #'       description = paste("Mean of", var),
 #'       qualifiers = NA_character_,
-#'       value = mean(dat[[var]], na.rm = TRUE)
+#'       value = mean(dat[[var]], na.rm = TRUE),
+#'       method = NA_character_
 #'     )
 #'   }
 #' )
