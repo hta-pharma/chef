@@ -7,6 +7,8 @@ Authors@R: c(
     person("HSPU (Henrik Sparre Spiegelhauer)", , , "hspu@novonordisk.com", role = "aut"),
     person("CINO (Christian Haargaard Olsen)", , , "cino@novonordisk.com", role = c("aut", "cre"))
   )
+Author: CINO (Christian Haargaard Olsen)
+Maintainer: CINO (Christian Haargaard Olsen) <cino@novonordisk.com>
 Description: Take endpoint recipes and transform them into statistical
     outputs. This package provides a framework for defining clinical trial
     endpoints and generating statistical analyses using the {targets} pipeline
