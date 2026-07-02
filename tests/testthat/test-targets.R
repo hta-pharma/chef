@@ -63,7 +63,7 @@ test_that("Base case: targets pipeline works", {
   expect_true(all(is.na(x$error)))
   tar_load(ep_stat)
   expect_equal(NROW(ep_stat), 36)
-  expect_equal(NCOL(ep_stat), 37)
+  expect_equal(NCOL(ep_stat), 38)
   expect_snapshot_value(ep_stat$stat_result_value,
                         tolerance = 1e-8,
                         style = "json2")
