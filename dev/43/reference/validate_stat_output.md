@@ -2,8 +2,8 @@
 
 Validates the output of statistical functions to ensure it conforms to
 expected structure. The expected structure includes specific column
-names (`label`, `description`, `qualifiers`, `value`) and at least one
-row. This validator is typically used with
+names (`label`, `description`, `qualifiers`, `value`, `method`) and at
+least one row. This validator is typically used with
 [`try_and_validate()`](https://hta-pharma.github.io/chef/reference/try_and_validate.md)
 to ensure statistical functions return correctly formatted results.
 
@@ -40,7 +40,8 @@ valid_stats <- data.table(
     "Percentage with events"
   ),
   qualifiers = NA_character_,
-  value = c(250L, 45L, 18.0)
+  value = c(250L, 45L, 18.0),
+  method = NA_character_
 )
 
 # Validation passes
@@ -58,14 +59,15 @@ incomplete_stats <- data.table(
   value = c(250L, 18.0)
 )
 validate_stat_output(incomplete_stats)  # Shows missing columns
-#> [1] "Expected columns: ( description, label, qualifiers, value )\nFound columns: ( label, value )\n\tMissing items in actual: ( description, qualifiers )"
+#> [1] "Expected columns: ( description, label, method, qualifiers, value )\nFound columns: ( label, value )\n\tMissing items in actual: ( description, method, qualifiers )"
 
 # Invalid: empty result (0 rows)
 empty_stats <- data.table(
   label = character(),
   description = character(),
   qualifiers = character(),
-  value = numeric()
+  value = numeric(),
+  method = character()
 )
 validate_stat_output(empty_stats)  # Error: 0 rows returned
 #> [1] "The statistical function returned a data.table with 0 rows"

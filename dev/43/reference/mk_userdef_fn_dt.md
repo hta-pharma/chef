@@ -88,5 +88,5 @@ fn_table[, .(fn_type, fn_name)]
 fn_table$fn_callable[[1]]  # Callable function
 #> function (study_metadata) 
 #> NULL
-#> <environment: 0x55a7eeff9ae0>
+#> <environment: 0x557e6e1a1508>
 ```
