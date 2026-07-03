@@ -63,7 +63,7 @@ test_that("Base case: targets pipeline works", {
   expect_true(all(is.na(x$error)))
   tar_load(ep_stat)
   expect_equal(NROW(ep_stat), 36)
-  expect_equal(NCOL(ep_stat), 38)
+  expect_equal(NCOL(ep_stat), 39)
   expect_snapshot_value(ep_stat$stat_result_value,
                         tolerance = 1e-8,
                         style = "json2")
@@ -120,7 +120,7 @@ test_that("targets pipeline works no criteria fn and missing by_* functions",
   expect_true(all(is.na(x$error)))
   tar_load(ep_stat)
   expect_equal(NROW(ep_stat), 18)
-  expect_equal(NCOL(ep_stat), 38)
+  expect_equal(NCOL(ep_stat), 39)
   expect_snapshot_value(ep_stat$stat_result_value,
                         tolerance = 1e-8,
                         style = "json2")
@@ -172,7 +172,7 @@ test_that("branching after prepare for stats step works", {
   expect_true(all(is.na(x$error)))
   tar_load(ep_stat)
   expect_equal(NROW(ep_stat), 12)
-  expect_equal(NCOL(ep_stat), 38)
+  expect_equal(NCOL(ep_stat), 39)
   expect_snapshot_value(ep_stat$stat_result_value,
                         tolerance = 1e-8,
                         style = "json2")
@@ -581,7 +581,7 @@ test_that(
 
       targets::tar_load(ep_stat)
       expect_equal(nrow(ep_stat), 700)
-      expect_equal(ncol(ep_stat), 38)
+      expect_equal(ncol(ep_stat), 39)
       expect_equal(sum(ep_stat$endpoint_spec_id == 1), 690)
       expect_equal(sum(ep_stat$endpoint_spec_id == 2), 10)
 
