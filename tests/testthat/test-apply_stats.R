@@ -63,7 +63,7 @@ test_that("base: stat_by_strata_by_trt", {
   # EXPECT ------------------------------------------------------------------
 
   expect_equal(nrow(actual), 9)
-  expect_equal(sort(setdiff(names(actual), names(ep_crit_by_strata_by_trt))), c("stat_result", "treatment_value"))
+  expect_equal(sort(setdiff(names(actual), names(ep_crit_by_strata_by_trt))), c("stat_result", "strata_value", "treatment_value"))
 
   for (i in 1:nrow(actual)) {
     stats <- actual[["stat_result"]][[i]]
@@ -385,7 +385,7 @@ test_that("apply_stats stat_by_strata_across_trt", {
   # EXPECT ------------------------------------------------------------------
 
   expect_equal(nrow(actual), 3)
-  expect_equal(sort(setdiff(names(actual), names(ep_crit_by_strata_by_trt))), c("stat_result", "treatment_value"))
+  expect_equal(sort(setdiff(names(actual), names(ep_crit_by_strata_by_trt))), c("stat_result", "strata_value", "treatment_value"))
 
   for (i in 1:nrow(actual)) {
     stats <- actual[["stat_result"]][[i]]
@@ -863,5 +863,229 @@ test_that("treatment_value column is NA for stat_by_strata_across_trt", {
 
   # Check that all values are NA for stat_by_strata_across_trt
   expect_true(all(is.na(actual$treatment_value)))
+})
+
+
+test_that("strata_value column is present and populated for stat_by_strata_by_trt", {
+  # SETUP -------------------------------------------------------------------
+  testthat::skip_on_ci()
+  ep <- mk_ep_0001_base(
+    stratify_by = list(c("SEX")),
+    data_prepare = mk_adcm,
+    stat_by_strata_by_trt = list(n_sub = n_sub)
+  )
+
+  ep <- add_id(ep)
+  ep_fn_map <-
+    suppressWarnings(unnest_endpoint_functions(ep))
+
+  user_def_fn <-
+    mk_userdef_fn_dt(ep_fn_map, env = environment())
+
+  fn_map <-
+    merge(ep_fn_map[, .(endpoint_spec_id, fn_hash)], user_def_fn, by = "fn_hash")
+  adam_db <-
+    fetch_db_data(
+      study_metadata = list(),
+      fn_dt = user_def_fn
+    )
+  ep_and_data <- filter_db_data(ep, ep_fn_map, adam_db)
+  ep_data_key <- ep_and_data$ep
+  analysis_data_container <-
+    ep_and_data$analysis_data_container
+  ep_expanded <-
+    expand_over_endpoints(ep_data_key, analysis_data_container)
+  ep_ev_index <-
+    add_event_index(ep_expanded, analysis_data_container)
+  ep_crit_endpoint <-
+    apply_criterion_endpoint(ep_ev_index, analysis_data_container, fn_map)
+  crit_accept_by_strata_by_trt <-
+    apply_criterion_by_strata(ep_crit_endpoint,
+      analysis_data_container,
+      fn_map,
+      type = "by_strata_by_trt"
+    )
+  crit_accept_by_strata_across_trt <-
+    apply_criterion_by_strata(crit_accept_by_strata_by_trt,
+      analysis_data_container,
+      fn_map,
+      type = "by_strata_across_trt"
+    )
+
+  ep_prep <- prepare_for_stats(
+    crit_accept_by_strata_across_trt,
+    analysis_data_container,
+    fn_map,
+    type = "stat_by_strata_by_trt"
+  )
+
+  # ACT ---------------------------------------------------------------------
+
+  actual <-
+    apply_stats(ep_prep,
+      analysis_data_container,
+      type = "stat_by_strata_by_trt"
+    )
+
+  # EXPECT ------------------------------------------------------------------
+
+  expect_true("strata_value" %in% names(actual),
+    label = "strata_value column is present")
+  expect_true(all(!is.na(actual$strata_value)),
+    label = "strata_value is non-NA for stat_by_strata_by_trt")
+})
+
+
+test_that("strata_value column is present and populated for stat_by_strata_across_trt", {
+  # SETUP -------------------------------------------------------------------
+  testthat::skip_on_ci()
+
+  ep <- mk_ep_0001_base(
+    custom_pop_filter = "TRT01A %in% c('Placebo', 'Xanomeline High Dose')",
+    stratify_by = list(c("SEX")),
+    data_prepare = mk_adcm,
+    endpoint_filter = "AOCCPFL=='Y'",
+    stat_by_strata_across_trt = list(n_subev_trt_diff = n_subev_trt_diff)
+  )
+
+  ep <- add_id(ep)
+  ep_fn_map <-
+    suppressWarnings(unnest_endpoint_functions(ep))
+
+  user_def_fn <-
+    mk_userdef_fn_dt(ep_fn_map, env = environment())
+
+  fn_map <-
+    merge(ep_fn_map[, .(endpoint_spec_id, fn_hash)], user_def_fn, by = "fn_hash")
+  adam_db <-
+    fetch_db_data(
+      study_metadata = list(),
+      fn_dt = user_def_fn
+    )
+  ep_and_data <- filter_db_data(ep, ep_fn_map, adam_db)
+  ep_data_key <- ep_and_data$ep
+  analysis_data_container <-
+    ep_and_data$analysis_data_container
+  ep_expanded <-
+    expand_over_endpoints(ep_data_key, analysis_data_container)
+  ep_ev_index <-
+    add_event_index(ep_expanded, analysis_data_container)
+  ep_crit_endpoint <-
+    apply_criterion_endpoint(ep_ev_index, analysis_data_container, fn_map)
+  crit_accept_by_strata_by_trt <-
+    apply_criterion_by_strata(ep_crit_endpoint,
+      analysis_data_container,
+      fn_map,
+      type = "by_strata_by_trt"
+    )
+  crit_accept_by_strata_across_trt <-
+    apply_criterion_by_strata(crit_accept_by_strata_by_trt,
+      analysis_data_container,
+      fn_map,
+      type = "by_strata_across_trt"
+    )
+
+  ep_prep <- prepare_for_stats(
+    crit_accept_by_strata_across_trt,
+    analysis_data_container,
+    fn_map,
+    type = "stat_by_strata_across_trt"
+  )
+
+  # ACT ---------------------------------------------------------------------
+  actual <-
+    apply_stats(
+      ep_prep,
+      analysis_data_container,
+      type = "stat_by_strata_across_trt"
+    )
+
+  # EXPECT ------------------------------------------------------------------
+
+  expect_true("strata_value" %in% names(actual),
+    label = "strata_value column is present")
+
+  expect_true(all(!is.na(actual$strata_value)),
+    label = "strata_value is non-NA for stat_by_strata_across_trt")
+})
+
+
+test_that("strata_value column is NA for stat_across_strata_across_trt", {
+  # SETUP -------------------------------------------------------------------
+  testthat::skip_on_ci()
+
+  n_sub_total <- function(dat, subjectid_var, ...) {
+    stat <- dat |> unique(by = subjectid_var) |> nrow()
+    data.table(label = "N", description = "Number of subjects",
+               qualifiers = NA_character_, value = stat, method = NA_character_)
+  }
+
+  ep <- mk_ep_0001_base(
+    custom_pop_filter = "TRT01A %in% c('Placebo', 'Xanomeline High Dose')",
+    stratify_by = list(c("SEX")),
+    data_prepare = mk_adcm,
+    endpoint_filter = "AOCCPFL=='Y'",
+    stat_across_strata_across_trt = list(n_sub_total = n_sub_total)
+  )
+
+  ep <- add_id(ep)
+  ep_fn_map <-
+    suppressWarnings(unnest_endpoint_functions(ep))
+
+  user_def_fn <-
+    mk_userdef_fn_dt(ep_fn_map, env = environment())
+
+  fn_map <-
+    merge(ep_fn_map[, .(endpoint_spec_id, fn_hash)], user_def_fn, by = "fn_hash")
+  adam_db <-
+    fetch_db_data(
+      study_metadata = list(),
+      fn_dt = user_def_fn
+    )
+  ep_and_data <- filter_db_data(ep, ep_fn_map, adam_db)
+  ep_data_key <- ep_and_data$ep
+  analysis_data_container <-
+    ep_and_data$analysis_data_container
+  ep_expanded <-
+    expand_over_endpoints(ep_data_key, analysis_data_container)
+  ep_ev_index <-
+    add_event_index(ep_expanded, analysis_data_container)
+  ep_crit_endpoint <-
+    apply_criterion_endpoint(ep_ev_index, analysis_data_container, fn_map)
+  crit_accept_by_strata_by_trt <-
+    apply_criterion_by_strata(ep_crit_endpoint,
+      analysis_data_container,
+      fn_map,
+      type = "by_strata_by_trt"
+    )
+  crit_accept_by_strata_across_trt <-
+    apply_criterion_by_strata(crit_accept_by_strata_by_trt,
+      analysis_data_container,
+      fn_map,
+      type = "by_strata_across_trt"
+    )
+
+  ep_prep <- prepare_for_stats(
+    crit_accept_by_strata_across_trt,
+    analysis_data_container,
+    fn_map,
+    type = "stat_across_strata_across_trt"
+  )
+
+  # ACT ---------------------------------------------------------------------
+  actual <-
+    apply_stats(
+      ep_prep,
+      analysis_data_container,
+      type = "stat_across_strata_across_trt"
+    )
+
+  # EXPECT ------------------------------------------------------------------
+
+  expect_true("strata_value" %in% names(actual),
+    label = "strata_value column is present")
+
+  expect_true(all(is.na(actual$strata_value)),
+    label = "strata_value is NA for stat_across_strata_across_trt")
 })
 

@@ -34,7 +34,8 @@ apply_stats <-
       crit_accept_by_strata_across_trt <-
       stratify_by <-
       treatment_refval <-
-      treatment_value <- NULL # To satisfy R CMD check
+      treatment_value <-
+      strata_value <- NULL # To satisfy R CMD check
     checkmate::assert_data_table(ep)
     # If no functions are given by the user, no results table needs to be
     # produced
@@ -57,6 +58,16 @@ apply_stats <-
     } else {
       ep_cp[, treatment_value := vapply(seq_len(.N), function(i) {
         as.character(stat_metadata[[i]][[treatment_var[[i]]]])
+      }, character(1))]
+    }
+
+    if (nrow(ep_cp) == 0) {
+      ep_cp[, strata_value := character(0)]
+    } else if (type == "stat_across_strata_across_trt") {
+      ep_cp[, strata_value := NA_character_]
+    } else {
+      ep_cp[, strata_value := vapply(seq_len(.N), function(i) {
+        as.character(stat_metadata[[i]][[strata_var[[i]]]])
       }, character(1))]
     }
 
