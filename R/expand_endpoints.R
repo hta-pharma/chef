@@ -67,6 +67,15 @@ expand_over_endpoints <- function(ep, analysis_data_container) {
   ep_with_data[, expand_specification := llist(define_expanded_ep(dat[[1]], group_by[[1]])),
     by = 1:nrow(ep_with_data)
   ]
+
+  # Multi-variable group_by expands to the full cartesian product of each
+  # variable's unique values (see index_expanded_ep_groups()); cut this back
+  # down to combinations actually observed in the data before dropping `dat`.
+  ep_with_data[, expand_specification := llist(
+    filter_to_observed_group_combos(dat[[1]], group_by[[1]], expand_specification[[1]])
+  ),
+    by = 1:nrow(ep_with_data)
+  ]
   ep_with_data[["dat"]] <- NULL
 
   # Expand by groups. If no grouping is present, then add empty group related columns
@@ -201,6 +210,50 @@ define_expanded_ep <- function(x, group_by, forced_group_levels = NULL, col_pref
     construct_group_filter(col_name_filter = col_name_filter)
   out[, (col_name_meta) := .(list(lapply(.SD, identity))), by = 1:nrow(out), .SDcols = names(group_by)]
   out[, .SD, .SDcols = c(col_name_meta, col_name_filter)]
+}
+
+#' Filter Expanded Endpoint Groups to Observed Combinations
+#'
+#' @description When `group_by` specifies two or more grouping variables,
+#'   `index_expanded_ep_groups()` (called via `define_expanded_ep()`) returns
+#'   the full cartesian product of each variable's unique values, which
+#'   includes combinations that never actually co-occur in `x`. This function
+#'   filters the expanded endpoint rows back down to only those combinations
+#'   that are genuinely observed in `x`. It is a no-op for single-variable
+#'   `group_by` (which is already observed-only) and is only intended to be
+#'   used for endpoint-level `group_by` expansion in `expand_over_endpoints()`
+#'   — it must not be applied to the stratify_by x treatment_var expansion in
+#'   `prepare_for_stats.R`, which relies on the cartesian product to represent
+#'   zero-count strata/treatment-arm cells.
+#'
+#' @param x A `data.table` containing the data associated with the endpoints.
+#' @param group_by A list specifying the grouping for endpoints.
+#' @param expanded The output of `define_expanded_ep(x, group_by)`.
+#'
+#' @return `expanded`, filtered to rows whose group-by combination is
+#'   observed in `x`. Returned unchanged if `expanded` is not a `data.table`
+#'   or if `group_by` has fewer than 2 variables.
+#' @noRd
+filter_to_observed_group_combos <- function(x, group_by, expanded) {
+  if (!data.table::is.data.table(expanded) || length(group_by) <= 1) {
+    return(expanded)
+  }
+
+  grouping_vars <- names(group_by)
+  # `expanded` always has exactly one metadata list-column alongside the
+  # filter column, whatever col_prefix was used to build it.
+  col_name_meta <- grep("_metadata$", names(expanded), value = TRUE)
+
+  observed <- x[, unique(.SD), .SDcols = grouping_vars]
+  observed <- observed[stats::complete.cases(observed)]
+  observed_keys <- observed[, do.call(paste, c(.SD, sep = ""))]
+
+  meta_list <- expanded[[col_name_meta]]
+  expanded_keys <- vapply(meta_list, function(m) {
+    paste(unlist(m[grouping_vars]), collapse = "")
+  }, character(1))
+
+  expanded[expanded_keys %in% observed_keys]
 }
 
 #' Index Non-Null Group Levels
