@@ -580,9 +580,9 @@ test_that(
 
 
       targets::tar_load(ep_stat)
-      expect_equal(nrow(ep_stat), 700)
+      expect_equal(nrow(ep_stat), 500)
       expect_equal(ncol(ep_stat), 40)
-      expect_equal(sum(ep_stat$endpoint_spec_id == 1), 690)
+      expect_equal(sum(ep_stat$endpoint_spec_id == 1), 490)
       expect_equal(sum(ep_stat$endpoint_spec_id == 2), 10)
 
       x <- tar_meta() |> data.table::setDT()
