@@ -46,7 +46,7 @@ unnest_by_fns <- function(dt, cols) {
   if (nrow(long) == 1) {
     x <- long
   } else {
-    x <- tidyr::unnest(long, c(fn, fn_name)) %>% as.data.table()
+    x <- tidyr::unnest(long, c(fn, fn_name)) |> as.data.table()
   }
 
 

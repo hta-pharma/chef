@@ -219,8 +219,8 @@ expand_ep_for_stats <- function(
   # step will explode
   ep_with_data[, (data_col) := NULL]
 
-  ep_exp <- ep_with_data %>%
-    tidyr::unnest(col = stat_expand_spec) %>%
+  ep_exp <- ep_with_data |>
+    tidyr::unnest(col = stat_expand_spec) |>
     setDT()
 
   setkey(ep_exp, key_analysis_data)

@@ -10,10 +10,53 @@ validate_stat_output(output)
 \item{output}{The output from a statistical function.}
 }
 \value{
-An error message if validation fails, otherwise NA.
+An error message (character) if validation fails, otherwise \code{NA_character_}.
+Use with \code{\link[=try_and_validate]{try_and_validate()}} to automatically handle validation failures.
 }
 \description{
 Validates the output of statistical functions to ensure it
 conforms to expected structure. The expected structure includes specific
-column names and non-empty results.
+column names (\code{label}, \code{description}, \code{qualifiers}, \code{value}, \code{method}) and at least one row.
+This validator is typically used with \code{\link[=try_and_validate]{try_and_validate()}} to ensure
+statistical functions return correctly formatted results.
+}
+\examples{
+library(data.table)
+
+# Valid statistical output - correctly formatted
+valid_stats <- data.table(
+  label = c("N", "n_events", "Rate"),
+  description = c(
+    "Number of subjects",
+    "Number with adverse events",
+    "Percentage with events"
+  ),
+  qualifiers = NA_character_,
+  value = c(250L, 45L, 18.0),
+  method = NA_character_
+)
+
+# Validation passes
+validate_stat_output(valid_stats)  # Returns NA_character_
+
+# Invalid: wrong class (must be data.table)
+invalid_vector <- c(N = 250, events = 45)
+validate_stat_output(invalid_vector)  # Returns error message
+
+# Invalid: missing required columns
+incomplete_stats <- data.table(
+  label = c("N", "Rate"),
+  value = c(250L, 18.0)
+)
+validate_stat_output(incomplete_stats)  # Shows missing columns
+
+# Invalid: empty result (0 rows)
+empty_stats <- data.table(
+  label = character(),
+  description = character(),
+  qualifiers = character(),
+  value = numeric(),
+  method = character()
+)
+validate_stat_output(empty_stats)  # Error: 0 rows returned
 }

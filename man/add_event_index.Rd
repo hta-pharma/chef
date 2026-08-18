@@ -29,3 +29,38 @@ pairs and singleton conditions that define specific events of interest
 within the dataset. This index can be used to identify events in the
 user-supplied criteria and/or statistical functions
 }
+\examples{
+library(data.table)
+library(pharmaverseadam)
+
+# Prepare clinical data with INDEX_ column
+adcm_data <- as.data.table(pharmaverseadam::adcm)
+adcm_data[, INDEX_ := .I]
+
+analysis_data_container <- data.table(
+  dat = list(adcm_data),
+  key_analysis_data = "a"
+)
+setkey(analysis_data_container, key_analysis_data)
+
+# Create endpoint with specific filters
+ep <- data.table(
+  endpoint_id = 1L,
+  pop_var = "SAFFL",
+  pop_value = "Y",
+  period_var = NA_character_,
+  period_value = NA_character_,
+  endpoint_filter = NA_character_,
+  endpoint_group_filter = NA_character_,
+  custom_pop_filter = NA_character_,
+  key_analysis_data = "a"
+)
+setkey(ep, key_analysis_data)
+
+# Add event index: identifies which rows match endpoint criteria
+ep_with_index <- add_event_index(ep, analysis_data_container)
+
+# event_index contains row numbers from adcm_data matching the criteria
+str(ep_with_index$event_index)  # integer vector of INDEX_ values
+length(ep_with_index$event_index[[1]])  # e.g., 47 events match SAFFL="Y"
+}

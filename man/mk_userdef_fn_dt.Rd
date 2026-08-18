@@ -39,3 +39,33 @@ function. The output is a list of \code{data.table} objects, where each
 information about each function, including a character representation and the
 callable function itself.
 }
+\examples{
+library(data.table)
+
+# Create function table with user-defined functions
+# (typically from endpoint definitions via unnest_endpoint_functions)
+endpoint_fns <- data.table(
+  endpoint_spec_id = c(1, 1, 2, 2),
+  fn_type = c("data_prepare", "stat_by_strata_by_trt",
+              "data_prepare", "stat_by_strata_by_trt"),
+  fn = list(
+    quote(function(study_metadata) NULL),
+    quote(function(dat, ...) nrow(dat)),
+    quote(function(study_metadata) NULL),
+    quote(function(dat, ...) nrow(dat))
+  ),
+  fn_name = c("prep_fn", "n_subj", "prep_fn", "n_subj"),
+  fn_hash = c("hash1", "hash2", "hash1", "hash2")
+)
+
+# Parse functions into callable format
+fn_table <- mk_userdef_fn_dt(endpoint_fns)
+
+# Result: unique functions by hash, deduplicated
+nrow(fn_table)  # 2 (hash1, hash2)
+fn_table[, .(fn_type, fn_name)]
+
+# fn_callable column contains executable functions
+fn_table$fn_callable[[1]]  # Callable function
+
+}

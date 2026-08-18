@@ -13,6 +13,57 @@
 #' @return A `data.table` with an additional logical column `crit_accept_endpoint`
 #'   indicating whether each endpoint meets the defined criteria.
 #' @export
+#'
+#' @examples
+#' library(data.table)
+#' library(pharmaverseadam)
+#'
+#' # Create a simple criterion function: keep endpoint if n events >= 5
+#' min_events_fn <- function(dat, event_index, ...) {
+#'   length(event_index) >= 5
+#' }
+#'
+#' # Prepare endpoint with event index
+#' adcm_data <- as.data.table(pharmaverseadam::adcm)
+#' adcm_data[, INDEX_ := .I]
+#'
+#' analysis_data_container <- data.table(
+#'   dat = list(adcm_data),
+#'   key_analysis_data = "a"
+#' )
+#' setkey(analysis_data_container, key_analysis_data)
+#'
+#' ep <- data.table(
+#'   endpoint_id = "1-0001",
+#'   endpoint_spec_id = 1L,
+#'   pop_var = "SAFFL",
+#'   pop_value = "Y",
+#'   period_var = NA_character_,
+#'   period_value = NA_character_,
+#'   endpoint_filter = NA_character_,
+#'   endpoint_group_filter = NA_character_,
+#'   custom_pop_filter = NA_character_,
+#'   stratify_by = list(),
+#'   treatment_var = "TRT01A",
+#'   treatment_refval = "Xanomeline High Dose",
+#'   event_index = list(1:20),  # Simulated event indices
+#'   key_analysis_data = "a"
+#' )
+#' setkey(ep, key_analysis_data)
+#'
+#' # Create function map linking endpoint to criterion
+#' fn_map <- data.table(
+#'   endpoint_spec_id = 1L,
+#'   fn_type = "crit_endpoint",
+#'   fn_callable = list(min_events_fn),
+#'   fn_name = "min_events"
+#' )
+#'
+#' # Apply endpoint criterion
+#' ep_filtered <- apply_criterion_endpoint(ep, analysis_data_container, fn_map)
+#'
+#' # Result: crit_accept_endpoint = TRUE (20 events >= 5)
+#' ep_filtered[, .(endpoint_id, crit_accept_endpoint)]
 apply_criterion_endpoint <- function(ep, analysis_data_container, fn_map) {
   fn_type <-
     crit_accept_endpoint <-
@@ -83,6 +134,64 @@ apply_criterion_endpoint <- function(ep, analysis_data_container, fn_map) {
 #' @return A `data.table` with one row per stratum for each endpoint, with an
 #'   additional logical column indicating whether each row meets the criteria.
 #' @export
+#'
+#' @examples
+#' library(data.table)
+#' library(pharmaverseadam)
+#'
+#' # Create endpoint with stratification that already passed endpoint criteria
+#' ep <- data.table(
+#'   endpoint_id = "1-0001",
+#'   endpoint_spec_id = 1L,
+#'   crit_accept_endpoint = TRUE,
+#'   stratify_by = list(c("SEX")),
+#'   strata_var = c("M", "F"),  # Two strata plus TOTAL
+#'   event_index = list(1:20),
+#'   treatment_var = "TRT01A",
+#'   treatment_refval = "Xanomeline High Dose",
+#'   endpoint_filter = NA_character_,
+#'   endpoint_group_filter = NA_character_,
+#'   endpoint_group_metadata = list(),
+#'   custom_pop_filter = NA_character_,
+#'   period_var = NA_character_,
+#'   period_value = NA_character_,
+#'   key_analysis_data = "a"
+#' )
+#'
+#' # Prepare data container
+#' adcm_data <- as.data.table(pharmaverseadam::adcm)
+#' adcm_data[, INDEX_ := .I]
+#'
+#' analysis_data_container <- data.table(
+#'   dat = list(adcm_data),
+#'   key_analysis_data = "a"
+#' )
+#' setkey(analysis_data_container, key_analysis_data)
+#' setkey(ep, key_analysis_data)
+#'
+#' # Create strata-level criterion: keep strata if >= 3 subjects
+#' min_subgroup_size <- function(dat, event_index, stratify_by, strata_var, ...) {
+#'   # This is a simplified example; actual implementation evaluates actual data
+#'   length(event_index) >= 3
+#' }
+#'
+#' fn_map <- data.table(
+#'   endpoint_spec_id = 1L,
+#'   fn_type = "crit_by_strata_by_trt",
+#'   fn_callable = list(min_subgroup_size),
+#'   fn_name = "min_subgroup_size"
+#' )
+#'
+#' # Apply strata criteria
+#' ep_strata <- apply_criterion_by_strata(
+#'   ep = ep,
+#'   analysis_data_container = analysis_data_container,
+#'   fn_map = fn_map,
+#'   type = "by_strata_by_trt"
+#' )
+#'
+#' # Result: multiple rows per endpoint (one per stratum)
+#' ep_strata[, .(endpoint_id, strata_var, crit_accept_by_strata_by_trt)]
 apply_criterion_by_strata <-
   function(ep,
            analysis_data_container,

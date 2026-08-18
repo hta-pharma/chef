@@ -13,6 +13,8 @@ handle_mk_fn(
 )
 }
 \arguments{
+\item{fn}{fn in list format}
+
 \item{pipeline_id}{The pipeline ID}
 
 \item{r_functions_dir}{The directory where the custom R scripts go}
@@ -20,7 +22,7 @@ handle_mk_fn(
 \item{type}{Type of mk_* function: mk_endpoint_def (default), mk_criterion,
 or mk_adam.}
 
-\item{fn_list}{fn in list format}
+\item{env}{Environment}
 }
 \description{
 Handle creation of endpoint def function

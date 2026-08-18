@@ -26,3 +26,42 @@ a mapping table that links these definitions to user-defined functions,
 which are then applied to the pre-processed ADaM datasets to create the
 expanded endpoints.
 }
+\examples{
+library(data.table)
+library(pharmaverseadam)
+
+# Prepare ADCM data
+adcm <- as.data.table(pharmaverseadam::adcm)[!is.na(CMCLAS)]
+cmclas_vals <- unique(adcm$CMCLAS)
+
+# Create endpoint definition expanding by therapeutic class
+endpoint_def <- data.table(
+  endpoint_spec_id = 1L,
+  endpoint_label = "Concomitant Medications: <CMCLAS>",
+  pop_var = "SAFFL",
+  pop_value = "Y",
+  period_var = NA_character_,
+  period_value = NA_character_,
+  treatment_var = "TRT01A",
+  treatment_refval = "Xanomeline High Dose",
+  endpoint_filter = NA_character_,
+  custom_pop_filter = NA_character_,
+  stratify_by = list(list()),
+  group_by = list(list(CMCLAS = cmclas_vals)),
+  key_analysis_data = "a"
+)
+
+# Create analysis data container
+analysis_data <- data.table(dat = list(adcm), key_analysis_data = "a")
+setkey(analysis_data, key_analysis_data)
+setkey(endpoint_def, key_analysis_data)
+
+# Expand: 1 row becomes one row per unique CMCLAS value
+expanded_ep <- expand_over_endpoints(
+  ep = endpoint_def,
+  analysis_data_container = analysis_data
+)
+nrow(expanded_ep)
+expanded_ep[, .(endpoint_id, endpoint_label, endpoint_group_filter)]
+
+}

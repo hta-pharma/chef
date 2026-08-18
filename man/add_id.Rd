@@ -10,8 +10,29 @@ add_id(ep)
 \item{ep}{A \code{data.table} containing endpoint definitions.}
 }
 \value{
-data.table
+data.table with an additional \code{endpoint_spec_id} column containing
+sequential integers starting from 1.
 }
 \description{
-Add ID to user-defined endpoint groups
+Adds a sequential identifier (\code{endpoint_spec_id}) to each row of an endpoint
+definition table. These IDs track endpoint specifications through the analysis
+pipeline and enable mapping of results back to original endpoint definitions.
+}
+\examples{
+library(data.table)
+
+# Typical endpoint definition table from chef workflows
+endpoints <- data.table(
+  endpoint_label = c("Primary Efficacy", "Safety", "Tolerability"),
+  analysis_type = c("efficacy", "adverse_event", "adverse_event"),
+  custom_pop_filter = c("AGE >= 18", "SAFFL=='Y'", "SAFFL=='Y'")
+)
+
+# Add sequential IDs for tracking through analysis pipeline
+endpoints_with_ids <- add_id(endpoints)
+
+endpoints_with_ids
+
+# The endpoint_spec_id column now uniquely identifies each endpoint
+# and can be used to map statistical results back to endpoint definitions
 }

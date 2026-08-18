@@ -33,3 +33,61 @@ functions to the endpoints data to determine eligibility for strata
 statistics. It adds a logical column to the data indicating
 whether each row meet the criteria.
 }
+\examples{
+library(data.table)
+library(pharmaverseadam)
+
+# Create endpoint with stratification that already passed endpoint criteria
+ep <- data.table(
+  endpoint_id = "1-0001",
+  endpoint_spec_id = 1L,
+  crit_accept_endpoint = TRUE,
+  stratify_by = list(c("SEX")),
+  strata_var = c("M", "F"),  # Two strata plus TOTAL
+  event_index = list(1:20),
+  treatment_var = "TRT01A",
+  treatment_refval = "Xanomeline High Dose",
+  endpoint_filter = NA_character_,
+  endpoint_group_filter = NA_character_,
+  endpoint_group_metadata = list(),
+  custom_pop_filter = NA_character_,
+  period_var = NA_character_,
+  period_value = NA_character_,
+  key_analysis_data = "a"
+)
+
+# Prepare data container
+adcm_data <- as.data.table(pharmaverseadam::adcm)
+adcm_data[, INDEX_ := .I]
+
+analysis_data_container <- data.table(
+  dat = list(adcm_data),
+  key_analysis_data = "a"
+)
+setkey(analysis_data_container, key_analysis_data)
+setkey(ep, key_analysis_data)
+
+# Create strata-level criterion: keep strata if >= 3 subjects
+min_subgroup_size <- function(dat, event_index, stratify_by, strata_var, ...) {
+  # This is a simplified example; actual implementation evaluates actual data
+  length(event_index) >= 3
+}
+
+fn_map <- data.table(
+  endpoint_spec_id = 1L,
+  fn_type = "crit_by_strata_by_trt",
+  fn_callable = list(min_subgroup_size),
+  fn_name = "min_subgroup_size"
+)
+
+# Apply strata criteria
+ep_strata <- apply_criterion_by_strata(
+  ep = ep,
+  analysis_data_container = analysis_data_container,
+  fn_map = fn_map,
+  type = "by_strata_by_trt"
+)
+
+# Result: multiple rows per endpoint (one per stratum)
+ep_strata[, .(endpoint_id, strata_var, crit_accept_by_strata_by_trt)]
+}

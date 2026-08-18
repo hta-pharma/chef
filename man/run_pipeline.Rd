@@ -2,7 +2,7 @@
 % Please edit documentation in R/use_chef.R
 \name{run_pipeline}
 \alias{run_pipeline}
-\title{Run a {targets} pipeline}
+\title{Run a targets pipeline}
 \usage{
 run_pipeline(pipeline_id = NULL, pipeline_name = NULL)
 }

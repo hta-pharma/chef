@@ -8,6 +8,9 @@ jobs:
   delete_pr_artifacts:
     runs-on: ubuntu-latest
     steps:
-      - uses: stefanluptak/delete-old-pr-artifacts@v1
-        with:
-          workflow_filename: Check.yaml
+      - uses: actions/checkout@v3
+      - name: Delete PR artifacts
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          gh cache list -R ${{ github.repository }} --json id --jq '.[] | .id' | xargs -I {} gh cache delete -R ${{ github.repository }} {}

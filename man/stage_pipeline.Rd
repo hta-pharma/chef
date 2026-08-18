@@ -2,7 +2,7 @@
 % Please edit documentation in R/use_chef.R
 \name{stage_pipeline}
 \alias{stage_pipeline}
-\title{Stage a {targets} pipeline so that you can work interactively with it}
+\title{Stage a targets pipeline so that you can work interactively with it}
 \usage{
 stage_pipeline(pipeline_id = NULL, pipeline_name = NULL)
 }
@@ -18,7 +18,7 @@ leave \code{pipeline_id} blank and enter your custom pipeline name here.}
 Nothing, run for side effects
 }
 \description{
-To interact with a {targets} pipeline (e.g., run the pipeline,
+To interact with a targets pipeline (e.g., run the pipeline,
 load the completed targets from cache into memory), targets needs to know
 which pipeline you want to work with. \verb{This function} is a thin wrapper
 apound a Sys.setenv() call, and depends on the _targets.yaml file being set

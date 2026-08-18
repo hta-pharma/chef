@@ -36,3 +36,23 @@ filter strings for each endpoint group, which are used to subset the data
 accordingly. The function ensures that each endpoint group has the
 necessary information for further analysis.
 }
+\examples{
+library(data.table)
+library(pharmaverseadam)
+
+# Load sample data and add INDEX_ column
+adcm <- as.data.table(pharmaverseadam::adcm)
+adcm <- adcm[!is.na(CMCLAS)][1:50]  # Subset for brevity
+
+# Define grouping: expand endpoint by therapeutic class
+group_by <- list(CMCLAS = unique(adcm$CMCLAS))
+
+# Generate expanded endpoint specifications
+expanded <- define_expanded_ep(x = adcm, group_by = group_by)
+
+# View structure: each row = one group level
+expanded
+# Note: endpoint_group_metadata contains the group values
+# endpoint_group_filter contains the filter string (e.g., 'CMCLAS == "NERVOUS SYSTEM"')
+
+}

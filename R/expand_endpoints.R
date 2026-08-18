@@ -15,6 +15,45 @@
 #' @return A `data.table` where each row corresponds to an expanded endpoint
 #'   definition
 #' @export
+#'
+#' @examples
+#' library(data.table)
+#' library(pharmaverseadam)
+#'
+#' # Prepare ADCM data
+#' adcm <- as.data.table(pharmaverseadam::adcm)[!is.na(CMCLAS)]
+#' cmclas_vals <- unique(adcm$CMCLAS)
+#'
+#' # Create endpoint definition expanding by therapeutic class
+#' endpoint_def <- data.table(
+#'   endpoint_spec_id = 1L,
+#'   endpoint_label = "Concomitant Medications: <CMCLAS>",
+#'   pop_var = "SAFFL",
+#'   pop_value = "Y",
+#'   period_var = NA_character_,
+#'   period_value = NA_character_,
+#'   treatment_var = "TRT01A",
+#'   treatment_refval = "Xanomeline High Dose",
+#'   endpoint_filter = NA_character_,
+#'   custom_pop_filter = NA_character_,
+#'   stratify_by = list(list()),
+#'   group_by = list(list(CMCLAS = cmclas_vals)),
+#'   key_analysis_data = "a"
+#' )
+#'
+#' # Create analysis data container
+#' analysis_data <- data.table(dat = list(adcm), key_analysis_data = "a")
+#' setkey(analysis_data, key_analysis_data)
+#' setkey(endpoint_def, key_analysis_data)
+#'
+#' # Expand: 1 row becomes one row per unique CMCLAS value
+#' expanded_ep <- expand_over_endpoints(
+#'   ep = endpoint_def,
+#'   analysis_data_container = analysis_data
+#' )
+#' nrow(expanded_ep)
+#' expanded_ep[, .(endpoint_id, endpoint_label, endpoint_group_filter)]
+#'
 expand_over_endpoints <- function(ep, analysis_data_container) {
   expand_specification <-
     dat <-
@@ -28,36 +67,46 @@ expand_over_endpoints <- function(ep, analysis_data_container) {
   ep_with_data[, expand_specification := llist(define_expanded_ep(dat[[1]], group_by[[1]])),
     by = 1:nrow(ep_with_data)
   ]
+
+  # Multi-variable group_by expands to the full cartesian product of each
+  # variable's unique values (see index_expanded_ep_groups()); cut this back
+  # down to combinations actually observed in the data before dropping `dat`.
+  ep_with_data[, expand_specification := llist(
+    filter_to_observed_group_combos(dat[[1]], group_by[[1]], expand_specification[[1]])
+  ),
+    by = 1:nrow(ep_with_data)
+  ]
   ep_with_data[["dat"]] <- NULL
 
   # Expand by groups. If no grouping is present, then add empty group related columns
   if (any(!is.na(ep_with_data$expand_specification))) {
-    ep_exp <- ep_with_data %>%
-      tidyr::unnest(col = expand_specification) %>%
+    ep_exp <- ep_with_data |>
+      tidyr::unnest(col = expand_specification) |>
       setDT()
   } else {
     ep_exp <- ep_with_data[, .SD, .SDcols = setdiff(names(ep_with_data), "expand_specification")]
     ep_exp[, endpoint_group_filter := NA]
-    ep_exp[, endpoint_group_metadata := list()]
+    ep_exp[["endpoint_group_metadata"]] <- vector("list", nrow(ep_exp))
   }
 
   ep_exp[, endpoint_id := add_ep_id(.SD, .BY), by = endpoint_spec_id]
 
   # Complete endpoint labels by replacing keywords with values
   nm_set <- names(ep_exp)
-  ep_exp[, endpoint_label_evaluated := apply(ep_exp, 1, function(x) {
-    xlab <- x[["endpoint_label"]]
+  evaluate_label <- function(row_idx) {
+    xlab <- ep_exp[[row_idx, "endpoint_label"]]
 
     # Replace keywords. Do only accept keywords which reference to either
     # character or numeric values (which excludes group_by)
     for (i in nm_set) {
       if (grepl(paste0("<", i, ">"), xlab)) {
-        if (is.character(x[[i]]) || is.numeric(x[[i]])) {
+        val <- ep_exp[[row_idx, i]]
+        if (is.character(val) || is.numeric(val)) {
           xlab <-
-            xlab %>% gsub(
+            gsub(
               paste0("<", i, ">"),
-              paste0(str_to_sentence_base(x[[i]]), collapse = ","),
-              .
+              paste0(str_to_sentence_base(val), collapse = ","),
+              xlab
             )
         }
       }
@@ -65,21 +114,23 @@ expand_over_endpoints <- function(ep, analysis_data_container) {
 
     # Replace group keywords
     group_keywords <-
-      stringr::str_extract_all(xlab, "(?<=<)[^<>]*(?=>)") %>% unlist()
+      stringr::str_extract_all(xlab, "(?<=<)[^<>]*(?=>)") |> unlist()
     if (length(group_keywords) > 0) {
       for (j in group_keywords) {
-        if (!is.null(x$endpoint_group_metadata[[j]])) {
+        meta <- ep_exp[[row_idx, "endpoint_group_metadata"]]
+        if (!is.null(meta[[j]])) {
           xlab <-
-            xlab %>% gsub(
+            gsub(
               paste0("<", j, ">"),
-              as.character(x$endpoint_group_metadata[[j]]),
-              .
+              as.character(meta[[j]]),
+              xlab
             )
         }
       }
     }
     return(xlab)
-  })]
+  }
+  ep_exp[, endpoint_label_evaluated := lapply(seq_len(.N), evaluate_label) |> unlist()]
   ep_exp[["endpoint_label"]] <- NULL
   setnames(ep_exp, "endpoint_label_evaluated", "endpoint_label")
 
@@ -128,6 +179,25 @@ expand_over_endpoints <- function(ep, analysis_data_container) {
 #'   consists only of `NA` values, the function returns `NA`.
 #' @export
 #'
+#' @examples
+#' library(data.table)
+#' library(pharmaverseadam)
+#'
+#' # Load sample data and add INDEX_ column
+#' adcm <- as.data.table(pharmaverseadam::adcm)
+#' adcm <- adcm[!is.na(CMCLAS)][1:50]  # Subset for brevity
+#'
+#' # Define grouping: expand endpoint by therapeutic class
+#' group_by <- list(CMCLAS = unique(adcm$CMCLAS))
+#'
+#' # Generate expanded endpoint specifications
+#' expanded <- define_expanded_ep(x = adcm, group_by = group_by)
+#'
+#' # View structure: each row = one group level
+#' expanded
+#' # Note: endpoint_group_metadata contains the group values
+#' # endpoint_group_filter contains the filter string (e.g., 'CMCLAS == "NERVOUS SYSTEM"')
+#'
 define_expanded_ep <- function(x, group_by, forced_group_levels = NULL, col_prefix = "endpoint_group") {
   if (!is.list(group_by) || all(is.na(group_by))) {
     return(NA)
@@ -136,10 +206,54 @@ define_expanded_ep <- function(x, group_by, forced_group_levels = NULL, col_pref
   col_name_meta <- paste(col_prefix, "metadata", sep = "_")
   col_name_filter <- paste(col_prefix, "filter", sep = "_")
 
-  out <- index_expanded_ep_groups(x, group_by, forced_group_levels) %>%
+  out <- index_expanded_ep_groups(x, group_by, forced_group_levels) |>
     construct_group_filter(col_name_filter = col_name_filter)
   out[, (col_name_meta) := .(list(lapply(.SD, identity))), by = 1:nrow(out), .SDcols = names(group_by)]
   out[, .SD, .SDcols = c(col_name_meta, col_name_filter)]
+}
+
+#' Filter Expanded Endpoint Groups to Observed Combinations
+#'
+#' @description When `group_by` specifies two or more grouping variables,
+#'   `index_expanded_ep_groups()` (called via `define_expanded_ep()`) returns
+#'   the full cartesian product of each variable's unique values, which
+#'   includes combinations that never actually co-occur in `x`. This function
+#'   filters the expanded endpoint rows back down to only those combinations
+#'   that are genuinely observed in `x`. It is a no-op for single-variable
+#'   `group_by` (which is already observed-only) and is only intended to be
+#'   used for endpoint-level `group_by` expansion in `expand_over_endpoints()`
+#'   — it must not be applied to the stratify_by x treatment_var expansion in
+#'   `prepare_for_stats.R`, which relies on the cartesian product to represent
+#'   zero-count strata/treatment-arm cells.
+#'
+#' @param x A `data.table` containing the data associated with the endpoints.
+#' @param group_by A list specifying the grouping for endpoints.
+#' @param expanded The output of `define_expanded_ep(x, group_by)`.
+#'
+#' @return `expanded`, filtered to rows whose group-by combination is
+#'   observed in `x`. Returned unchanged if `expanded` is not a `data.table`
+#'   or if `group_by` has fewer than 2 variables.
+#' @noRd
+filter_to_observed_group_combos <- function(x, group_by, expanded) {
+  if (!data.table::is.data.table(expanded) || length(group_by) <= 1) {
+    return(expanded)
+  }
+
+  grouping_vars <- names(group_by)
+  # `expanded` always has exactly one metadata list-column alongside the
+  # filter column, whatever col_prefix was used to build it.
+  col_name_meta <- grep("_metadata$", names(expanded), value = TRUE)
+
+  observed <- x[, unique(.SD), .SDcols = grouping_vars]
+  observed <- observed[stats::complete.cases(observed)]
+  observed_keys <- observed[, do.call(paste, c(.SD, sep = ""))]
+
+  meta_list <- expanded[[col_name_meta]]
+  expanded_keys <- vapply(meta_list, function(m) {
+    paste(unlist(m[grouping_vars]), collapse = "")
+  }, character(1))
+
+  expanded[expanded_keys %in% observed_keys]
 }
 
 #' Index Non-Null Group Levels
@@ -213,7 +327,7 @@ index_expanded_ep_groups <- function(x, group_by, forced_group_levels = NULL) {
 construct_group_filter <- function(x, col_name_filter = "endpoint_group_filter") {
   out <- copy(x)
   filter_str_vec <-
-    purrr::pmap(x, create_condition_str) %>% unlist(recursive = F)
+    purrr::pmap(x, create_condition_str) |> unlist(recursive = FALSE)
   out[, (col_name_filter) := filter_str_vec]
 }
 

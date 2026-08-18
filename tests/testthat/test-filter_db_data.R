@@ -155,10 +155,20 @@ test_that("filter_db_data works with >1 row in ep dataset", {
   actual <- filter_db_data(ep, ep_fn_map, adam_db)
 
   # EXPECT ------------------------------------------------------------------
-  expect_equal(actual$analysis_data_container$dat[[1]], adam[SAFFL == "Y" &
-    CMSEQ >= 60])
-  expect_equal(actual$analysis_data_container$dat[[2]], adam[SAFFL == "Y" &
-    CMSEQ >= 75])
+  # The container's row order is determined by digest() of an internal hash
+  # key, which can differ between platforms / digest versions. Match each
+  # expected dataset to whichever container row equals it.
+  actual_dat <- actual$analysis_data_container$dat
+  expect_length(actual_dat, 2)
+  match_60 <- which(vapply(actual_dat,
+    function(d) isTRUE(all.equal(d, adam[SAFFL == "Y" & CMSEQ >= 60])),
+    logical(1)))
+  match_75 <- which(vapply(actual_dat,
+    function(d) isTRUE(all.equal(d, adam[SAFFL == "Y" & CMSEQ >= 75])),
+    logical(1)))
+  expect_length(match_60, 1)
+  expect_length(match_75, 1)
+  expect_true(match_60 != match_75)
 })
 
 

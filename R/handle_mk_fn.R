@@ -1,10 +1,11 @@
 #' Handle creation of endpoint def function
 #'
+#' @param fn fn in list format
 #' @param pipeline_id The pipeline ID
-#' @param fn_list fn in list format
+#' @param r_functions_dir The directory where the custom R scripts go
 #' @param type Type of mk_* function: mk_endpoint_def (default), mk_criterion,
 #'   or mk_adam.
-#' @param r_functions_dir The directory where the custom R scripts go
+#' @param env Environment
 #'
 #' @keywords internal
 handle_mk_fn <-

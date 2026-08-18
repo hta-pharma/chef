@@ -1,6 +1,8 @@
 test_that("Base case: targets pipeline works", {
   # SETUP -------------------------------------------------------------------
-  testr::create_local_project()
+  tmp <- withr::local_tempdir()
+  withr::local_dir(tmp)
+  usethis::local_project(tmp, force = TRUE, setwd = FALSE, quiet = TRUE)
   crit_endpoint <- function(...) {
     return(T)
   }
@@ -61,7 +63,7 @@ test_that("Base case: targets pipeline works", {
   expect_true(all(is.na(x$error)))
   tar_load(ep_stat)
   expect_equal(NROW(ep_stat), 36)
-  expect_equal(NCOL(ep_stat), 37)
+  expect_equal(NCOL(ep_stat), 40)
   expect_snapshot_value(ep_stat$stat_result_value,
                         tolerance = 1e-8,
                         style = "json2")
@@ -71,7 +73,9 @@ test_that("Base case: targets pipeline works", {
 test_that("targets pipeline works no criteria fn and missing by_* functions",
           {
             # SETUP -------------------------------------------------------------------
-            testr::create_local_project()
+            tmp <- withr::local_tempdir()
+            withr::local_dir(tmp)
+  usethis::local_project(tmp, force = TRUE, setwd = FALSE, quiet = TRUE)
 
             mk_ep_def <- function() {
               ep <- mk_endpoint_str(
@@ -116,7 +120,7 @@ test_that("targets pipeline works no criteria fn and missing by_* functions",
   expect_true(all(is.na(x$error)))
   tar_load(ep_stat)
   expect_equal(NROW(ep_stat), 18)
-  expect_equal(NCOL(ep_stat), 37)
+  expect_equal(NCOL(ep_stat), 40)
   expect_snapshot_value(ep_stat$stat_result_value,
                         tolerance = 1e-8,
                         style = "json2")
@@ -125,7 +129,9 @@ test_that("targets pipeline works no criteria fn and missing by_* functions",
 
 test_that("branching after prepare for stats step works", {
   # SETUP -------------------------------------------------------------------
-  testr::create_local_project()
+  tmp <- withr::local_tempdir()
+  withr::local_dir(tmp)
+  usethis::local_project(tmp, force = TRUE, setwd = FALSE, quiet = TRUE)
 
   mk_ep_def <- function() {
     ep <- mk_endpoint_str(
@@ -166,7 +172,7 @@ test_that("branching after prepare for stats step works", {
   expect_true(all(is.na(x$error)))
   tar_load(ep_stat)
   expect_equal(NROW(ep_stat), 12)
-  expect_equal(NCOL(ep_stat), 37)
+  expect_equal(NCOL(ep_stat), 40)
   expect_snapshot_value(ep_stat$stat_result_value,
                         tolerance = 1e-8,
                         style = "json2")
@@ -175,7 +181,9 @@ test_that("branching after prepare for stats step works", {
 
 test_that("ep_fn_map is always outdated", {
   # SETUP -------------------------------------------------------------------
-  testr::create_local_project()
+  tmp <- withr::local_tempdir()
+  withr::local_dir(tmp)
+  usethis::local_project(tmp, force = TRUE, setwd = FALSE, quiet = TRUE)
 
   mk_ep_def <- function() {
     ep <- mk_endpoint_str(
@@ -219,7 +227,9 @@ test_that("ep_fn_map is always outdated", {
 
 test_that("study_data responds to changes in source data", {
   # SETUP -------------------------------------------------------------------
-  testr::create_local_project()
+  tmp <- withr::local_tempdir()
+  withr::local_dir(tmp)
+  usethis::local_project(tmp, force = TRUE, setwd = FALSE, quiet = TRUE)
   saveRDS(data.table(runif(10)), file = "tmp_data_obj.rds")
   mk_test_fn <- function(study_metadata) {
     readRDS("tmp_data_obj.rds")
@@ -570,9 +580,9 @@ test_that(
 
 
       targets::tar_load(ep_stat)
-      expect_equal(nrow(ep_stat), 700)
-      expect_equal(ncol(ep_stat), 37)
-      expect_equal(sum(ep_stat$endpoint_spec_id == 1), 690)
+      expect_equal(nrow(ep_stat), 500)
+      expect_equal(ncol(ep_stat), 40)
+      expect_equal(sum(ep_stat$endpoint_spec_id == 1), 490)
       expect_equal(sum(ep_stat$endpoint_spec_id == 2), 10)
 
       x <- tar_meta() |> data.table::setDT()

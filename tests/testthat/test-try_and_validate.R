@@ -10,7 +10,8 @@ test_that("validate_stat_output in simple cases", {
       label = character(),
       value = numeric(),
       description = character(),
-      qualifiers = character()
+      qualifiers = character(),
+      method = character()
     )
   simple_dt <- data.table::data.table()
   valid_dt <-
@@ -18,7 +19,8 @@ test_that("validate_stat_output in simple cases", {
       label = "log",
       value = 1,
       description = "Natural log",
-      qualifiers = NA_character_
+      qualifiers = NA_character_,
+      method = NA_character_
     )
 
   expect_str_contains(
@@ -108,7 +110,8 @@ test_that(
           label = "log",
           value = log10(x),
           description = "Natural log",
-          qualifiers = NA_character_
+          qualifiers = NA_character_,
+          method = NA_character_
         )
       }
     tmp <- withr::local_tempdir()
@@ -151,10 +154,12 @@ test_that(
 )
 
 test_that("test in a targets setting.", {
-  testr::skip_on_devops()
+  testthat::skip_on_ci()
 
   # SETUP -------------------------------------------------------------------
-  testr::create_local_project()
+  tmp <- withr::local_tempdir()
+  withr::local_dir(tmp)
+  usethis::local_project(tmp, force = TRUE, setwd = FALSE, quiet = TRUE)
   crit_endpoint <- function(...) {
     return(T)
   }
@@ -264,10 +269,12 @@ test_that("loaded packages are included.", {
 
 
 test_that("loaded packages are included - In targets setting", {
-  testr::skip_on_devops()
+  testthat::skip_on_ci()
 
   # SETUP -------------------------------------------------------------------
-  testr::create_local_project()
+  tmp <- withr::local_tempdir()
+  withr::local_dir(tmp)
+  usethis::local_project(tmp, force = TRUE, setwd = FALSE, quiet = TRUE)
   crit_endpoint <- function(...) {
     return(T)
   }
